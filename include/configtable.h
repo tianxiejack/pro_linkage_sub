@@ -16,19 +16,36 @@ enum devvideo{
 	MAX_CHAN,
 };
 
+typedef enum{
+	mainmenu0=0,
+	mainmenu1,
+	mainmenu2,
+	submenu_DefaultWorkMode,// submenu_carli
+	//submenu_gridMapCalibrate, //"submenu_gunball" is replaced by "submenu_gridMapCalibrate"
+	submenu_mtd,
+	submenu_setimg,
+	submenu_setball,
+	submenu_setcom,
+	submenu_setnet,
+	submenu_handleMatchPoints,// for handle calibrate match points 
+	menumaxid
+}AppMenuId;
+
+typedef struct
+{
+	int id;
+	int pointer;
+	int submenu_cnt;
+	int start;
+	int end;
+}AppMenu;
+
 typedef enum _MenuDisplay{
 	MENU_MAIN_VIEW=0,
-	MENU_SBS,
 	MENU_GUN,
-	MENU_BALL,
-	MENU_CALIBRA_CAP,
-	MENU_CALIBRA_RESULT,
-	MENU_MATCH_POINT_VIEW,
-	MENU_TEST_RESULT_VIEW,
-	MENU_TRIG_INTER_MODE,
-	MENU_GRID_MAP_VIEW,
 	MENU_DISPLAY_COUNT		
 }MenuDisplay;
+
 typedef enum _GB_WorkMode{ // This App Has three work mode : Handle, Auto, and Only Contrl Ball camera
 	HANDLE_LINK_MODE =0,
 	AUTO_LINK_MODE,
@@ -60,6 +77,35 @@ typedef enum _VIDEOCNANNEL {
 	VIDEO_4,
 	VIDEO_COUNT 		
 }VIDEOCNANNEL;
+
+#define MAX_SUBMENU 7
+
+typedef struct osdbuffer
+{
+	volatile unsigned char osdID;
+	volatile unsigned char color;
+	volatile unsigned char alpha;
+	volatile unsigned char font;
+	volatile unsigned char fontsize;
+	volatile unsigned char ctrl;
+	volatile unsigned int posx;
+	volatile unsigned int posy;
+	volatile unsigned char buf[128];
+}osdbuffer_t;
+
+typedef struct osdtext
+{
+	volatile unsigned char osdID[32];
+	volatile unsigned char color[32];
+	volatile unsigned char alpha[32];
+	volatile unsigned char font[32];
+	volatile unsigned char fontsize[32];
+	volatile unsigned char ctrl[32];
+	volatile unsigned int posx[32];
+	volatile unsigned int posy[32];
+	volatile unsigned char buf[32][128];
+}osdtext_t;
+
 
 
 

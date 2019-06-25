@@ -34,7 +34,6 @@ static CDisplayer *gThis = NULL;
 extern CProcess* plat;
 extern bool sceneLost;
 
-
 double capTime = 0;
 
 GLint Uniform_tex_in = -1;
@@ -63,9 +62,6 @@ static GLfloat m_glvTexCoordsDefault[8] = {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1
 
 OSD_CONFIG_USER gCFG_Osd = {0};
 OSDSTATUS gSYS_Osd = {0};
-
-MenuDisplay g_displayMode = MENU_MAIN_VIEW;
-GB_WorkMode g_AppWorkMode = HANDLE_LINK_MODE;
 
 CDisplayer::CDisplayer()
 :m_renderCount(0),m_bRun(false),m_bFullScreen(false),m_bOsd(false),
@@ -2159,29 +2155,19 @@ void CDisplayer::linkageSwitchMode(void)
 {
 	int winId, chId;
 	unsigned int mask = 0;
-	switch( g_displayMode )
-	{
-		case MENU_MAIN_VIEW:
-			displayMode = MAIN_VIEW;
-			break;
-		case MENU_GUN:
-			displayMode = GUN_FULL_SCREEN;
-			break;
-		default:
-			break;
-	}
-	switch(displayMode) 
+
+	switch(linkage.displayMode) 
 	{
 		case MAIN_VIEW:	
 			RenderVideoOnOrthoView(VIDEO_1, m_WinWidth/4, m_WinHeight/2, m_WinWidth/2, m_WinHeight/2);
 			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]/2);	
-			if( g_CurDisplayMode != MAIN_VIEW)
-				g_CurDisplayMode = MAIN_VIEW;			
+			if( linkage.g_CurDisplayMode != MAIN_VIEW)
+				linkage.g_CurDisplayMode = MAIN_VIEW;			
 			break;
 		case GUN_FULL_SCREEN:				
 			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]);
-			if( g_CurDisplayMode != GUN_FULL_SCREEN)
-				g_CurDisplayMode = GUN_FULL_SCREEN;
+			if( linkage.g_CurDisplayMode != GUN_FULL_SCREEN)
+				linkage.g_CurDisplayMode = GUN_FULL_SCREEN;
 			break;
 			
 		default:

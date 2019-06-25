@@ -75,11 +75,6 @@ typedef struct RectfNode {
     int y2;  
 }RectfNode;
 
-typedef struct{  
-    int x;  
-    int y;   
-}PointNode;
-
 typedef struct{
 	char number;
 	TRK_RECT_INFO trkobj;

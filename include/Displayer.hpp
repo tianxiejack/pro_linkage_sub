@@ -21,6 +21,7 @@ const char chid = 5;
 #include "osa_sem.h"
 #include "app_status.h"
 #include "configtable.h"
+#include "link.hpp"
 
 using namespace std;
 using namespace cv;
@@ -321,9 +322,9 @@ public:
 	void linkageSwitchMode(void);
 	void RenderVideoOnOrthoView( int videoChannel, int x, int y, int width, int height );
 
-	DISPLAYMODE displayMode;
-	DISPLAYMODE g_CurDisplayMode;
-	
+	//DISPLAYMODE displayMode;
+	//DISPLAYMODE g_CurDisplayMode;
+	CLink linkage;
 };
 
 #define mallocwidth 1920

@@ -29,7 +29,6 @@ CProcess * CProcess::sThis = NULL;
 CProcess* plat = NULL;
 
 OSA_SemHndl g_linkage_getPos;
-extern MenuDisplay g_displayMode;
 
 void inputtmp(unsigned char cmdid)
 {
@@ -1686,8 +1685,8 @@ void CProcess::OnKeyDwn(unsigned char key)
 
 	if(key == 'Q' || key == 'q') 
 	{
-		MenuDisplay nextMode = MenuDisplay((int)(g_displayMode+1) % MENU_DISPLAY_COUNT);
-		g_displayMode = nextMode;
+		MenuDisplay nextMode = MenuDisplay((int)(m_display.linkage.displayMode+1) % MENU_DISPLAY_COUNT);
+		m_display.linkage.setDisplayMode(nextMode);
 	}
 
 
@@ -3404,4 +3403,5 @@ vector<string> CProcess::csplit(const string& str, const string& delim)
 	}
 	return res;
 }
+
 
