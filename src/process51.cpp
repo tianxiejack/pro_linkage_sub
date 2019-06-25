@@ -1580,6 +1580,20 @@ void CProcess::OnMouseRightDwn(int x, int y){};
 void CProcess::OnMouseRightUp(int x, int y){};
 void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 {
+	switch( key ) 
+	{
+		case 1:
+
+			break;
+		case 2:
+			m_display.linkage.m_menuindex = 0;
+			
+			break;
+
+		default:
+			break;
+	}
+	
 }
 
 void CProcess::OnKeyDwn(unsigned char key)

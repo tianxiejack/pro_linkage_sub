@@ -103,6 +103,7 @@ public:
 	MENU_POS m_currentMenuPos[32][7];
 	int oresoltype;
 	int curBaudRate;
+	int setrigion_flagv20;
 
 
 	

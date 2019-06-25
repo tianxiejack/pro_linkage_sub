@@ -19,14 +19,20 @@ CLink::CLink()
 	mouse_show = 0;
 	oresoltype = r1920x1080_f60;
 	curBaudRate = 9600;
+	setrigion_flagv20 = 0;
+
 	
 }
 
 	
 void CLink::init()
 {
+	menuOsdInit();
+
+
 	
 }
+
 
 void CLink::setDisplayMode(MenuDisplay mode)
 {

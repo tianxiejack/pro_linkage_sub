@@ -321,6 +321,8 @@ public:
 public:
 	void linkageSwitchMode(void);
 	void RenderVideoOnOrthoView( int videoChannel, int x, int y, int width, int height );
+	int MenuFunc(int index);
+	
 
 	//DISPLAYMODE displayMode;
 	//DISPLAYMODE g_CurDisplayMode;
