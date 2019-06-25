@@ -69,6 +69,7 @@ typedef enum _WindowSize{
 	WINDOW_WIDTH = 1920,
 	WINDOW_HEIGHT = 1080,
 }WindowSize;
+
 typedef enum _VIDEOCNANNEL {
 	VIDEO_0 = 0,
 	VIDEO_1,
@@ -77,6 +78,26 @@ typedef enum _VIDEOCNANNEL {
 	VIDEO_4,
 	VIDEO_COUNT 		
 }VIDEOCNANNEL;
+
+enum resol_t{
+	r1920x1080_f60,
+	r1024x768_f60,
+	r1280x1024_f60,
+	maxresolid,
+};
+
+enum baud_t{
+	baud_2400,
+	baud_4800,
+	baud_9600,
+	baud_15200,
+	MAX_BAUDID
+};
+
+typedef struct _MENU_POS{
+	int posX,posY;
+	bool isShow;
+}MENU_POS;
 
 #define MAX_SUBMENU 7
 

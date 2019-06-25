@@ -63,7 +63,7 @@ public:
 	~CLink(){};
 
 	void init();
-	
+	void menuOsdInit();
 	void OnJosEvent(int key, int param);
 
 public:
@@ -74,13 +74,20 @@ public:
 	
 	void setDisplayMode(MenuDisplay mode);
 
+
+	void set_mouse_show(int param)
+	{
+		mouse_show = param;
+	}
+
+
 public:
 	menu_param_t msgextMenuCtrl;
 	GB_WorkMode g_AppWorkMode ;
 	DISPLAYMODE g_CurDisplayMode;
 	MenuDisplay displayMode ;
 
-	
+	menu_param_t extMenuCtrl;
 	//MenuDisplay g_displayMode ;
 
 
@@ -91,8 +98,14 @@ public:
 	wchar_t disMenu[menumaxid][MAX_SUBMENU][33];
 	wchar_t disMtd[1][MAX_SUBMENU][33];
 
+	int mouse_show ;
+
+	MENU_POS m_currentMenuPos[32][7];
+	int oresoltype;
+	int curBaudRate;
 
 
+	
 };
 
 
