@@ -299,6 +299,7 @@ void app_ctrl_setReset(CMD_EXT * pInCmd)
 
 void app_ctrl_setSensor(CMD_EXT * pInCmd)
 {
+	/*
 	if(msgextInCtrl==NULL)
 		return ;
 
@@ -311,6 +312,7 @@ void app_ctrl_setSensor(CMD_EXT * pInCmd)
 		//app_ctrl_Sensorchange(pInCmd);
 		MSGDRIV_send(MSGID_EXT_INPUT_SENSOR, 0);
 	}
+	*/
 	return ;
 }
 
