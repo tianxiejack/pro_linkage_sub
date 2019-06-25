@@ -518,7 +518,8 @@ int CVideoProcess::MAIN_threadDestroy(void)
 }
 
 CVideoProcess::CVideoProcess()
-	:m_track(NULL),m_curChId(0),m_curSubChId(-1),adaptiveThred(40)		
+	:m_track(NULL),adaptiveThred(40),
+	m_curChId(video_gaoqing),m_curSubChId(video_gaoqing0)
 {
 	pThis = this;
 	memset(m_mtd, 0, sizeof(m_mtd));
@@ -566,8 +567,8 @@ CVideoProcess::CVideoProcess()
 	memset(polwarn_count, 0, sizeof(polwarn_count));
 	memset(polwarn_count_bak, 0, sizeof(polwarn_count_bak));
 	setrigon_polygon = 0;
-
-
+	
+	return ;
 }
 
 CVideoProcess::~CVideoProcess()
@@ -1034,16 +1035,17 @@ int CVideoProcess::dynamic_config(int type, int iPrm, void* pPrm)
 	switch(type)
 	{
 	case VP_CFG_MainChId:
-		m_curChId = iPrm;
+		m_curChId = video_gaoqing;
 		m_iTrackStat = 0;
 		mainProcThrObj.bFirst = true;
 		m_display.dynamic_config(CDisplayer::DS_CFG_ChId, 0, &m_curChId);
 		break;
 	case VP_CFG_SubChId:
-		m_curSubChId = iPrm;
+		m_curSubChId = video_gaoqing0;
 		m_display.dynamic_config(CDisplayer::DS_CFG_ChId, 1, &m_curSubChId);
 		break;
 	case VP_CFG_TrkEnable:
+		/*
 		m_bTrack = iPrm;
 		m_bakChId = m_curChId;
 		m_iTrackStat = 0;
@@ -1063,15 +1065,16 @@ int CVideoProcess::dynamic_config(int type, int iPrm, void* pPrm)
 		{
 			m_rcTrack = *(UTC_RECT_float*)pPrm;
 		}
+		*/
 		break;
 	case VP_CFG_MmtEnable:
 		m_bMtd = iPrm;
 		break;
 	case VP_CFG_SubPicpChId:
-		m_curSubChId = iPrm;
-		if(pPrm!=NULL)
-		render=*(int *)pPrm;
-		m_display.dynamic_config(CDisplayer::DS_CFG_ChId, render, &m_curSubChId);
+		//m_curSubChId = iPrm;
+		//if(pPrm!=NULL)
+		//render=*(int *)pPrm;
+		//m_display.dynamic_config(CDisplayer::DS_CFG_ChId, render, &m_curSubChId);
 		break;
 	case VP_CFG_MvDetect:
 		m_bMoveDetect = iPrm;
@@ -1340,7 +1343,7 @@ int CVideoProcess::process_frame(int chId, int virchId, Mat frame)
 	OSA_mutexLock(&m_mutex);
 
 
-	if(chId == m_curChId)
+	if(chId == m_curSubChId)
 	{
 		if((chId==video_pal) && (virchId!= PAL_VIRCHID))
 			;

@@ -29,6 +29,7 @@ CProcess * CProcess::sThis = NULL;
 CProcess* plat = NULL;
 
 OSA_SemHndl g_linkage_getPos;
+extern MenuDisplay g_displayMode;
 
 void inputtmp(unsigned char cmdid)
 {
@@ -218,9 +219,8 @@ void CProcess::loadIPCParam()
 	pIStuts->unitAimX		=	vdisWH[video_pal][0]/2;
 	pIStuts->unitAimY		=	vdisWH[video_pal][1]/2;
 
-	//pIStuts->SensorStat 	=   MAIN_CHID;
 	cfg_ctrl_mainchReset(pIStuts);
-	m_curChId = pIStuts->SensorStat;
+	//m_curChId = pIStuts->SensorStat;
 	pIStuts->SensorStatpri  =   pIStuts->SensorStat;
 	pIStuts->PicpSensorStatpri	=	pIStuts->PicpSensorStat = 0xFF;
 	
@@ -2322,6 +2322,12 @@ void CProcess::OnKeyDwn(unsigned char key)
 		{
 			msgdriv_event(MSGID_EXT_INPUT_PICPCROP, NULL);
 		}
+
+	if(key == 'Q' || key == 'q') 
+	{
+		MenuDisplay nextMode = MenuDisplay((int)(g_displayMode+1) % MENU_DISPLAY_COUNT);
+		g_displayMode = nextMode;
+	}
 
 
 	if(key == 'w'|| key == 'W')

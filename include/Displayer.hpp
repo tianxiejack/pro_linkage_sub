@@ -312,6 +312,17 @@ public:
 	void drawtriangle(Mat frame, int direction, int alpha);
 	void OSDWorkMode();
 
+public:
+	int m_WinWidth, m_WinHeight;
+	int m_viewPortX,m_viewPortY;
+	int m_viewWidth,m_viewHeight;
+
+public:
+	void linkageSwitchMode(void);
+	void RenderVideoOnOrthoView( int videoChannel, int x, int y, int width, int height );
+
+	DISPLAYMODE displayMode;
+	DISPLAYMODE g_CurDisplayMode;
 	
 };
 

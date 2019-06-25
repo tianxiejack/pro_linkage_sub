@@ -64,10 +64,14 @@ static GLfloat m_glvTexCoordsDefault[8] = {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1
 OSD_CONFIG_USER gCFG_Osd = {0};
 OSDSTATUS gSYS_Osd = {0};
 
+MenuDisplay g_displayMode = MENU_MAIN_VIEW;
+GB_WorkMode g_AppWorkMode = HANDLE_LINK_MODE;
+
 CDisplayer::CDisplayer()
 :m_renderCount(0),m_bRun(false),m_bFullScreen(false),m_bOsd(false),
  m_glProgram(0), m_bUpdateVertex(false),m_tmRender(0ul),m_waitSync(false),
- m_telapse(5.0), m_nSwapTimeOut(0)
+ m_telapse(5.0), m_nSwapTimeOut(0),
+ m_WinWidth(VIDEO_DIS_WIDTH),m_WinHeight(VIDEO_DIS_HEIGHT)
 {
 	int i;
 	gThis = this;
@@ -206,20 +210,7 @@ int CDisplayer::destroy()
 
 int CDisplayer::initRender(bool bInitBind)
 {	
-	
-
 	m_renderCount = 2;
-#if 0
-	m_renders[0].croprect.x=0;
-	m_renders[0].croprect.y=0;
-	m_renders[0].croprect.w=0;
-	m_renders[0].croprect.h=0;
-#endif
-	
-
-	//m_renders[0].videodect=1;
-	
-
 	for(int chId=0; chId<DS_CHAN_MAX; chId++)
 	{
 		m_img[chId].cols =0 ;
@@ -241,34 +232,28 @@ int CDisplayer::initRender(bool bInitBind)
 		m_renders[chId].bFreeze=0;
 	}
 
-
 	m_renders[0].croprect.x=0;
 	m_renders[0].croprect.y=0;
 	m_renders[0].croprect.w=0;
 	m_renders[0].croprect.h=0;
 	
-	m_renders[0].video_chId = m_initPrm.initMainchId;
+	m_renders[0].video_chId = BALL_CHID;
 	m_renders[0].displayrect.x = 0;
-	m_renders[0].displayrect.y = 0;
-	m_renders[0].displayrect.w = VIDEO_DIS_WIDTH;
-	m_renders[0].displayrect.h = VIDEO_DIS_HEIGHT;
+	m_renders[0].displayrect.y = VIDEO_DIS_HEIGHT/2;
+	m_renders[0].displayrect.w = VIDEO_DIS_WIDTH/2;
+	m_renders[0].displayrect.h = VIDEO_DIS_HEIGHT/2;
 	m_renders[0].videodect=1;
 
-	m_renders[1].video_chId = -1;
-	m_renders[1].displayrect.x = VIDEO_DIS_WIDTH*2/3;
-	m_renders[1].displayrect.y = VIDEO_DIS_HEIGHT*2/3;
-	m_renders[1].displayrect.w = VIDEO_DIS_WIDTH/3;
-	m_renders[1].displayrect.h = VIDEO_DIS_HEIGHT/3;
+	m_renders[1].video_chId = GUN_CHID;
+	m_renders[1].displayrect.x = VIDEO_DIS_WIDTH/2;
+	m_renders[1].displayrect.y = VIDEO_DIS_HEIGHT/2;
+	m_renders[1].displayrect.w = VIDEO_DIS_WIDTH/2;
+	m_renders[1].displayrect.h = VIDEO_DIS_HEIGHT/2;
 	m_renders[1].videodect=1;
-
-	m_renders[2].videodect=1;
-	m_renders[3].videodect=1;
-	m_renders[4].videodect=1;
 
 	
 	m_img_novideo.cols=0;
-	m_img_novideo.rows=0;
-	
+	m_img_novideo.rows=0;	
 	return 0;
 }
 
@@ -1357,10 +1342,6 @@ void CDisplayer::gl_textureLoad(void)
 				cudaResource_RegisterBuffer(chId, pbo, byteCount);
 				cudaResource_mapBuffer(chId, (void **)&dev_pbo, &tmpSize);
 
-				frametextcout++;
-				tvframecount++;
-				firframecount++;
-
 				int drupfram=PICBUFFERCOUNT;
 				if(chId==video_gaoqing0)
 				{
@@ -1722,42 +1703,10 @@ void CDisplayer::gl_display(void)
 	glUseProgram(m_glProgram);
 	
 	Uniform_tex_in = glGetUniformLocation(m_glProgram, "tex_in");
-	//Uniform_tex_osd = glGetUniformLocation(m_glProgram, "tex_osd");
-	//Uniform_tex_pbo = glGetUniformLocation(m_glProgram, "tex_pbo");
-	//Uniform_osd_enable = glGetUniformLocation(m_glProgram, "bOsd");
 	Uniform_mattrans = glGetUniformLocation(m_glProgram, "mTrans");
 	Uniform_font_color = glGetUniformLocation(m_fontProgram,"fontColor");
 
-
-
-	for(winId=0; winId<m_renderCount; winId++)
-	{			
-		chId = m_renders[winId].video_chId;
-		if(chId < 0 || chId >= DS_CHAN_MAX)
-		{
-			continue;
-		}
-
-		if(m_img[chId].cols <=0 || m_img[chId].rows <=0 || m_img[chId].channels() == 0)
-		{
-			continue;
-		}
-	
-		glUniformMatrix4fv(Uniform_mattrans, 1, GL_FALSE, m_glmat44fTrans[0]);
-
-		glUniform1i(Uniform_tex_in, 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textureId_input[chId]);
-		glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, GL_FALSE, 0, m_glvVerts[0]);
-		glVertexAttribPointer(ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, m_glvTexCoords[0]);
-		glEnableVertexAttribArray(ATTRIB_VERTEX);
-		glEnableVertexAttribArray(ATTRIB_TEXTURE);
-
-		glViewport(m_renders[winId].displayrect.x,m_renders[winId].displayrect.y,m_renders[winId].displayrect.w,m_renders[winId].displayrect.h);
-
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	}	
+	linkageSwitchMode();	
 
 	if(m_bOsd)
 	{
@@ -1785,11 +1734,11 @@ void CDisplayer::gl_display(void)
 		glDisable(GL_BLEND);
 
 		
-		IrisAndFocus();
-		OSDChid();
-		OSDWorkMode();
-		if(m_userOsd)
-			OSDFunc();
+		//IrisAndFocus();
+		//OSDChid();
+		//OSDWorkMode();
+		//if(m_userOsd)
+		//	OSDFunc();
 	}
 	
 	glUseProgram(0);
@@ -2205,4 +2154,56 @@ void CDisplayer::chinese_osd(int x,int y,wchar_t* text,char font,char fontsize,u
 	glUseProgram(0);
 }
 
+
+void CDisplayer::linkageSwitchMode(void)
+{
+	int winId, chId;
+	unsigned int mask = 0;
+	switch( g_displayMode )
+	{
+		case MENU_MAIN_VIEW:
+			displayMode = MAIN_VIEW;
+			break;
+		case MENU_GUN:
+			displayMode = GUN_FULL_SCREEN;
+			break;
+		default:
+			break;
+	}
+	switch(displayMode) 
+	{
+		case MAIN_VIEW:	
+			RenderVideoOnOrthoView(VIDEO_1, m_WinWidth/4, m_WinHeight/2, m_WinWidth/2, m_WinHeight/2);
+			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]/2);	
+			if( g_CurDisplayMode != MAIN_VIEW)
+				g_CurDisplayMode = MAIN_VIEW;			
+			break;
+		case GUN_FULL_SCREEN:				
+			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]);
+			if( g_CurDisplayMode != GUN_FULL_SCREEN)
+				g_CurDisplayMode = GUN_FULL_SCREEN;
+			break;
+			
+		default:
+			break;	
+	}	
+}
+
+
+void CDisplayer::RenderVideoOnOrthoView( int videoChannel, int x, int y, int width, int height )
+{
+	glViewport( x, y, width, height );
+	glPushMatrix();
+	glLoadIdentity();
+	glUniformMatrix4fv(Uniform_mattrans, 1, GL_FALSE, m_glmat44fTrans[0]);
+	glUniform1i(Uniform_tex_in, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureId_input[videoChannel]);
+	glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, GL_FALSE, 0, m_glvVerts[0]);
+	glVertexAttribPointer(ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, m_glvTexCoords[0]);
+	glEnableVertexAttribArray(ATTRIB_VERTEX);
+	glEnableVertexAttribArray(ATTRIB_TEXTURE);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glPopMatrix();	
+}
 

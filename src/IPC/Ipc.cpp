@@ -113,7 +113,7 @@ void cfg_ctrl_sysInit(int * configTab)
 
 	///////////////////
 	configTab[CFGID_OUTPUT_dftch] = clip(configTab[CFGID_OUTPUT_dftch], 0, video_pal);
-	configTab[CFGID_RTS_mainch] = configTab[CFGID_RTS_mainch2] = configTab[CFGID_OUTPUT_dftch];
+	configTab[CFGID_RTS_mainch] = configTab[CFGID_RTS_mainch2] = 0;//configTab[CFGID_OUTPUT_dftch];
 	printf("output init default select channel %d\n", configTab[CFGID_OUTPUT_dftch]);
 	gSYS_Enc.rtpEn = (bool)configTab[CFGID_ENCOUT_rtp];
 	gSYS_Enc.rtpIpaddr = configTab[CFGID_ENCOUT_rmip];
@@ -786,14 +786,7 @@ void* recv_msgpth(SENDST *pInData)
 
 	///////////////////////////////////////////
 		case sensor:
-			if(!pMsg->AvtTrkStat)
-			{
-				pMsg->SensorStat = clip(pIn->intPrm[0], 0, video_pal);
-				app_ctrl_setSensor(pMsg);
-				cfg_set_outSensor(pMsg->SensorStat, pMsg->SensorStat);
-				cfg_update_acqBySensor(sysConfig);
-				cfg_update_mtdBySensor(sysConfig);
-			}
+	
 			break;
 
 		case BoresightPos:

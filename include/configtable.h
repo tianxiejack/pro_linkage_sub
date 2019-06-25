@@ -16,10 +16,57 @@ enum devvideo{
 	MAX_CHAN,
 };
 
-#define MAIN_CHID					video_gaoqing0
-#define PAL_VIRCHID					0
+typedef enum _MenuDisplay{
+	MENU_MAIN_VIEW=0,
+	MENU_SBS,
+	MENU_GUN,
+	MENU_BALL,
+	MENU_CALIBRA_CAP,
+	MENU_CALIBRA_RESULT,
+	MENU_MATCH_POINT_VIEW,
+	MENU_TEST_RESULT_VIEW,
+	MENU_TRIG_INTER_MODE,
+	MENU_GRID_MAP_VIEW,
+	MENU_DISPLAY_COUNT		
+}MenuDisplay;
+typedef enum _GB_WorkMode{ // This App Has three work mode : Handle, Auto, and Only Contrl Ball camera
+	HANDLE_LINK_MODE =0,
+	AUTO_LINK_MODE,
+	ONLY_BALL_MODE,
+	MODE_COUNT		
+}GB_WorkMode;
 
-#define VIDEO_DIS_WIDTH		1920
+typedef enum _GRIDINTER_Mode{
+	GRIDINTER_CTRLBALL_MODE = 0,
+	GRIDINTER_MOUSE_MODE,
+	GRIDINTER_COUNT,
+}GRIDINTER_Mode;
+
+typedef enum _DISPLAYMODE {
+	MAIN_VIEW = 0,
+	GUN_FULL_SCREEN,
+	TOTAL_MODE_COUNT
+}DISPLAYMODE;
+
+typedef enum _WindowSize{
+	WINDOW_WIDTH = 1920,
+	WINDOW_HEIGHT = 1080,
+}WindowSize;
+typedef enum _VIDEOCNANNEL {
+	VIDEO_0 = 0,
+	VIDEO_1,
+	VIDEO_2,
+	VIDEO_3,
+	VIDEO_4,
+	VIDEO_COUNT 		
+}VIDEOCNANNEL;
+
+
+
+#define MAIN_CHID				video_gaoqing0
+#define PAL_VIRCHID				0
+
+#define VIDEO_DIS_WIDTH			1920
 #define VIDEO_DIS_HEIGHT		1080
 
 #define BALL_CHID			video_gaoqing
@@ -32,6 +79,7 @@ enum devvideo{
 
 extern int vcapWH[5][2];
 extern int vdisWH[5][2];
+extern int outputWHF[3];
 
 ////////////////////////////////////////////////////
 // sys config table part
