@@ -1583,11 +1583,10 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 	switch( key ) 
 	{
 		case 1:
-
+			m_display.linkage.app_ctrl_setMenuStat(0);
 			break;
 		case 2:
-			m_display.linkage.m_menuindex = 0;
-			
+			m_display.linkage.app_ctrl_setMenuStat(2);	
 			break;
 
 		default:

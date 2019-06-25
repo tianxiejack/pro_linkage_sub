@@ -1729,7 +1729,7 @@ void CDisplayer::gl_display(void)
 		}
 		glDisable(GL_BLEND);
 
-		OSDFunc();
+		//OSDFunc();
 		MenuFunc(linkage.m_menuindex);
 		
 		#if 0
@@ -2203,7 +2203,7 @@ int CDisplayer::MenuFunc(int index)
 	unsigned char r, g, b, a, color, colorbak, Enable;
 	short x, y;
 	char font,fontsize;
-
+printf("index = %d \n" , index );
 	if(linkage.setrigion_flagv20)
 		return -1;
 		

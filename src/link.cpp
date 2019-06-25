@@ -97,14 +97,13 @@ void CLink::setWorkMode(GB_WorkMode workmode)
 void CLink::app_ctrl_setMenuStat(int index)
 {
 	menu_param_t *pMenuStatus = &msgextMenuCtrl;
-
 	pMenuStatus->MenuStat = index;
 	
 	memset(pMenuStatus->Passwd, 0, sizeof(pMenuStatus->Passwd));
 	memset(pMenuStatus->disPasswd, 0, sizeof(pMenuStatus->disPasswd));
 	memset(disMenu[mainmenu0][1], 0, sizeof(disMenu[mainmenu0][1]));
-
-	//MSGDRIV_send(MSGID_EXT_MENUSWITCH, 0);
+	
+	m_menuindex = index;
 
 	if(-1 != index)
 		set_mouse_show(0);
