@@ -1715,6 +1715,11 @@ void CProcess::OnKeyDwn(unsigned char key)
 			OSA_printf("MSGID_EXT_INPUT_MMTSHOW\n");
 		}
 
+	if((key >= '0') && (key <= '9'))
+	{
+		m_display.linkage.app_ctrl_setnumber(key);
+	}
+
 	
 }
 

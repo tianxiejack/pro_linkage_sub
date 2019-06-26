@@ -123,6 +123,154 @@ void CLink::app_ctrl_setMenu_jos(int menu_state)
 	return ;
 }
 
+void CLink::app_ctrl_setnumber(char key)
+{
+	menu_param_t *pMenuStatus = &msgextMenuCtrl;
+
+	/*
+	if(MENU_TRIG_INTER_MODE == g_displayMode)
+	{
+		if(key == '0')
+		{
+			plat->m_autofr.deleteallPoints();
+			plat->set_jos_mouse_mode(mouse_mode);
+		}
+		else if(key == '1')
+		{
+			app_ctrl_save_trig_inter();
+		}
+	}
+	
+	else if(mainmenu0 == pMenuStatus->MenuStat)
+	{
+		int offset = strlen(pMenuStatus->Passwd) * sizeof(char);		
+		if(offset < sizeof(pMenuStatus->Passwd) - 1)
+		{
+			sprintf(pMenuStatus->Passwd + offset,"%c", key);
+			sprintf(pMenuStatus->disPasswd + offset,"%c", '*');
+			swprintf(plat->m_display.disMenu[mainmenu0][1], 33, L"%s", pMenuStatus->disPasswd);
+		}
+		else
+			printf("password reached max length:128");
+		
+		printf("%s,%d,passwd=%s\n",__FILE__,__LINE__,pMenuStatus->Passwd);
+	}
+	else if(submenu_setimg == pMenuStatus->MenuStat)
+	{
+		if(key == '0')
+		{
+			if(plat->save_flag)
+			{
+				plat->dtimer.stopTimer(plat->resol_apply_id);
+				pMenuStatus->resol_type_tmp = pMenuStatus->resol_type;
+				plat->setresol(pMenuStatus->resol_type);
+				plat->save_flag = 0;
+				memset(plat->m_display.disMenu[submenu_setimg][4], 0, sizeof(plat->m_display.disMenu[submenu_setimg][4]));
+				memset(plat->m_display.disMenu[submenu_setimg][5], 0, sizeof(plat->m_display.disMenu[submenu_setimg][5]));
+				MSGDRIV_send(MSGID_EXT_SETRESOL, 0);
+			}
+		}
+		else if(key == '1')
+		{
+			if(plat->save_flag)
+			{
+				plat->dtimer.stopTimer(plat->resol_apply_id);
+				pMenuStatus->resol_type = pMenuStatus->resol_type_tmp;
+				plat->save_flag = 0;
+				memset(plat->m_display.disMenu[submenu_setimg][4], 0, sizeof(plat->m_display.disMenu[submenu_setimg][4]));
+				memset(plat->m_display.disMenu[submenu_setimg][5], 0, sizeof(plat->m_display.disMenu[submenu_setimg][5]));
+				MSGDRIV_send(MSGID_EXT_SAVERESOL, 0);
+			}
+
+		}
+	}
+	else if((1 == m_mtdSetRigion) && (key == '2'))
+	{
+		CMD_EXT tmpCmd = {0};
+		tmpCmd.MtdSetRigion = 0;
+		app_ctrl_setMtdRigionStat(&tmpCmd);
+		app_ctrl_setMenuStat(submenu_mtd);
+		g_displayMode = MENU_MAIN_VIEW;
+		memset(plat->m_display.disMtd[0][4], 0, sizeof(plat->m_display.disMenu[0][4]));
+	}
+#if __POLYGON_MTD_ROI__
+	else if((1 == m_mtdSetRigion) && (key == '1'))
+	{
+		memset(plat->pol_rectn, 0, sizeof(plat->pol_rectn));
+		memset(plat->polRect, 0, sizeof(plat->polRect));
+	}
+#endif
+
+	else if((submenu_mtd == pMenuStatus->MenuStat) && (pMenuStatus->mtdnum_deng == 1))
+	{
+		int offset = strlen(pMenuStatus->mtdnum_arr) * sizeof(char);
+		if(offset < sizeof(pMenuStatus->mtdnum_arr) - 1)
+			sprintf(pMenuStatus->mtdnum_arr + offset,"%c", key);
+		else
+			printf("mtdnum reached max length:128");
+
+		int num = atoi(pMenuStatus->mtdnum_arr);
+		pMenuStatus->osd_mudnum = atoi(pMenuStatus->mtdnum_arr);
+		printf("%s,%d,osd_mudnum=%d\n",__FILE__,__LINE__,pMenuStatus->osd_mudnum);
+		MSGDRIV_send(MSGID_EXT_SETMTDNUM, 0);
+	}
+	else if((submenu_mtd == pMenuStatus->MenuStat) && (pMenuStatus->trktime_deng == 1))
+	{
+		int offset = strlen(pMenuStatus->trktime_arr) * sizeof(char);
+		if(offset < sizeof(pMenuStatus->trktime_arr) - 1)
+			sprintf(pMenuStatus->trktime_arr + offset,"%c", key);
+		else
+			printf("trktime reached max length:128");
+
+		int num = atoi(pMenuStatus->trktime_arr);
+		pMenuStatus->osd_trktime = atoi(pMenuStatus->trktime_arr);
+		printf("%s,%d,osd_trktime=%d\n",__FILE__,__LINE__,pMenuStatus->osd_trktime);
+		MSGDRIV_send(MSGID_EXT_SETMTDTRKTIME, 0);
+	}
+	else if((submenu_mtd == pMenuStatus->MenuStat) && (pMenuStatus->maxsize_deng == 1))
+	{
+		int offset = strlen(pMenuStatus->maxsize_arr) * sizeof(char);
+		if(offset < sizeof(pMenuStatus->maxsize_arr) - 1)
+			sprintf(pMenuStatus->maxsize_arr + offset,"%c", key);
+		else
+			printf("maxsize reached max length:128");
+
+		int num = atoi(pMenuStatus->maxsize_arr);
+		pMenuStatus->osd_maxsize = atoi(pMenuStatus->maxsize_arr);
+		printf("%s,%d,osd_maxsize=%d\n",__FILE__,__LINE__,pMenuStatus->osd_maxsize);
+		MSGDRIV_send(MSGID_EXT_SETMTDMAXSIZE, 0);
+	}
+	else if((submenu_mtd == pMenuStatus->MenuStat) && (pMenuStatus->minsize_deng == 1))
+	{
+		int offset = strlen(pMenuStatus->minsize_arr) * sizeof(char);
+		if(offset < sizeof(pMenuStatus->minsize_arr) - 1)
+			sprintf(pMenuStatus->minsize_arr + offset,"%c", key);
+		else
+			printf("minsize reached max length:128");
+
+		int num = atoi(pMenuStatus->minsize_arr);
+		pMenuStatus->osd_minsize = atoi(pMenuStatus->minsize_arr);
+		printf("%s,%d,osd_minsize=%d\n",__FILE__,__LINE__,pMenuStatus->osd_minsize);
+		MSGDRIV_send(MSGID_EXT_SETMTDMINSIZE, 0);
+	}
+	else if((submenu_mtd == pMenuStatus->MenuStat) && (pMenuStatus->sensi_deng == 1))
+	{
+		int offset = strlen(pMenuStatus->sensi_arr) * sizeof(char);
+		if(offset < sizeof(pMenuStatus->sensi_arr) - 1)
+			sprintf(pMenuStatus->sensi_arr + offset,"%c", key);
+		else
+			printf("sensi reached max length:128");
+
+		int num = atoi(pMenuStatus->sensi_arr);
+		pMenuStatus->osd_sensi = atoi(pMenuStatus->sensi_arr);
+		printf("%s,%d,osd_sensi=%d\n",__FILE__,__LINE__,pMenuStatus->osd_sensi);
+		MSGDRIV_send(MSGID_EXT_SETMTDSENSI, 0);
+	}
+	*/
+}
+
+
+
 void CLink::menuOsdInit()
 {
 	m_menuindex = -1;

@@ -75,6 +75,7 @@ public:
 	
 	void setDisplayMode(MenuDisplay mode);
 
+	void app_ctrl_setnumber(char key);
 
 	void set_mouse_show(int param)
 	{
@@ -105,6 +106,7 @@ public:
 	int oresoltype;
 	int curBaudRate;
 	int setrigion_flagv20;
+	int m_mtdSetRigion;
 
 
 	
