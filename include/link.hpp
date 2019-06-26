@@ -104,6 +104,10 @@ public:
 	void menu2_handle();
 	void submenu_DefaultWorkMode_handle();
 	void submenu_mtd_handle();
+	void upMenu();
+	void downMenu();
+	void app_ctrl_downMenu();
+	void app_ctrl_upMenu();
 
 
 
@@ -180,6 +184,8 @@ public:
 	int maxsize, minsize , sensi;
 
 	
+	int m_secondMenuIndex;
+	int m_firstMenuIndex;
 };
 
 

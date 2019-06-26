@@ -30,6 +30,15 @@ CProcess* plat = NULL;
 
 OSA_SemHndl g_linkage_getPos;
 
+#define SPECIAL_KEY_UP			101
+#define SPECIAL_KEY_DOWN 		103
+#define SPECIAL_KEY_LEFT 		100
+#define SPECIAL_KEY_RIGHT 		102
+
+#define SPECIAL_KEY_PAGEUP 		104
+#define SPECIAL_KEY_PAGEDOWN 	105
+
+
 void inputtmp(unsigned char cmdid)
 {
 	plat->OnKeyDwn(cmdid);
@@ -1590,6 +1599,14 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 			m_display.linkage.OnJosEvent(JOSF2_ENTER_MENU,f);
 			break;
 
+		case SPECIAL_KEY_UP:
+			m_display.linkage.app_ctrl_upMenu();
+			break;
+					
+		case SPECIAL_KEY_DOWN:
+			m_display.linkage.app_ctrl_downMenu();
+			break; 
+			
 		default:
 			break;
 	}

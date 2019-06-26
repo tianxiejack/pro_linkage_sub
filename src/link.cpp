@@ -1091,3 +1091,145 @@ void CLink::processdurationMenu_osd(int value)
 	#endif
 }
 
+
+void CLink::app_ctrl_upMenu()
+{
+	int menustate = msgextMenuCtrl.MenuStat; 
+	if((menustate >= mainmenu2) && (menustate <= submenu_handleMatchPoints))
+	{
+		if((submenu_mtd == menustate) && (msgextMenuCtrl.mtdnum_deng == 1))
+		{
+			msgextMenuCtrl.osd_mudnum = (msgextMenuCtrl.osd_mudnum + 1) % (MAX_MTDTARGET_NUM+1);
+			if(msgextMenuCtrl.osd_mudnum < MIN_MTDTARGET_NUM)
+				msgextMenuCtrl.osd_mudnum = MIN_MTDTARGET_NUM;
+			set_mtd_num_osd();
+		}
+		else if((submenu_mtd == menustate) && (msgextMenuCtrl.trktime_deng == 1))
+		{
+			msgextMenuCtrl.osd_trktime = (msgextMenuCtrl.osd_trktime + 1) % (MAX_MTDTRKTIME+1);
+			if(msgextMenuCtrl.osd_trktime < MIN_MTDTRKTIME)
+				msgextMenuCtrl.osd_trktime = MIN_MTDTRKTIME;
+			set_mtd_trktime_osd();
+		}
+		else if((submenu_mtd == menustate) && (msgextMenuCtrl.maxsize_deng == 1))
+		{
+			msgextMenuCtrl.osd_maxsize = (msgextMenuCtrl.osd_maxsize + 1) % (MAX_MTDMAXSIZE+1);
+			if(msgextMenuCtrl.osd_maxsize < minsize)
+				msgextMenuCtrl.osd_maxsize = minsize;
+			set_mtd_maxsize_osd();
+		}
+		else if((submenu_mtd == menustate) && (msgextMenuCtrl.minsize_deng == 1))
+		{
+			msgextMenuCtrl.osd_minsize = (msgextMenuCtrl.osd_minsize + 1) % (MAX_MTDMAXSIZE+1);
+			if(msgextMenuCtrl.osd_minsize > maxsize)
+				msgextMenuCtrl.osd_minsize =MIN_MTDMINSIZE;
+			set_mtd_minsize_osd();
+		}
+		else if((submenu_mtd == menustate) && (msgextMenuCtrl.sensi_deng == 1))
+		{
+			msgextMenuCtrl.osd_sensi = (msgextMenuCtrl.osd_sensi + 1) % (MAX_MTDSENSI+1);
+			if(msgextMenuCtrl.osd_sensi < MIN_MTDSENSI)
+				msgextMenuCtrl.osd_sensi = MIN_MTDSENSI;
+			set_mtd_sensi_osd();
+		}
+		else if(msgextMenuCtrl.menuarray[menustate].pointer > 0)
+		{
+			msgextMenuCtrl.menuarray[menustate].pointer--;
+			upMenu();
+		}
+	}
+}
+
+void CLink::upMenu()
+{
+	int menustate = extMenuCtrl.MenuStat;
+	int pointer = dismenuarray[menustate].pointer;
+	if((menustate >= mainmenu2) && (menustate <= submenu_handleMatchPoints))
+	{
+		if(pointer > 0)
+		{
+			disMenuBuf[menustate][pointer].color = 2;
+			dismenuarray[menustate].pointer= extMenuCtrl.menuarray[menustate].pointer;
+
+			m_secondMenuIndex = dismenuarray[menustate].pointer;
+			m_firstMenuIndex = menustate;
+			
+			disMenuBuf[menustate][dismenuarray[menustate].pointer].color = 3;
+		}
+	}
+	return ;
+}
+
+void CLink::downMenu()
+{
+	int menustate = extMenuCtrl.MenuStat;
+	int pointer = dismenuarray[menustate].pointer;
+	if((menustate >= mainmenu2) && (menustate <= submenu_handleMatchPoints))
+	{
+		if(pointer < extMenuCtrl.menuarray[menustate].submenu_cnt - 1)
+		{
+			disMenuBuf[menustate][pointer].color = 2;
+			dismenuarray[menustate].pointer = extMenuCtrl.menuarray[menustate].pointer;
+			disMenuBuf[menustate][dismenuarray[menustate].pointer].color = 3;
+
+			m_secondMenuIndex = dismenuarray[menustate].pointer;
+			m_firstMenuIndex = menustate;
+		}
+	}
+	return;
+}
+
+void CLink::app_ctrl_downMenu()
+{
+	int menustate = msgextMenuCtrl.MenuStat; 
+	if((menustate >= mainmenu2) && (menustate <= submenu_handleMatchPoints))
+	{
+		if((submenu_mtd == menustate) && (msgextMenuCtrl.mtdnum_deng == 1))
+		{
+			if(MIN_MTDTARGET_NUM == msgextMenuCtrl.osd_mudnum)
+				msgextMenuCtrl.osd_mudnum = MAX_MTDTARGET_NUM;
+			else
+				msgextMenuCtrl.osd_mudnum = (msgextMenuCtrl.osd_mudnum + MAX_MTDTARGET_NUM - 1) % MAX_MTDTARGET_NUM;
+			set_mtd_num_osd();
+		}
+		else if((submenu_mtd == menustate) && (msgextMenuCtrl.trktime_deng == 1))
+		{
+			if(MIN_MTDTRKTIME == msgextMenuCtrl.osd_trktime)
+				msgextMenuCtrl.osd_trktime = MAX_MTDTRKTIME;
+			else
+				msgextMenuCtrl.osd_trktime = (msgextMenuCtrl.osd_trktime + MAX_MTDTRKTIME - 1) % MAX_MTDTRKTIME;
+			set_mtd_trktime_osd();
+		}
+		else if((submenu_mtd == menustate) && (msgextMenuCtrl.maxsize_deng == 1))
+		{
+			if(msgextMenuCtrl.osd_maxsize == minsize)
+				msgextMenuCtrl.osd_maxsize = MAX_MTDMAXSIZE;
+			else
+				msgextMenuCtrl.osd_maxsize = (msgextMenuCtrl.osd_maxsize + MAX_MTDMAXSIZE - 1) % MAX_MTDMAXSIZE;
+			set_mtd_maxsize_osd();
+		}
+		else if((submenu_mtd == menustate) && (msgextMenuCtrl.minsize_deng == 1))
+		{
+			if(MIN_MTDMINSIZE == msgextMenuCtrl.osd_minsize)
+				msgextMenuCtrl.osd_minsize = maxsize;
+			else
+				msgextMenuCtrl.osd_minsize = (msgextMenuCtrl.osd_minsize + MAX_MTDMAXSIZE - 1) % MAX_MTDMAXSIZE;
+			set_mtd_minsize_osd();
+		}
+		else if((submenu_mtd == menustate) && (msgextMenuCtrl.sensi_deng == 1))
+		{
+			if(MIN_MTDSENSI == msgextMenuCtrl.osd_sensi)
+				msgextMenuCtrl.osd_sensi = MAX_MTDSENSI;
+			else
+				msgextMenuCtrl.osd_sensi = (msgextMenuCtrl.osd_sensi + MAX_MTDSENSI - 1) % MAX_MTDSENSI;
+			set_mtd_sensi_osd();
+		}
+		else if(msgextMenuCtrl.menuarray[menustate].pointer < msgextMenuCtrl.menuarray[menustate].submenu_cnt - 1)
+		{
+			msgextMenuCtrl.menuarray[menustate].pointer++;
+			downMenu();
+		}
+	}
+	return ;
+}
+
