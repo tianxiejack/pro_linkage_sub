@@ -80,7 +80,7 @@ public:
 
 	OSDFUNC drawtext;
 	
-
+	
 public:
 	
 	void app_ctrl_setMenuStat(int index);
@@ -131,14 +131,15 @@ public:
 	void osdshow();
 	
 	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);
-	
+	void reminderOSDFunc();
 
-	
+	void reminderOSD_calib();
 
 public:
 
 	void set_mouse_show(int param){mouse_show = param;};
 	void set_josctrl_mode(jos_mouse_Mode value){m_josMode = value;};
+	jos_mouse_Mode get_josctrl_mode(){ return m_josMode;};
 	void app_ctrl_setMtdRigionStat(int parm){setrigion_flagv20 = parm;};
 
 	void set_showpip_stat(bool value){draw_pip_stat = value;};
@@ -198,6 +199,9 @@ public:
 	
 	int m_secondMenuIndex;
 	int m_firstMenuIndex;
+
+	
+	int m_firstLevel,m_secondLever;
 
 	bool draw_pip_stat,drawpoints_stat;
 };

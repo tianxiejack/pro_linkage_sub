@@ -33,7 +33,7 @@ CLink::CLink()
 	draw_pip_stat = false;
 	drawpoints_stat = false;
 
-	
+	m_firstLevel = m_secondLever = 0;
 }
 
 	
@@ -205,7 +205,7 @@ void CLink::menuOsdInit()
 			/*{"网格标定","移动检测设置","画面设置","球机设定","固件升级","密码更改"},*/
 			/*{"枪机内参标定","球机内参标定","返回"},*/
 			{"手动联动模式","自动联动模式","单控球机模式","返回"},
-		   /* {"   ","枪机画面网格标定","	"},*/
+		    {""},
 			{"检测区域选择","目标个数 	1","跟踪持续时间 1秒","最大目标面积 10000像素","最小目标面积 9像素","灵敏度		30","返回"},
 			{"扫描方式均为逐行扫描","格式 1920x1080@60Hz","应用","返回"},
 			{"使用串口设置","使用网络设置","返回"},
@@ -337,14 +337,14 @@ void CLink::menuLoadIpcParam(int* config)
 	memset(m_menuCtrl.Passwd, 0, sizeof(m_menuCtrl.Passwd));
 	memset(m_menuCtrl.disPasswd, 0, sizeof(m_menuCtrl.disPasswd));
 
-	int cnt[menumaxid] = {4,5,3,4,7,6,3,5,5,3}; 
+	int cnt[menumaxid] = {4,5,3,4,0,7,6,3,5,5,3}; 
 	memset(m_menuCtrl.menuarray, 0, sizeof(m_menuCtrl.menuarray));
 	for(int i = 0; i < menumaxid; i++)
 	{
 		m_menuCtrl.menuarray[i].id = i;
 		m_menuCtrl.menuarray[i].pointer = 0;
 		m_menuCtrl.menuarray[i].submenu_cnt = cnt[i];
-	}
+	}   
 		
 	if(config == NULL)
 	{
@@ -661,7 +661,7 @@ void CLink::menu2_handle()
 				tmpMenuCmd.Trig_Inter_Mode = 1;
 				app_ctrl_settrig_inter(&tmpMenuCmd);
 				set_jos_mouse_mode(mouse_mode);
-				app_ctrl_setMenuStat(-1);
+				app_ctrl_setMenuStat(submenu_calib);
 			}
 			break;
 		case 2:
@@ -1232,7 +1232,7 @@ void CLink::osdshow()
 {		
 	MenuFunc();
 	MtdOSDFunc();
-
+	reminderOSDFunc();
 	return ;
 }
 
@@ -1295,7 +1295,7 @@ int CLink::MenuFunc()
 	if(setrigion_flagv20)
 		return -1;
 
-	if(-1 == index)
+	if(-1 == index || submenu_calib == index)
 		return -1;
 
 	for(int i = 0; i < MAX_SUBMENU; i++)
@@ -1320,7 +1320,6 @@ int CLink::MenuFunc()
 	
 	return 0;
 }
-
 
 
 void CLink::MtdOSDFunc()
@@ -1352,4 +1351,39 @@ void CLink::MtdOSDFunc()
 	return;
 }
 
+void CLink::reminderOSD_calib()
+{
+	int fontx = 900;
+	int fonty = 10;
+	int fontx2 =500;
+	int fonty2 = 50;
+	jos_mouse_Mode mode = get_josctrl_mode();
+	switch(1)
+	{
+		case jos_mode:
+			drawtext(fontx,fonty,L"控球模式",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
+			break;
+		case mouse_mode:
+			drawtext(fontx,fonty,L"鼠标模式",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
+			break;
+		default:
+			break;
+	}
+	drawtext(fontx2,fonty2,L"鼠标左键:选择点 鼠标右键:删除点 回车:确认 F1:控球模式 0:删除所有点  1:保存",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
+	return;
+}
+
+void CLink::reminderOSDFunc()
+{
+	switch(m_menuindex)
+	{
+		case submenu_calib:
+			reminderOSD_calib();
+			break;
+			
+		default:
+			break;
+	}
+	return;
+}
 
