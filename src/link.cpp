@@ -12,6 +12,9 @@
 #include <stdio.h>
 #include <wchar.h>
 
+bool CLink::storeWorkModeFlag = false;
+bool CLink::storeMtdConfigFlag = false;
+
 CLink::CLink()
 {
 	displayMode = MENU_MAIN_VIEW;
@@ -20,8 +23,11 @@ CLink::CLink()
 	oresoltype = r1920x1080_f60;
 	curBaudRate = 9600;
 	setrigion_flagv20 = 0;
-
+	setting_WorkMode = HANDLE_LINK_MODE;
 	
+	mouse_workmode = DrawRectangle_Mode;
+	
+	init_passwd ="0000";
 }
 
 	
@@ -319,6 +325,8 @@ void CLink::menuOsdInit()
 
 void CLink::menuLoadIpcParam(int* config)
 {
+	if(m_config == NULL)
+		m_config = config;
 	extMenuCtrl.resol_type_tmp = extMenuCtrl.resol_type = oresoltype;
 	extMenuCtrl.MenuStat = -1;
 	extMenuCtrl.Trig_Inter_Mode = 0;
@@ -464,3 +472,426 @@ void CLink::set_mtd_sensi(char key)
 		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度       %d", msgextMenuCtrl.osd_sensi);
 	return ;
 }
+
+
+void CLink::queryCurBallCamPosition()
+{
+	int flag =0;	
+	int ret =0;
+	#if 0
+	SENDST trkmsg={0};
+	trkmsg.cmd_ID = querypos;
+	ipc_sendmsg(&trkmsg, IPC_FRIMG_MSG);
+	printf("\r\n[%s]:Send Query PTZ Command ... ... \r\n",__func__);
+	waittochange
+	#endif
+	return;
+}
+
+void CLink::SetDefaultWorkMode( GB_WorkMode workmode )
+{
+	int workModeType = 0;
+	switch(workmode)
+	{
+		case HANDLE_LINK_MODE:
+			workModeType = 0;
+			break;
+		case AUTO_LINK_MODE:
+			workModeType = 1;
+			break;
+		case ONLY_BALL_MODE:
+			workModeType = 2;
+			break;
+		default:
+			workModeType = 0;
+			break;			
+	}
+	#if 0
+	SENDST	tmp = {0};
+	tmp.cmd_ID = storeDefaultWorkMode;
+	tmp.param[0] = workModeType+1;
+	ipc_sendmsg(&tmp, IPC_FRIMG_MSG);
+	waittochange
+	#endif
+	printf("\r\n[%s]:Send Set Default Work Mode <%d> to Linkage ctrl process !!!\r\n",__func__, workModeType );
+	return ;
+}
+
+
+void CLink::save_polygon_roi()
+{
+	/*
+	unsigned int curId = m_curChId;
+	float floatx,floaty;
+	int setx, sety = 0;
+	int areanum = 1;
+
+	if(pol_rectn[curId] >= 3)
+		swprintf(disMtd[0][4], 33, L"点数:%d,保存成功", pol_rectn[curId]);
+	else{
+		swprintf(disMtd[0][4], 33, L"点数小于3,保存失败");
+		return -1;
+	}
+
+	polyWarnRoi.resize(areanum);
+	edge_contours.resize(areanum);
+
+	for(int i = 0; i < areanum; i++)
+	{
+		polyWarnRoi[i].resize(pol_rectn[curId]);
+		edge_contours[i].resize(pol_rectn[curId]);
+		for(int j = 0; j < pol_rectn[curId]; j++)
+		{
+			floatx = polRect[curId][j].x;
+			floaty = polRect[curId][j].y;
+			map1080p2normal_point(&floatx, &floaty);
+			mapnormal2curchannel_point(&floatx, &floaty, vdisWH[curId][0], vdisWH[curId][1]);
+
+			setx = floatx;
+			sety = floaty;
+			polyWarnRoi[i][j] = cv::Point(setx, sety);
+
+			mapfullscreen2gun_pointv20(&setx, &sety);
+			edge_contours[i][j].x = setx;
+			edge_contours[i][j].y = sety;
+		}
+	}
+
+	if(polyWarnRoi.size() != 0)
+	{
+		SaveMtdSelectArea("SaveMtdArea.yml", polyWarnRoi);
+	}
+
+	printf("polygon mtd area num:%d\n", polyWarnRoi.size());
+	for(int i = 0; i< polyWarnRoi.size(); i++)
+	{
+		for(int j = 0; j < polyWarnRoi[i].size(); j++)
+			printf("(%d, %d),", polyWarnRoi[i][j].x,polyWarnRoi[i][j].y);
+		printf("\n");
+	}
+
+	for(int i = 0; i < areanum; i++)
+	{
+		m_pMovDetector->setWarningRoi(polyWarnRoi[i], i);
+	}
+
+	edge_contours_notMap = polyWarnRoi ; 
+	*/
+}
+
+
+void CLink::app_ctrl_settrig_inter(menu_param_t *pInCmd)
+{
+	/*
+	if(msgextMenuCtrl==NULL)
+		return;
+
+	menu_param_t *pMenuStatus = msgextMenuCtrl;
+	
+	if(pMenuStatus->Trig_Inter_Mode != pInCmd->Trig_Inter_Mode)
+	{
+		pMenuStatus->Trig_Inter_Mode = pInCmd->Trig_Inter_Mode;
+		if(pMenuStatus->Trig_Inter_Mode)
+		{
+			g_displayMode = MENU_TRIG_INTER_MODE;
+			plat->set_showpip_stat(true);
+			plat->set_send_mat_stat(true);
+			plat->set_drawpoints_stat(true);
+			plat->set_gridinter_mode(mouse_mode);
+		}
+		else
+		{
+			g_displayMode = MENU_MAIN_VIEW;
+			plat->set_drawpoints_stat(false);
+			plat->set_drawsubdiv_stat(false);
+			plat->set_draw_point_triangle_stat(false);
+		}
+	}
+	*/
+}
+
+
+void CLink::menu0_handle()
+{
+	if(strcmp(init_passwd, msgextMenuCtrl.Passwd))
+		app_ctrl_setMenuStat(mainmenu1);
+	else
+		app_ctrl_setMenuStat(mainmenu2);
+}
+
+void CLink::menu1_handle()
+{
+	app_ctrl_setMenuStat(mainmenu0);
+}
+
+void CLink::menu2_handle()
+{
+	switch(msgextMenuCtrl.menuarray[mainmenu2].pointer)
+	{
+		case 0:
+			app_ctrl_setMenuStat(submenu_DefaultWorkMode);
+			break;
+		case 1:	
+			if(AUTO_LINK_MODE != g_AppWorkMode){
+				menu_param_t tmpMenuCmd = {0};
+				tmpMenuCmd.Trig_Inter_Mode = 1;
+				app_ctrl_settrig_inter(&tmpMenuCmd);
+				set_jos_mouse_mode(mouse_mode);
+				app_ctrl_setMenuStat(-1);
+			}
+			break;
+		case 2:
+			app_ctrl_setMenuStat(submenu_mtd);
+			break;
+		case 3:
+			app_ctrl_setMenuStat(submenu_setimg);
+			break;
+		case 4:
+			app_ctrl_setMenuStat(submenu_setball);
+			break;
+		default:
+			break;
+	}
+	return;
+}
+
+void CLink::submenu_DefaultWorkMode_handle()
+{
+	if(INDEX_FOURTH == msgextMenuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
+		app_ctrl_setMenuStat(mainmenu2);
+		displayMode = MENU_MAIN_VIEW;	
+	}
+	else if(INDEX_FIRST == msgextMenuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
+		setting_WorkMode = HANDLE_LINK_MODE;		
+		storeWorkModeFlag = true;
+	}
+	else if(INDEX_SECOND == msgextMenuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
+		setting_WorkMode = AUTO_LINK_MODE;
+		storeWorkModeFlag = true;
+	}
+	else if(INDEX_THIRD == msgextMenuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
+		setting_WorkMode = ONLY_BALL_MODE;
+		storeWorkModeFlag = true;
+	}	
+	if(storeWorkModeFlag == true){
+		storeWorkModeFlag = false;
+		SetDefaultWorkMode(setting_WorkMode);
+	}
+}
+
+
+void CLink::submenu_mtd_handle()
+{
+	if(0 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
+	{
+		if(0 == m_config[CFGID_RTS_mtden])
+		{
+			mouse_workmode = SetMteRigion_Mode;
+			app_ctrl_setMtdRigionStat(1);
+			displayMode = MENU_GUN;
+		}
+	}
+		/*
+	else if(1 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
+	{
+		msgextMenuCtrl.mtdnum_deng = !msgextMenuCtrl.mtdnum_deng;
+		if(msgextMenuCtrl.mtdnum_deng)
+			plat->dtimer.startTimer(plat->mtdnum_light_id,500);
+		else
+		{
+			plat->dtimer.stopTimer(plat->mtdnum_light_id);
+			MSGDRIV_send(MSGID_EXT_SETMTDNUM, 0);
+			if((msgextMenuCtrl.osd_mudnum >= MIN_MTDTARGET_NUM) && (msgextMenuCtrl.osd_mudnum <= MAX_MTDTARGET_NUM))
+			{
+				plat->detectNum = msgextMenuCtrl.osd_mudnum;
+				g_mtdConfig.targetNum =  msgextMenuCtrl.osd_mudnum;
+				storeMtdConfigFlag = true;
+			}
+			memset(msgextMenuCtrl.mtdnum_arr, 0, sizeof(msgextMenuCtrl.mtdnum_arr));
+		}
+	}
+
+
+	else if(2 == pMenuStatus->menuarray[submenu_mtd].pointer)
+	{
+		pMenuStatus->trktime_deng = !pMenuStatus->trktime_deng;
+		if(pMenuStatus->trktime_deng)
+			plat->dtimer.startTimer(plat->trktime_light_id,500);
+		else
+		{
+			plat->dtimer.stopTimer(plat->trktime_light_id);
+			MSGDRIV_send(MSGID_EXT_SETMTDTRKTIME, 0);
+			if((pMenuStatus->osd_trktime >= MIN_MTDTRKTIME) && (pMenuStatus->osd_trktime <= MAX_MTDTRKTIME))
+			{
+				plat->m_display.processdurationMenu_osd(pMenuStatus->osd_trktime);
+				g_mtdConfig.trackTime = pMenuStatus->osd_trktime;
+				storeMtdConfigFlag = true;
+			}
+			memset(pMenuStatus->trktime_arr, 0, sizeof(pMenuStatus->trktime_arr));
+		}
+	}
+	else if(3 == pMenuStatus->menuarray[submenu_mtd].pointer)
+	{
+		pMenuStatus->maxsize_deng = !pMenuStatus->maxsize_deng;
+		if(pMenuStatus->maxsize_deng)
+			plat->dtimer.startTimer(plat->maxsize_light_id,500);
+		else
+		{
+			plat->dtimer.stopTimer(plat->maxsize_light_id);
+			MSGDRIV_send(MSGID_EXT_SETMTDMAXSIZE, 0);
+			if((pMenuStatus->osd_maxsize >= plat->minsize) && (pMenuStatus->osd_maxsize <= MAX_MTDMAXSIZE))
+			{
+				plat->maxsize = pMenuStatus->osd_maxsize;
+				g_mtdConfig.maxArea = pMenuStatus->osd_maxsize;
+				storeMtdConfigFlag = true;
+			}
+			memset(pMenuStatus->maxsize_arr, 0, sizeof(pMenuStatus->maxsize_arr));
+		}
+	}
+	else if(4 == pMenuStatus->menuarray[submenu_mtd].pointer)
+	{
+		pMenuStatus->minsize_deng = !pMenuStatus->minsize_deng;
+		if(pMenuStatus->minsize_deng)
+			plat->dtimer.startTimer(plat->minsize_light_id,500);
+		else
+		{
+			plat->dtimer.stopTimer(plat->minsize_light_id);
+			MSGDRIV_send(MSGID_EXT_SETMTDMINSIZE, 0);
+			if((pMenuStatus->osd_minsize >= MIN_MTDMINSIZE) && (pMenuStatus->osd_minsize <= plat->maxsize))
+			{
+				plat->minsize = pMenuStatus->osd_minsize;
+				g_mtdConfig.minArea =  pMenuStatus->osd_minsize;
+				storeMtdConfigFlag = true;
+			}
+			memset(pMenuStatus->minsize_arr, 0, sizeof(pMenuStatus->minsize_arr));
+		}
+	}
+	else if(5 == pMenuStatus->menuarray[submenu_mtd].pointer)
+	{
+		pMenuStatus->sensi_deng = !pMenuStatus->sensi_deng;
+		if(pMenuStatus->sensi_deng)
+			plat->dtimer.startTimer(plat->sensi_light_id,500);
+		else
+		{
+			plat->dtimer.stopTimer(plat->sensi_light_id);
+			MSGDRIV_send(MSGID_EXT_SETMTDSENSI, 0);
+			if((pMenuStatus->osd_sensi >= MIN_MTDSENSI) && (pMenuStatus->osd_sensi <= MAX_MTDSENSI))
+			{
+				plat->sensi = pMenuStatus->osd_sensi;
+				g_mtdConfig.sensitivity = pMenuStatus->osd_sensi;
+				storeMtdConfigFlag = true;
+			}
+			memset(pMenuStatus->sensi_arr, 0, sizeof(pMenuStatus->sensi_arr));
+		}
+	}
+	
+	else if(6 == pMenuStatus->menuarray[submenu_mtd].pointer)
+	{
+		app_ctrl_setMenuStat(mainmenu2);
+		storeMtdConfigFlag = true;
+		//plat->SetMtdConfig(g_mtdConfig);
+		printf("\r\n[%s]:MTD Config:\r\nTarget Number:%d\r\nTrack Time:%d\r\nMax Area:%d\r\nMin Area:%d\r\nSensitivity:%d\r\n",
+			__func__,g_mtdConfig.targetNum,g_mtdConfig.trackTime, g_mtdConfig.maxArea,g_mtdConfig.minArea,g_mtdConfig.sensitivity);
+
+	}
+	if(storeMtdConfigFlag == true)
+	{
+		storeMtdConfigFlag = false;
+		plat->SetMtdConfig(g_mtdConfig);
+
+	}
+	*/
+}
+
+
+void CLink::app_ctrl_enter()
+{
+
+	if(MENU_GUN == displayMode)
+		queryCurBallCamPosition();
+	else if(1 == m_mtdSetRigion)
+		;//save_polygon_roi();
+	else if(mainmenu0 == msgextMenuCtrl.MenuStat)
+		menu0_handle();
+	else if(mainmenu1 == msgextMenuCtrl.MenuStat)
+		menu1_handle();
+	else if(mainmenu2 == msgextMenuCtrl.MenuStat)
+		menu2_handle();
+	else if(submenu_DefaultWorkMode == msgextMenuCtrl.MenuStat)
+		submenu_DefaultWorkMode_handle();
+	else if(submenu_mtd == msgextMenuCtrl.MenuStat)
+		submenu_mtd_handle();
+	
+	/*
+	else if(submenu_setimg == pMenuStatus->MenuStat)
+	{
+		if(1 == pMenuStatus->menuarray[submenu_setimg].pointer)
+		{
+			pMenuStatus->resol_deng = !pMenuStatus->resol_deng;
+			if(pMenuStatus->resol_deng)
+				plat->dtimer.startTimer(plat->resol_light_id,500);
+			else
+			{
+				plat->dtimer.stopTimer(plat->resol_light_id);
+				MSGDRIV_send(MSGID_EXT_SETRESOL, 0);
+			}
+		}
+		else if(2 == pMenuStatus->menuarray[submenu_setimg].pointer)
+		{	
+			plat->setresol(pMenuStatus->resol_type_tmp);
+			plat->save_flag = 1;
+			plat->cnt_down = 10;
+			plat->dtimer.startTimer(plat->resol_apply_id, 1000);
+		}
+		else if(3 == pMenuStatus->menuarray[submenu_setimg].pointer)
+			app_ctrl_setMenuStat(mainmenu2);
+	}
+	else if(submenu_setball == pMenuStatus->MenuStat)
+	{
+		if(0 == pMenuStatus->menuarray[submenu_setball].pointer){
+			app_ctrl_setMenuStat(submenu_setcom);
+			show_circle_pointer = true;
+		}
+		else if(1 == pMenuStatus->menuarray[submenu_setball].pointer)
+			app_ctrl_setMenuStat(submenu_setnet);
+		else if(2 == pMenuStatus->menuarray[submenu_setball].pointer)
+			app_ctrl_setMenuStat(mainmenu2);
+	}
+	else if(submenu_setcom == pMenuStatus->MenuStat)
+	{
+		if(0 == pMenuStatus->menuarray[submenu_setcom].pointer){
+				pMenuStatus->baud_light= !pMenuStatus->baud_light;
+
+				if(pMenuStatus->baud_light){
+					plat->dtimer.startTimer(plat->baud_light_id,500);
+				}
+				else
+				{
+					plat->dtimer.stopTimer(plat->baud_light_id);
+					MSGDRIV_send(MSGID_EXT_SETBAUD, 0);
+				}
+
+				
+				if(setComBaud_select == true) {
+					setComBaud_select = false;
+					changeComBaud = true;
+					MSGDRIV_send(MSGID_EXT_SETBAUD, 0);
+				}
+		}
+		else if(4 == pMenuStatus->menuarray[submenu_setcom].pointer){
+			show_circle_pointer = false;
+			app_ctrl_setMenuStat(submenu_setball);
+			
+		}
+		
+	}
+	else if(submenu_setnet == pMenuStatus->MenuStat)
+	{
+		if(4 == pMenuStatus->menuarray[submenu_setnet].pointer)
+			app_ctrl_setMenuStat(submenu_setball);
+	}
+
+	*/
+	//printf("\r\n[%s]: pIStuts->MenuStat = %d ",__FUNCTION__, pMenuStatus->MenuStat);
+}
+

@@ -1720,6 +1720,11 @@ void CProcess::OnKeyDwn(unsigned char key)
 		m_display.linkage.app_ctrl_setnumber(key);
 	}
 
+	if(key == 13)
+	{
+		m_display.linkage.app_ctrl_enter();
+	}
+
 	
 }
 

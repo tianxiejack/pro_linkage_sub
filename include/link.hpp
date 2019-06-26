@@ -22,6 +22,14 @@ enum DrawBehavior
 	DRAW_COUNT
 };
 
+typedef enum _SelectMode{
+	Click_Mode =0,
+	DrawRectangle_Mode,
+	SetMteRigion_Mode,
+	Mode_Count
+}SelectMode;
+
+
 typedef struct{
 		int button;
 		int state;
@@ -76,28 +84,44 @@ public:
 	void setWorkMode(GB_WorkMode workmode);
 	void setDisplayMode(MenuDisplay mode);
 	void app_ctrl_setnumber(char key);
-	void set_mouse_show(int param)
-	{
-		mouse_show = param;
-	};
-	
-	void set_josctrl_mode(jos_mouse_Mode value)
-	{
-		m_josMode = value;
-	};
+
 	void set_jos_mouse_mode(jos_mouse_Mode mode);
 	void set_mtd_num(char key);
 	void set_mtd_trktime(char key);
 	void set_mtd_maxsize(char key);
 	void set_mtd_minsize(char key);
 	void set_mtd_sensi(char key);
+	void app_ctrl_enter();
+	void queryCurBallCamPosition();
+	void save_polygon_roi();
+	void app_ctrl_settrig_inter(menu_param_t *pInCmd);
+	void SetDefaultWorkMode( GB_WorkMode workmode );
 
+
+	void menu0_handle();
+	void menu1_handle();
+	void menu2_handle();
+	void submenu_DefaultWorkMode_handle();
+	void submenu_mtd_handle();
+
+	
 
 public:
+
+	void set_mouse_show(int param){mouse_show = param;};
+	void set_josctrl_mode(jos_mouse_Mode value){m_josMode = value;};
+	void app_ctrl_setMtdRigionStat(int parm){setrigion_flagv20 = parm;};
+
+
+	
+	
+public:
+	int* m_config;
 	menu_param_t msgextMenuCtrl;
 	GB_WorkMode g_AppWorkMode ;
 	MenuDisplay g_CurDisplayMode;
 	MenuDisplay displayMode ;
+	GB_WorkMode setting_WorkMode;
 
 	menu_param_t extMenuCtrl;
 	//MenuDisplay g_displayMode ;
@@ -125,6 +149,15 @@ public:
 	int pol_draw;
 	PointNode polRect[MAX_CHAN][100];
 	int pol_tempX, pol_tempY, pol_rectn[MAX_CHAN];
+
+
+	std::vector< std::vector< cv::Point > > polyWarnRoi;
+
+	SelectMode mouse_workmode;
+
+
+	char *init_passwd;
+	static bool storeWorkModeFlag,storeMtdConfigFlag;
 
 	
 };

@@ -16,15 +16,21 @@ enum devvideo{
 	MAX_CHAN,
 };
 
-#define MAX_MTDRIGION_NUM 		1
-#define MIN_MTDTARGET_NUM		1
-#define MAX_MTDTARGET_NUM		10
+#define MAX_MTDRIGION_NUM 	1
+#define MIN_MTDTARGET_NUM	1
+#define MAX_MTDTARGET_NUM	10
 #define MIN_MTDTRKTIME		1
 #define MAX_MTDTRKTIME		20
 #define MIN_MTDMINSIZE		225
 #define MAX_MTDMAXSIZE		70000
 #define MIN_MTDSENSI		10
 #define MAX_MTDSENSI		100
+
+#define INDEX_FIRST        0
+#define INDEX_SECOND       1
+#define INDEX_THIRD        2
+#define INDEX_FOURTH       3
+#define INDEX_FIFTH        4
 
 
 typedef enum{
