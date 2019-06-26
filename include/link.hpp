@@ -66,17 +66,19 @@ typedef struct{
 	char sensi_arr[128];
 }menu_param_t;
 
-
+typedef void (*OSDFUNC)(int x,int y,wchar_t* text,char font,char fontsize,unsigned char r,unsigned char g,unsigned char b,unsigned char a,int win_width,int win_height);
 
 class CLink{
 public:
 	CLink();
 	~CLink(){};
 
-	void init();
+	void init(OSDFUNC func);
 	void menuOsdInit();
 	void menuLoadIpcParam(int* config);
 	void OnJosEvent(int key, int param);
+
+	OSDFUNC drawtext;
 
 public:
 	
@@ -123,6 +125,8 @@ public:
 	static void Tcallback(void *p);
 	void processdurationMenu_osd(int value);
 	void sendIpcSaveMtd();
+	int MenuFunc();
+	void MtdOSDFunc();
 
 	
 
@@ -132,6 +136,10 @@ public:
 	void set_josctrl_mode(jos_mouse_Mode value){m_josMode = value;};
 	void app_ctrl_setMtdRigionStat(int parm){setrigion_flagv20 = parm;};
 
+	void set_showpip_stat(bool value){draw_pip_stat = value;};
+	bool get_showpip_stat(){return draw_pip_stat;};
+	void set_drawpoints_stat(bool value){drawpoints_stat = value;};
+	bool get_drawpoints_stat(){return drawpoints_stat;};
 
 	
 	
@@ -142,7 +150,7 @@ public:
 	MenuDisplay displayMode ;
 	GB_WorkMode setting_WorkMode;
 	
-	menu_param_t m_menuCtrl;
+	menu_param_t m_menuCtrl; // msgextMenuCtrl
 	//MenuDisplay g_displayMode ;
 
 
@@ -163,7 +171,7 @@ public:
 	CAutoManualFindRelation* m_autofr;
 
 	
-	jos_mouse_Mode m_josMode = mouse_mode;
+	jos_mouse_Mode m_josMode ;
 
 	int pol_draw;
 	PointNode polRect[MAX_CHAN][100];
@@ -185,6 +193,8 @@ public:
 	
 	int m_secondMenuIndex;
 	int m_firstMenuIndex;
+
+	bool draw_pip_stat,drawpoints_stat;
 };
 
 

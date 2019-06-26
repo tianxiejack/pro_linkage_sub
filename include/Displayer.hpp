@@ -305,7 +305,7 @@ public:
 	void setFrameCount(int count)	{ frameCount = count;	};
 	float getFrameRate()			{return frameRate;	};
 	void GetFPS();
-	void chinese_osd(int x,int y,wchar_t* text,char font,char fontsize,unsigned char r,unsigned char g,unsigned char b,unsigned char a,int win_width,int win_height);
+	static void chinese_osd(int x,int y,wchar_t* text,char font,char fontsize,unsigned char r,unsigned char g,unsigned char b,unsigned char a,int win_width,int win_height);
 
 	void IrisAndFocus();
 	int OSDFunc();
@@ -322,7 +322,7 @@ public:
 	void linkageSwitchMode(void);
 	void RenderVideoOnOrthoView( int videoChannel, int x, int y, int width, int height );
 	int MenuFunc(int index);
-	
+	void MtdOSDFunc();
 
 	//DISPLAYMODE displayMode;
 	CLink linkage;

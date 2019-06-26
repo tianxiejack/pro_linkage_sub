@@ -26,16 +26,22 @@ CLink::CLink()
 	setting_WorkMode = HANDLE_LINK_MODE;
 	
 	mouse_workmode = DrawRectangle_Mode;
-	
+	m_josMode = mouse_mode;
+
 	init_passwd ="0000";
+
+	draw_pip_stat = false;
+	drawpoints_stat = false;
+
+	
 }
 
 	
-void CLink::init()
+void CLink::init(OSDFUNC func)
 {
 	m_autofr = new CAutoManualFindRelation(outputWHF[0],outputWHF[1], 6, 6);
 	menuOsdInit();
-
+	drawtext = func;
 }
 
 
@@ -160,7 +166,7 @@ void CLink::app_ctrl_setnumber(char key)
 	}
 	else if((1 == m_mtdSetRigion) && (key == '2'))
 	{
-		setrigion_flagv20 = 0;
+		app_ctrl_setMtdRigionStat(0);
 		app_ctrl_setMenuStat(submenu_mtd);
 		
 		displayMode = MENU_MAIN_VIEW;
@@ -608,32 +614,24 @@ void CLink::save_polygon_roi()
 
 void CLink::app_ctrl_settrig_inter(menu_param_t *pInCmd)
 {
-	/*
-	if(msgextMenuCtrl==NULL)
-		return;
-
-	menu_param_t *pMenuStatus = msgextMenuCtrl;
+	menu_param_t *pMenuStatus = &m_menuCtrl;
 	
 	if(pMenuStatus->Trig_Inter_Mode != pInCmd->Trig_Inter_Mode)
 	{
 		pMenuStatus->Trig_Inter_Mode = pInCmd->Trig_Inter_Mode;
 		if(pMenuStatus->Trig_Inter_Mode)
 		{
-			g_displayMode = MENU_TRIG_INTER_MODE;
-			plat->set_showpip_stat(true);
-			plat->set_send_mat_stat(true);
-			plat->set_drawpoints_stat(true);
-			plat->set_gridinter_mode(mouse_mode);
+			displayMode = MENU_GUN;
+			set_showpip_stat(true);
+			set_drawpoints_stat(true);
 		}
 		else
 		{
-			g_displayMode = MENU_MAIN_VIEW;
-			plat->set_drawpoints_stat(false);
-			plat->set_drawsubdiv_stat(false);
-			plat->set_draw_point_triangle_stat(false);
+			displayMode = MENU_MAIN_VIEW;
+			set_drawpoints_stat(false);
 		}
 	}
-	*/
+	return ;
 }
 
 
@@ -824,7 +822,6 @@ void CLink::submenu_mtd_handle()
 
 void CLink::app_ctrl_enter()
 {
-
 	if(MENU_GUN == displayMode)
 		queryCurBallCamPosition();
 	else if(1 == m_mtdSetRigion)
@@ -1230,4 +1227,156 @@ void CLink::app_ctrl_downMenu()
 	}
 	return ;
 }
+
+
+int CLink::MenuFunc()
+{
+	unsigned char r, g, b, a, color, colorbak, Enable;
+	short x, y;
+	char font,fontsize;
+	
+	int index = m_menuindex;
+	
+	if(setrigion_flagv20)
+		return -1;
+
+	if(-1 == index)
+		return -1;
+
+	for(int i = 0; i < MAX_SUBMENU; i++)
+	{
+		if(i == dismenuarray[index].submenu_cnt)
+			break;
+		Enable = disMenuBuf[index][i].ctrl;
+		if(!Enable)
+		{
+			 x = disMenuBuf[index][i].posx;
+			 y = disMenuBuf[index][i].posy;
+		 	 a = disMenuBuf[index][i].alpha;
+			 color = disMenuBuf[index][i].color;
+			 font = 1;
+			 fontsize = 4;
+
+			switch(color)
+			{
+				case 1:
+					r = 0;
+					g = 0;
+					b = 0;
+					break;
+				case 2:
+					r = 255;
+					g = 255;
+					b = 255;
+					break;
+				case 3:
+					r = 255;
+					g = 0;
+					b = 0;
+					break;
+				case 4:
+					r = 255;
+					g = 255;
+					b = 0;
+					break;
+				case 5:
+					r = 0;
+					g = 0;
+					b = 255;
+					break;
+				case 6:
+					r = 0;
+					g = 255;
+					b = 0;
+					break;
+				case 7:
+					color = colorbak;
+					break;
+			}
+
+			if(a > 0x0a)
+				a = 0x0a;
+			if(a == 0x0a)
+				a = 0;
+			else
+				a = 255 - a*16;
+			drawtext(x, y, disMenu[index][i],font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
+		}
+	}
+	
+	return 0;
+}
+
+
+
+void CLink::MtdOSDFunc()
+{
+	unsigned char r, g, b, a, color, colorbak, Enable;
+	short x, y;
+	char font,fontsize;
+
+	if(0 == setrigion_flagv20)
+		return;
+
+	for(int i = 0; i < 5; i++)
+	{
+		Enable = disMtdBuf[0][i].ctrl;
+		if(!Enable)
+		{
+			 x = disMtdBuf[0][i].posx;
+			 y = disMtdBuf[0][i].posy;
+		 	 a = disMtdBuf[0][i].alpha;
+			 color = disMtdBuf[0][i].color;
+			 font = 1;
+			 fontsize = 4;
+
+			switch(color)
+			{
+				case 1:
+					r = 0;
+					g = 0;
+					b = 0;
+					break;
+				case 2:
+					r = 255;
+					g = 255;
+					b = 255;
+					break;
+				case 3:
+					r = 255;
+					g = 0;
+					b = 0;
+					break;
+				case 4:
+					r = 255;
+					g = 255;
+					b = 0;
+					break;
+				case 5:
+					r = 0;
+					g = 0;
+					b = 255;
+					break;
+				case 6:
+					r = 0;
+					g = 255;
+					b = 0;
+					break;
+				case 7:
+					color = colorbak;
+					break;
+			}
+
+			if(a > 0x0a)
+				a = 0x0a;
+			if(a == 0x0a)
+				a = 0;
+			else
+				a = 255 - a*16;
+			drawtext(x, y, disMtd[0][i],font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
+		}
+	}
+	return;
+}
+
 

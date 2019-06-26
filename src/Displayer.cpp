@@ -516,7 +516,7 @@ int CDisplayer::init(DS_InitPrm *pPrm)
 
 	gl_Loadinit();
 
-	linkage.init();
+	linkage.init(chinese_osd);
 	
 	return 0;
 }
@@ -1732,7 +1732,9 @@ void CDisplayer::gl_display(void)
 		glDisable(GL_BLEND);
 
 		//OSDFunc();
-		MenuFunc(linkage.m_menuindex);
+		linkage.MenuFunc();
+		linkage.MtdOSDFunc();
+
 		
 		#if 0
 			IrisAndFocus();
@@ -2146,7 +2148,7 @@ void CDisplayer::GetFPS()
 
 void CDisplayer::chinese_osd(int x,int y,wchar_t* text,char font,char fontsize,unsigned char r,unsigned char g,unsigned char b,unsigned char a,int win_width,int win_height)
 {
-	glUseProgram(m_fontProgram);
+	glUseProgram(gThis->m_fontProgram);
 	_fontColor[0] = (float)r/float(255);
 	_fontColor[1] = (float)g/float(255);
 	_fontColor[2] = (float)b/float(255);
@@ -2193,84 +2195,5 @@ void CDisplayer::RenderVideoOnOrthoView( int videoChannel, int x, int y, int wid
 	glEnableVertexAttribArray(ATTRIB_TEXTURE);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glPopMatrix();	
-}
-
-
-int CDisplayer::MenuFunc(int index)
-{
-	unsigned char r, g, b, a, color, colorbak, Enable;
-	short x, y;
-	char font,fontsize;
-
-	if(linkage.setrigion_flagv20)
-		return -1;
-
-	if(-1 == index)
-		return -1;
-
-	for(int i = 0; i < MAX_SUBMENU; i++)
-	{
-		if(i == linkage.dismenuarray[index].submenu_cnt)
-			break;
-		Enable = linkage.disMenuBuf[index][i].ctrl;
-		if(!Enable)
-		{
-			 x = linkage.disMenuBuf[index][i].posx;
-			 y = linkage.disMenuBuf[index][i].posy;
-		 	 a = linkage.disMenuBuf[index][i].alpha;
-			 color = linkage.disMenuBuf[index][i].color;
-			 //font = plat->extInCtrl->osdTextFont;
-			 //fontsize = plat->extInCtrl->osdTextSize;
-			 font = 1;
-			 fontsize = 4;
-
-			switch(color)
-			{
-				case 1:
-					r = 0;
-					g = 0;
-					b = 0;
-					break;
-				case 2:
-					r = 255;
-					g = 255;
-					b = 255;
-					break;
-				case 3:
-					r = 255;
-					g = 0;
-					b = 0;
-					break;
-				case 4:
-					r = 255;
-					g = 255;
-					b = 0;
-					break;
-				case 5:
-					r = 0;
-					g = 0;
-					b = 255;
-					break;
-				case 6:
-					r = 0;
-					g = 255;
-					b = 0;
-					break;
-				case 7:
-					color = colorbak;
-					break;
-			}
-
-			if(a > 0x0a)
-				a = 0x0a;
-			if(a == 0x0a)
-				a = 0;
-			else
-				a = 255 - a*16;
-			chinese_osd(x, y, linkage.disMenu[index][i],font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
-		}
-	}
-	
-	return 0;
 }
 
