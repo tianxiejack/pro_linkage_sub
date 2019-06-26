@@ -350,12 +350,15 @@ void CLink::menuLoadIpcParam(int* config)
 		extMenuCtrl.osd_minsize = 9;
 		extMenuCtrl.osd_sensi = 30; 				
 	}else{	
-		extMenuCtrl.osd_mudnum = config[CFGID_MTD_detnum];
-		extMenuCtrl.osd_trktime = config[CFGID_MTD_maxtrk];
-		extMenuCtrl.osd_maxsize = config[CFGID_MTD_maxpixel];
-		extMenuCtrl.osd_minsize = config[CFGID_MTD_minpixel];
-		extMenuCtrl.osd_sensi = config[CFGID_INPUT_SENISIVITY(CFGID_INPUT1_BKID)];
+		extMenuCtrl.osd_mudnum  = m_config[CFGID_MTD_detnum];
+		extMenuCtrl.osd_trktime = m_config[CFGID_MTD_maxtrk];
+		extMenuCtrl.osd_maxsize = m_config[CFGID_MTD_maxpixel];
+		extMenuCtrl.osd_minsize = m_config[CFGID_MTD_minpixel];
+		extMenuCtrl.osd_sensi   = m_config[CFGID_INPUT_SENISIVITY(CFGID_INPUT1_BKID)];
 	}
+	minsize = extMenuCtrl.osd_minsize;
+	maxsize = extMenuCtrl.osd_maxsize;
+	sensi = extMenuCtrl.osd_sensi;
 	return ;
 }
 
@@ -385,7 +388,12 @@ void CLink::set_mtd_num(char key)
 	int num = atoi(msgextMenuCtrl.mtdnum_arr);
 	msgextMenuCtrl.osd_mudnum = atoi(msgextMenuCtrl.mtdnum_arr);
 	printf("%s,%d,osd_mudnum=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_mudnum);
+	set_mtd_num_osd();
+	return ;
+}
 
+void CLink::set_mtd_num_osd()
+{
 	if((msgextMenuCtrl.osd_mudnum < MIN_MTDTARGET_NUM) || (msgextMenuCtrl.osd_mudnum > MAX_MTDTARGET_NUM))
 		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	   %d(超出范围%d~%d)", msgextMenuCtrl.osd_mudnum,MIN_MTDTARGET_NUM,MAX_MTDTARGET_NUM);
 	else
@@ -405,13 +413,20 @@ void CLink::set_mtd_trktime(char key)
 	int num = atoi(msgextMenuCtrl.trktime_arr);
 	msgextMenuCtrl.osd_trktime = atoi(msgextMenuCtrl.trktime_arr);
 	printf("%s,%d,osd_trktime=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_trktime);
+	set_mtd_trktime_osd();
+	return ;
+}
 
+
+void CLink::set_mtd_trktime_osd()
+{
 	if((msgextMenuCtrl.osd_trktime < MIN_MTDTRKTIME) || (msgextMenuCtrl.osd_trktime > MAX_MTDTRKTIME))
 		swprintf(disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒(超出范围%d~%d)", msgextMenuCtrl.osd_trktime,MIN_MTDTRKTIME,MAX_MTDTRKTIME);
 	else
 		swprintf(disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒", msgextMenuCtrl.osd_trktime);
 	return ;
 }
+
 
 void CLink::set_mtd_maxsize(char key)
 {
@@ -424,12 +439,17 @@ void CLink::set_mtd_maxsize(char key)
 	int num = atoi(msgextMenuCtrl.maxsize_arr);
 	msgextMenuCtrl.osd_maxsize = atoi(msgextMenuCtrl.maxsize_arr);
 	printf("%s,%d,osd_maxsize=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_maxsize);
+	set_mtd_maxsize_osd();
+	return ;
+}
 
+void CLink::set_mtd_maxsize_osd()
+{
 	if((msgextMenuCtrl.osd_maxsize < MIN_MTDMINSIZE) || (msgextMenuCtrl.osd_maxsize > MAX_MTDMAXSIZE))
 		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d(超出范围)", msgextMenuCtrl.osd_maxsize);
 	else
 		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d", msgextMenuCtrl.osd_maxsize);
-	return ;
+	return;
 }
 
 
@@ -444,13 +464,17 @@ void CLink::set_mtd_minsize(char key)
 	int num = atoi(msgextMenuCtrl.minsize_arr);
 	msgextMenuCtrl.osd_minsize = atoi(msgextMenuCtrl.minsize_arr);
 	printf("%s,%d,osd_minsize=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_minsize);
+	set_mtd_minsize_osd();
+	return ;
+}
 
-
+void CLink::set_mtd_minsize_osd()
+{
 	if((msgextMenuCtrl.osd_minsize < MIN_MTDMINSIZE) || (msgextMenuCtrl.osd_minsize > MAX_MTDMAXSIZE))
 		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d(超出范围)", msgextMenuCtrl.osd_minsize);
 	else
 		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d", msgextMenuCtrl.osd_minsize);
-	return ;
+	return;
 }
 
 
@@ -465,14 +489,18 @@ void CLink::set_mtd_sensi(char key)
 	int num = atoi(msgextMenuCtrl.sensi_arr);
 	msgextMenuCtrl.osd_sensi = atoi(msgextMenuCtrl.sensi_arr);
 	printf("%s,%d,osd_sensi=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_sensi);
-		
+	set_mtd_sensi_osd();
+	return ;
+}
+
+void CLink::set_mtd_sensi_osd()
+{
 	if((msgextMenuCtrl.osd_sensi < MIN_MTDSENSI) || (msgextMenuCtrl.osd_sensi > MAX_MTDSENSI))
 		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度       %d(超出范围%d~%d)", msgextMenuCtrl.osd_sensi,MIN_MTDSENSI,MAX_MTDSENSI);
 	else
 		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度       %d", msgextMenuCtrl.osd_sensi);
-	return ;
+	return;
 }
-
 
 void CLink::queryCurBallCamPosition()
 {
@@ -682,8 +710,7 @@ void CLink::submenu_DefaultWorkMode_handle()
 
 void CLink::submenu_mtd_handle()
 {
-	if(0 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
-	{
+	if(0 == msgextMenuCtrl.menuarray[submenu_mtd].pointer){
 		if(0 == m_config[CFGID_RTS_mtden])
 		{
 			mouse_workmode = SetMteRigion_Mode;
@@ -691,116 +718,109 @@ void CLink::submenu_mtd_handle()
 			displayMode = MENU_GUN;
 		}
 	}
-		/*
 	else if(1 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
 	{
 		msgextMenuCtrl.mtdnum_deng = !msgextMenuCtrl.mtdnum_deng;
 		if(msgextMenuCtrl.mtdnum_deng)
-			plat->dtimer.startTimer(plat->mtdnum_light_id,500);
+			m_dtimer.startTimer(mtdnum_light_id,500);
 		else
 		{
-			plat->dtimer.stopTimer(plat->mtdnum_light_id);
-			MSGDRIV_send(MSGID_EXT_SETMTDNUM, 0);
+			m_dtimer.stopTimer(mtdnum_light_id);
+			set_mtd_num_osd();
 			if((msgextMenuCtrl.osd_mudnum >= MIN_MTDTARGET_NUM) && (msgextMenuCtrl.osd_mudnum <= MAX_MTDTARGET_NUM))
 			{
-				plat->detectNum = msgextMenuCtrl.osd_mudnum;
-				g_mtdConfig.targetNum =  msgextMenuCtrl.osd_mudnum;
+				m_config[CFGID_MTD_detnum] = msgextMenuCtrl.osd_mudnum;
 				storeMtdConfigFlag = true;
 			}
 			memset(msgextMenuCtrl.mtdnum_arr, 0, sizeof(msgextMenuCtrl.mtdnum_arr));
 		}
 	}
-
-
-	else if(2 == pMenuStatus->menuarray[submenu_mtd].pointer)
+	else if(2 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
 	{
-		pMenuStatus->trktime_deng = !pMenuStatus->trktime_deng;
-		if(pMenuStatus->trktime_deng)
-			plat->dtimer.startTimer(plat->trktime_light_id,500);
+		msgextMenuCtrl.trktime_deng = !msgextMenuCtrl.trktime_deng;
+		if(msgextMenuCtrl.trktime_deng)
+			m_dtimer.startTimer(trktime_light_id,500);
 		else
 		{
-			plat->dtimer.stopTimer(plat->trktime_light_id);
-			MSGDRIV_send(MSGID_EXT_SETMTDTRKTIME, 0);
-			if((pMenuStatus->osd_trktime >= MIN_MTDTRKTIME) && (pMenuStatus->osd_trktime <= MAX_MTDTRKTIME))
+			m_dtimer.stopTimer(trktime_light_id);
+			set_mtd_trktime_osd();
+			if((msgextMenuCtrl.osd_trktime >= MIN_MTDTRKTIME) && (msgextMenuCtrl.osd_trktime <= MAX_MTDTRKTIME))
 			{
-				plat->m_display.processdurationMenu_osd(pMenuStatus->osd_trktime);
-				g_mtdConfig.trackTime = pMenuStatus->osd_trktime;
+				processdurationMenu_osd(msgextMenuCtrl.osd_trktime);
+				m_config[CFGID_MTD_maxtrk] = msgextMenuCtrl.osd_trktime;
 				storeMtdConfigFlag = true;
 			}
-			memset(pMenuStatus->trktime_arr, 0, sizeof(pMenuStatus->trktime_arr));
-		}
-	}
-	else if(3 == pMenuStatus->menuarray[submenu_mtd].pointer)
-	{
-		pMenuStatus->maxsize_deng = !pMenuStatus->maxsize_deng;
-		if(pMenuStatus->maxsize_deng)
-			plat->dtimer.startTimer(plat->maxsize_light_id,500);
-		else
-		{
-			plat->dtimer.stopTimer(plat->maxsize_light_id);
-			MSGDRIV_send(MSGID_EXT_SETMTDMAXSIZE, 0);
-			if((pMenuStatus->osd_maxsize >= plat->minsize) && (pMenuStatus->osd_maxsize <= MAX_MTDMAXSIZE))
-			{
-				plat->maxsize = pMenuStatus->osd_maxsize;
-				g_mtdConfig.maxArea = pMenuStatus->osd_maxsize;
-				storeMtdConfigFlag = true;
-			}
-			memset(pMenuStatus->maxsize_arr, 0, sizeof(pMenuStatus->maxsize_arr));
-		}
-	}
-	else if(4 == pMenuStatus->menuarray[submenu_mtd].pointer)
-	{
-		pMenuStatus->minsize_deng = !pMenuStatus->minsize_deng;
-		if(pMenuStatus->minsize_deng)
-			plat->dtimer.startTimer(plat->minsize_light_id,500);
-		else
-		{
-			plat->dtimer.stopTimer(plat->minsize_light_id);
-			MSGDRIV_send(MSGID_EXT_SETMTDMINSIZE, 0);
-			if((pMenuStatus->osd_minsize >= MIN_MTDMINSIZE) && (pMenuStatus->osd_minsize <= plat->maxsize))
-			{
-				plat->minsize = pMenuStatus->osd_minsize;
-				g_mtdConfig.minArea =  pMenuStatus->osd_minsize;
-				storeMtdConfigFlag = true;
-			}
-			memset(pMenuStatus->minsize_arr, 0, sizeof(pMenuStatus->minsize_arr));
-		}
-	}
-	else if(5 == pMenuStatus->menuarray[submenu_mtd].pointer)
-	{
-		pMenuStatus->sensi_deng = !pMenuStatus->sensi_deng;
-		if(pMenuStatus->sensi_deng)
-			plat->dtimer.startTimer(plat->sensi_light_id,500);
-		else
-		{
-			plat->dtimer.stopTimer(plat->sensi_light_id);
-			MSGDRIV_send(MSGID_EXT_SETMTDSENSI, 0);
-			if((pMenuStatus->osd_sensi >= MIN_MTDSENSI) && (pMenuStatus->osd_sensi <= MAX_MTDSENSI))
-			{
-				plat->sensi = pMenuStatus->osd_sensi;
-				g_mtdConfig.sensitivity = pMenuStatus->osd_sensi;
-				storeMtdConfigFlag = true;
-			}
-			memset(pMenuStatus->sensi_arr, 0, sizeof(pMenuStatus->sensi_arr));
+			memset(msgextMenuCtrl.trktime_arr, 0, sizeof(msgextMenuCtrl.trktime_arr));
 		}
 	}
 	
-	else if(6 == pMenuStatus->menuarray[submenu_mtd].pointer)
+	else if(3 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
+	{
+		msgextMenuCtrl.maxsize_deng = !msgextMenuCtrl.maxsize_deng;
+		if(msgextMenuCtrl.maxsize_deng)
+			m_dtimer.startTimer(maxsize_light_id,500);
+		else
+		{
+			m_dtimer.stopTimer(maxsize_light_id);
+			set_mtd_maxsize_osd();
+			if((msgextMenuCtrl.osd_maxsize >= minsize) && (msgextMenuCtrl.osd_maxsize <= MAX_MTDMAXSIZE))
+			{
+				maxsize = msgextMenuCtrl.osd_maxsize;
+				m_config[CFGID_MTD_maxpixel] = msgextMenuCtrl.osd_maxsize;
+				storeMtdConfigFlag = true;
+			}
+			memset(msgextMenuCtrl.maxsize_arr, 0, sizeof(msgextMenuCtrl.maxsize_arr));
+		}
+	}
+	
+	else if(4 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
+	{
+		msgextMenuCtrl.minsize_deng = !msgextMenuCtrl.minsize_deng;
+		if(msgextMenuCtrl.minsize_deng)
+			m_dtimer.startTimer(minsize_light_id,500);
+		else
+		{
+			m_dtimer.stopTimer(minsize_light_id);
+			set_mtd_sensi_osd();
+			if((msgextMenuCtrl.osd_minsize >= MIN_MTDMINSIZE) && (msgextMenuCtrl.osd_minsize <= maxsize))
+			{
+				minsize = msgextMenuCtrl.osd_minsize;
+				m_config[CFGID_MTD_minpixel] = msgextMenuCtrl.osd_minsize;
+				storeMtdConfigFlag = true;
+			}
+			memset(msgextMenuCtrl.minsize_arr, 0, sizeof(msgextMenuCtrl.minsize_arr));
+		}
+	}
+	else if(5 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
+	{
+		msgextMenuCtrl.sensi_deng = !msgextMenuCtrl.sensi_deng;
+		if(msgextMenuCtrl.sensi_deng)
+			m_dtimer.startTimer(sensi_light_id,500);
+		else
+		{
+			m_dtimer.stopTimer(sensi_light_id);
+			set_mtd_sensi_osd();
+			if((msgextMenuCtrl.osd_sensi >= MIN_MTDSENSI) && (msgextMenuCtrl.osd_sensi <= MAX_MTDSENSI))
+			{
+				sensi = msgextMenuCtrl.osd_sensi;
+				m_config[CFGID_INPUT_SENISIVITY(CFGID_INPUT1_BKID)] = msgextMenuCtrl.osd_sensi;
+				storeMtdConfigFlag = true;
+			}
+			memset(msgextMenuCtrl.sensi_arr, 0, sizeof(msgextMenuCtrl.sensi_arr));
+		}
+	}
+	else if(6 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
 	{
 		app_ctrl_setMenuStat(mainmenu2);
 		storeMtdConfigFlag = true;
-		//plat->SetMtdConfig(g_mtdConfig);
-		printf("\r\n[%s]:MTD Config:\r\nTarget Number:%d\r\nTrack Time:%d\r\nMax Area:%d\r\nMin Area:%d\r\nSensitivity:%d\r\n",
-			__func__,g_mtdConfig.targetNum,g_mtdConfig.trackTime, g_mtdConfig.maxArea,g_mtdConfig.minArea,g_mtdConfig.sensitivity);
-
 	}
+	
 	if(storeMtdConfigFlag == true)
 	{
 		storeMtdConfigFlag = false;
-		plat->SetMtdConfig(g_mtdConfig);
-
+		sendIpcSaveMtd();
 	}
-	*/
+	return ;
 }
 
 
@@ -893,5 +913,181 @@ void CLink::app_ctrl_enter()
 
 	*/
 	//printf("\r\n[%s]: pIStuts->MenuStat = %d ",__FUNCTION__, pMenuStatus->MenuStat);
+}
+
+void CLink::TimerCreate()
+{
+	resol_light_id = m_dtimer.createTimer();
+	resol_apply_id = m_dtimer.createTimer();
+	mtdnum_light_id = m_dtimer.createTimer();
+	trktime_light_id = m_dtimer.createTimer();
+	maxsize_light_id = m_dtimer.createTimer();
+	minsize_light_id = m_dtimer.createTimer();
+	sensi_light_id = m_dtimer.createTimer();
+	baud_light_id = m_dtimer.createTimer();
+	mouse_show_id = m_dtimer.createTimer();
+
+	m_dtimer.registerTimer(resol_light_id, Tcallback, &resol_light_id);
+	m_dtimer.registerTimer(resol_apply_id, Tcallback, &resol_apply_id);
+	m_dtimer.registerTimer(mtdnum_light_id, Tcallback, &mtdnum_light_id);
+	m_dtimer.registerTimer(trktime_light_id, Tcallback, &trktime_light_id);
+	m_dtimer.registerTimer(maxsize_light_id, Tcallback, &maxsize_light_id);
+	m_dtimer.registerTimer(minsize_light_id, Tcallback, &minsize_light_id);
+	m_dtimer.registerTimer(sensi_light_id, Tcallback, &sensi_light_id);
+	m_dtimer.registerTimer(baud_light_id, Tcallback, &baud_light_id);
+	m_dtimer.registerTimer(mouse_show_id, Tcallback, &mouse_show_id);
+}
+
+void CLink::Tcallback(void *p)
+{
+	static int resol_dianmie = 0;
+	static int mtdnum_dianmie = 0;
+	static int trktime_dianmie = 0;
+	static int maxsize_dianmie = 0;
+	static int minsize_dianmie = 0;
+	static int sensi_dianmie = 0;
+	static int baud_dianmie = 0;
+	
+	unsigned char baudlbuf[MAX_BAUDID][128] = {
+		"波特率     2400","波特率     4800","波特率     9600","波特率     115200"};
+	unsigned char resolbuf[maxresolid][128] = {
+			"格式 1920x1080@60Hz","格式 1024x768@60Hz","格式 1280x1024@60Hz"};
+	unsigned char resolapplybuf1[128] = "是否保存当前分辨率?";
+	unsigned char resolapplybuf2[128] = "0:取消  1:保存";
+	int a = *(int *)p;
+
+	/*
+	if(a == resol_light_id)
+	{
+		if(resol_dianmie)
+			swprintf(disMenu[submenu_setimg][1], 33, L"%s", resolbuf[sThis->m_display.disresol_type_tmp]);
+		else
+			swprintf(disMenu[submenu_setimg][1], 33, L"格式");
+		resol_dianmie = !resol_dianmie;
+	}
+	else if(a == resol_apply_id)
+	{
+		swprintf(disMenu[submenu_setimg][4], 33, L"%s %d", resolapplybuf1, sThis->cnt_down--);
+		swprintf(disMenu[submenu_setimg][5], 33, L"%s", resolapplybuf2);
+		if(sThis->cnt_down < 0)
+		{
+			sThis->dtimer.stopTimer(sThis->resol_apply_id);
+			if(sThis->save_flag)
+			{
+				sThis->save_flag = 0;
+				sThis->setresol(sThis->m_display.disresol_type);
+				swprintf(sThis->m_display.disMenu[submenu_setimg][1], 33, L"%s", resolbuf[sThis->m_display.disresol_type]);
+				memset(sThis->m_display.disMenu[submenu_setimg][4], 0, sizeof(sThis->m_display.disMenu[submenu_setimg][4]));
+				memset(sThis->m_display.disMenu[submenu_setimg][5], 0, sizeof(sThis->m_display.disMenu[submenu_setimg][5]));
+			}
+		}
+	}
+	else if(a == sThis->mtdnum_light_id)
+	{
+		if(mtdnum_dianmie)
+		{
+			if((sThis->extMenuCtrl.osd_mudnum < MIN_MTDTARGET_NUM) || (sThis->extMenuCtrl.osd_mudnum > MAX_MTDTARGET_NUM))
+				swprintf(sThis->m_display.disMenu[submenu_mtd][1], 33, L"目标个数     %d(超出范围%d~%d)", sThis->extMenuCtrl.osd_mudnum,MIN_MTDTARGET_NUM,MAX_MTDTARGET_NUM);
+			else
+				swprintf(sThis->m_display.disMenu[submenu_mtd][1], 33, L"目标个数     %d", sThis->extMenuCtrl.osd_mudnum);
+		}
+		else
+			swprintf(sThis->m_display.disMenu[submenu_mtd][1], 33, L"目标个数");
+		mtdnum_dianmie = !mtdnum_dianmie;
+	}
+	else if(a == sThis->trktime_light_id)
+	{
+		if(trktime_dianmie)
+		{
+			if((sThis->extMenuCtrl.osd_trktime < MIN_MTDTRKTIME) || (sThis->extMenuCtrl.osd_trktime > MAX_MTDTRKTIME))
+				swprintf(sThis->m_display.disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒(超出范围%d~%d秒)", sThis->extMenuCtrl.osd_trktime,MIN_MTDTRKTIME,MAX_MTDTRKTIME);
+			else
+				swprintf(sThis->m_display.disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒", sThis->extMenuCtrl.osd_trktime);
+		}
+		else
+			swprintf(sThis->m_display.disMenu[submenu_mtd][2], 33, L"跟踪持续时间  秒");
+		trktime_dianmie = !trktime_dianmie;
+	}
+	else if(a == sThis->maxsize_light_id)
+	{
+		if(maxsize_dianmie)
+		{
+			if((sThis->extMenuCtrl.osd_maxsize < sThis->minsize) || (sThis->extMenuCtrl.osd_maxsize > MAX_MTDMAXSIZE))
+				swprintf(sThis->m_display.disMenu[submenu_mtd][3], 33, L"最大目标面积 %d(超出范围)", sThis->extMenuCtrl.osd_maxsize);
+			else
+				swprintf(sThis->m_display.disMenu[submenu_mtd][3], 33, L"最大目标面积 %d", sThis->extMenuCtrl.osd_maxsize);
+		}
+		else
+			swprintf(sThis->m_display.disMenu[submenu_mtd][3], 33, L"最大目标面积      ");
+		maxsize_dianmie = !maxsize_dianmie;
+	}
+	else if(a == sThis->minsize_light_id)
+	{
+		if(minsize_dianmie)
+		{
+			if((sThis->extMenuCtrl.osd_minsize < MIN_MTDMINSIZE) || (sThis->extMenuCtrl.osd_minsize > sThis->maxsize))
+				swprintf(sThis->m_display.disMenu[submenu_mtd][4], 33, L"最小目标面积 %d(超出范围)", sThis->extMenuCtrl.osd_minsize);
+			else
+				swprintf(sThis->m_display.disMenu[submenu_mtd][4], 33, L"最小目标面积 %d", sThis->extMenuCtrl.osd_minsize);
+		}
+		else
+			swprintf(sThis->m_display.disMenu[submenu_mtd][4], 33, L"最小目标面积  ");
+		minsize_dianmie = !minsize_dianmie;
+	}
+	else if(a == sThis->sensi_light_id)
+	{
+		if(sensi_dianmie)
+		{
+			if((sThis->extMenuCtrl.osd_sensi < MIN_MTDSENSI) || (sThis->extMenuCtrl.osd_sensi > MAX_MTDSENSI))
+				swprintf(sThis->m_display.disMenu[submenu_mtd][5], 33, L"灵敏度       %d(超出范围%d~%d)", sThis->extMenuCtrl.osd_sensi,MIN_MTDSENSI,MAX_MTDSENSI);
+			else
+				swprintf(sThis->m_display.disMenu[submenu_mtd][5], 33, L"灵敏度       %d", sThis->extMenuCtrl.osd_sensi);
+		}
+		else
+			swprintf(sThis->m_display.disMenu[submenu_mtd][5], 33, L"灵敏度");
+		sensi_dianmie = !sensi_dianmie;
+	}
+	else if( a == sThis->baud_light_id ){
+		if(baud_dianmie)
+			swprintf(sThis->m_display.disMenu[submenu_setcom][0], 33, L"%s", baudlbuf[sThis->m_display.disbaud_type]);
+		else
+			memset(sThis->m_display.disMenu[submenu_setcom][0], 0, sizeof(sThis->m_display.disMenu[submenu_setcom][0]));
+		baud_dianmie = !baud_dianmie;
+
+	}
+	else if(a == sThis->mouse_show_id)
+	{
+		if(sThis->mouse_show)
+			sThis->set_mouse_show(0);
+	}	
+	*/
+}
+
+void CLink::sendIpcSaveMtd()
+{
+	/*
+	MTD_Config tempConfig = {0};	
+	tempConfig = mtdconfig;
+	SENDST	message = {0};
+	message.cmd_ID = storeMtdConfig;
+	memcpy(&message.param[0],&tempConfig, sizeof(MTD_Config));
+	ipc_sendmsg(&message, IPC_FRIMG_MSG);
+	*/
+	return ;
+}
+
+
+void CLink::processdurationMenu_osd(int value)
+{
+	#if 0
+	SENDST test = {0};
+	CMD_MTDTRKTIME mtdtime;
+	
+	test.cmd_ID = mtdtrktime;
+	mtdtime.seconds = value;
+	memcpy(test.param, &mtdtime, sizeof(mtdtime));
+	ipc_sendmsg(&test, IPC_FRIMG_MSG);	
+	waittochange
+	#endif
 }
 

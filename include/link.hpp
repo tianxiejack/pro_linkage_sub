@@ -6,6 +6,7 @@
 #include "configtable.h"
 #include "ipc_custom_head.h"
 #include "autoManualFindRelation.hpp"
+#include "DxTimer.hpp"
 
 using namespace cr_automanualfindrelation;
 
@@ -104,6 +105,21 @@ public:
 	void submenu_DefaultWorkMode_handle();
 	void submenu_mtd_handle();
 
+
+
+	void set_mtd_num_osd();
+	void set_mtd_trktime_osd();
+	void set_mtd_sensi_osd();
+	void set_mtd_minsize_osd();
+	void set_mtd_maxsize_osd();
+	
+
+
+	void TimerCreate();
+	static void Tcallback(void *p);
+	void processdurationMenu_osd(int value);
+	void sendIpcSaveMtd();
+
 	
 
 public:
@@ -158,6 +174,10 @@ public:
 
 	char *init_passwd;
 	static bool storeWorkModeFlag,storeMtdConfigFlag;
+
+	DxTimer m_dtimer;
+	int resol_light_id, mouse_show_id, resol_apply_id, mtdnum_light_id, trktime_light_id, maxsize_light_id, minsize_light_id, sensi_light_id, baud_light_id;
+	int maxsize, minsize , sensi;
 
 	
 };
