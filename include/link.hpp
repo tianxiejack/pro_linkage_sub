@@ -137,13 +137,12 @@ public:
 	
 public:
 	int* m_config;
-	menu_param_t msgextMenuCtrl;
+
 	GB_WorkMode g_AppWorkMode ;
-	MenuDisplay g_CurDisplayMode;
 	MenuDisplay displayMode ;
 	GB_WorkMode setting_WorkMode;
-
-	menu_param_t extMenuCtrl;
+	
+	menu_param_t m_menuCtrl;
 	//MenuDisplay g_displayMode ;
 
 

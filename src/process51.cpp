@@ -298,6 +298,7 @@ void CProcess::loadIPCParam()
 	OSA_semCreate(&g_linkage_getPos, 1, 0);
 
 	m_display.linkage.menuLoadIpcParam(getSysconfig());
+
 	return ;
 }
 

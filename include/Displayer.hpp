@@ -325,7 +325,6 @@ public:
 	
 
 	//DISPLAYMODE displayMode;
-	//DISPLAYMODE g_CurDisplayMode;
 	CLink linkage;
 };
 

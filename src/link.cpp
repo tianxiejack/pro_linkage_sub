@@ -36,8 +36,6 @@ void CLink::init()
 	m_autofr = new CAutoManualFindRelation(outputWHF[0],outputWHF[1], 6, 6);
 	menuOsdInit();
 
-
-	
 }
 
 
@@ -103,7 +101,7 @@ void CLink::setWorkMode(GB_WorkMode workmode)
 
 void CLink::app_ctrl_setMenuStat(int index)
 {
-	menu_param_t *pMenuStatus = &msgextMenuCtrl;
+	menu_param_t *pMenuStatus = &m_menuCtrl;
 	pMenuStatus->MenuStat = index;
 	
 	memset(pMenuStatus->Passwd, 0, sizeof(pMenuStatus->Passwd));
@@ -120,7 +118,7 @@ void CLink::app_ctrl_setMenu_jos(int menu_state)
 {	
 	if(1 == menu_state)
 	{
-		if(-1 == msgextMenuCtrl.MenuStat)
+		if(-1 == m_menuCtrl.MenuStat)
 			app_ctrl_setMenuStat(mainmenu0);
 	}
 	else if(0 == menu_state)
@@ -143,21 +141,21 @@ void CLink::app_ctrl_setnumber(char key)
 		else if(key == '1')
 			m_autofr->writeParams();
 	}
-	else if(mainmenu0 == msgextMenuCtrl.MenuStat)
+	else if(mainmenu0 == m_menuCtrl.MenuStat)
 	{
-		int offset = strlen(msgextMenuCtrl.Passwd) * sizeof(char);		
-		if(offset < sizeof(msgextMenuCtrl.Passwd) - 1)
+		int offset = strlen(m_menuCtrl.Passwd) * sizeof(char);		
+		if(offset < sizeof(m_menuCtrl.Passwd) - 1)
 		{
-			sprintf(msgextMenuCtrl.Passwd + offset,"%c", key);
-			sprintf(msgextMenuCtrl.disPasswd + offset,"%c", '*');
-			swprintf(disMenu[mainmenu0][1], 33, L"%s", msgextMenuCtrl.disPasswd);
+			sprintf(m_menuCtrl.Passwd + offset,"%c", key);
+			sprintf(m_menuCtrl.disPasswd + offset,"%c", '*');
+			swprintf(disMenu[mainmenu0][1], 33, L"%s", m_menuCtrl.disPasswd);
 		}
 		else
 			printf("password reached max length:128");
 		
-		printf("%s,%d,passwd=%s\n",__FILE__,__LINE__,msgextMenuCtrl.Passwd);
+		printf("%s,%d,passwd=%s\n",__FILE__,__LINE__,m_menuCtrl.Passwd);
 	}
-	else if(submenu_setimg == msgextMenuCtrl.MenuStat)
+	else if(submenu_setimg == m_menuCtrl.MenuStat)
 	{
 	}
 	else if((1 == m_mtdSetRigion) && (key == '2'))
@@ -173,15 +171,15 @@ void CLink::app_ctrl_setnumber(char key)
 		memset(pol_rectn, 0, sizeof(pol_rectn));
 		memset(polRect, 0, sizeof(polRect));
 	}
-	else if((submenu_mtd == msgextMenuCtrl.MenuStat) && (msgextMenuCtrl.mtdnum_deng == 1))
+	else if((submenu_mtd == m_menuCtrl.MenuStat) && (m_menuCtrl.mtdnum_deng == 1))
 		set_mtd_num(key);	
-	else if((submenu_mtd == msgextMenuCtrl.MenuStat) && (msgextMenuCtrl.trktime_deng == 1))
+	else if((submenu_mtd == m_menuCtrl.MenuStat) && (m_menuCtrl.trktime_deng == 1))
 		set_mtd_trktime(key);
-	else if((submenu_mtd == msgextMenuCtrl.MenuStat) && (msgextMenuCtrl.maxsize_deng == 1))
+	else if((submenu_mtd == m_menuCtrl.MenuStat) && (m_menuCtrl.maxsize_deng == 1))
 		set_mtd_maxsize(key);
-	else if((submenu_mtd == msgextMenuCtrl.MenuStat) && (msgextMenuCtrl.minsize_deng == 1))
+	else if((submenu_mtd == m_menuCtrl.MenuStat) && (m_menuCtrl.minsize_deng == 1))
 		set_mtd_minsize(key);
-	else if((submenu_mtd == msgextMenuCtrl.MenuStat) && (msgextMenuCtrl.sensi_deng == 1))
+	else if((submenu_mtd == m_menuCtrl.MenuStat) && (m_menuCtrl.sensi_deng == 1))
 		set_mtd_sensi(key);
 
 	return ;
@@ -191,7 +189,7 @@ void CLink::app_ctrl_setnumber(char key)
 void CLink::menuOsdInit()
 {
 	m_menuindex = -1;
-	memcpy(&dismenuarray, extMenuCtrl.menuarray, sizeof(dismenuarray));
+	memcpy(&dismenuarray, m_menuCtrl.menuarray, sizeof(dismenuarray));
 	unsigned char menubuf[menumaxid][MAX_SUBMENU][128] = {
 			{"请输入密码呼出菜单", "", "按回车确认", "按F2退出"},
 			{"请输入密码呼出菜单", "密码输入错误，","按回车后再次输入", "按回车确认", "按F2退出"},
@@ -235,11 +233,11 @@ void CLink::menuOsdInit()
 
 //=====================================================================
 
-		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	 %d", msgextMenuCtrl.osd_mudnum);
-		swprintf(disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒",msgextMenuCtrl.osd_trktime);
-		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d像素", msgextMenuCtrl.osd_maxsize);
-		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d像素", msgextMenuCtrl.osd_minsize);
-		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度		%d", msgextMenuCtrl.osd_sensi);
+		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	 %d", m_menuCtrl.osd_mudnum);
+		swprintf(disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒",m_menuCtrl.osd_trktime);
+		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d像素", m_menuCtrl.osd_maxsize);
+		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d像素", m_menuCtrl.osd_minsize);
+		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度		%d", m_menuCtrl.osd_sensi);
 
 //=====================================================================
 
@@ -327,38 +325,38 @@ void CLink::menuLoadIpcParam(int* config)
 {
 	if(m_config == NULL)
 		m_config = config;
-	extMenuCtrl.resol_type_tmp = extMenuCtrl.resol_type = oresoltype;
-	extMenuCtrl.MenuStat = -1;
-	extMenuCtrl.Trig_Inter_Mode = 0;
-	memset(extMenuCtrl.Passwd, 0, sizeof(extMenuCtrl.Passwd));
-	memset(extMenuCtrl.disPasswd, 0, sizeof(extMenuCtrl.disPasswd));
+	m_menuCtrl.resol_type_tmp = m_menuCtrl.resol_type = oresoltype;
+	m_menuCtrl.MenuStat = -1;
+	m_menuCtrl.Trig_Inter_Mode = 0;
+	memset(m_menuCtrl.Passwd, 0, sizeof(m_menuCtrl.Passwd));
+	memset(m_menuCtrl.disPasswd, 0, sizeof(m_menuCtrl.disPasswd));
 
 	int cnt[menumaxid] = {4,5,3,4,7,6,3,5,5,3}; 
-	memset(extMenuCtrl.menuarray, 0, sizeof(extMenuCtrl.menuarray));
+	memset(m_menuCtrl.menuarray, 0, sizeof(m_menuCtrl.menuarray));
 	for(int i = 0; i < menumaxid; i++)
 	{
-		extMenuCtrl.menuarray[i].id = i;
-		extMenuCtrl.menuarray[i].pointer = 0;
-		extMenuCtrl.menuarray[i].submenu_cnt = cnt[i];
+		m_menuCtrl.menuarray[i].id = i;
+		m_menuCtrl.menuarray[i].pointer = 0;
+		m_menuCtrl.menuarray[i].submenu_cnt = cnt[i];
 	}
 		
 	if(config == NULL)
 	{
-		extMenuCtrl.osd_mudnum = 1;
-		extMenuCtrl.osd_trktime = 1;
-		extMenuCtrl.osd_maxsize = 10000;
-		extMenuCtrl.osd_minsize = 9;
-		extMenuCtrl.osd_sensi = 30; 				
+		m_menuCtrl.osd_mudnum = 1;
+		m_menuCtrl.osd_trktime = 1;
+		m_menuCtrl.osd_maxsize = 10000;
+		m_menuCtrl.osd_minsize = 9;
+		m_menuCtrl.osd_sensi = 30; 				
 	}else{	
-		extMenuCtrl.osd_mudnum  = m_config[CFGID_MTD_detnum];
-		extMenuCtrl.osd_trktime = m_config[CFGID_MTD_maxtrk];
-		extMenuCtrl.osd_maxsize = m_config[CFGID_MTD_maxpixel];
-		extMenuCtrl.osd_minsize = m_config[CFGID_MTD_minpixel];
-		extMenuCtrl.osd_sensi   = m_config[CFGID_INPUT_SENISIVITY(CFGID_INPUT1_BKID)];
+		m_menuCtrl.osd_mudnum  = m_config[CFGID_MTD_detnum];
+		m_menuCtrl.osd_trktime = m_config[CFGID_MTD_maxtrk];
+		m_menuCtrl.osd_maxsize = m_config[CFGID_MTD_maxpixel];
+		m_menuCtrl.osd_minsize = m_config[CFGID_MTD_minpixel];
+		m_menuCtrl.osd_sensi   = m_config[CFGID_INPUT_SENISIVITY(CFGID_INPUT1_BKID)];
 	}
-	minsize = extMenuCtrl.osd_minsize;
-	maxsize = extMenuCtrl.osd_maxsize;
-	sensi = extMenuCtrl.osd_sensi;
+	minsize = m_menuCtrl.osd_minsize;
+	maxsize = m_menuCtrl.osd_maxsize;
+	sensi = m_menuCtrl.osd_sensi;
 	return ;
 }
 
@@ -379,40 +377,40 @@ void CLink::set_jos_mouse_mode(jos_mouse_Mode mode)
 
 void CLink::set_mtd_num(char key)
 {
-	int offset = strlen(msgextMenuCtrl.mtdnum_arr) * sizeof(char);
-	if(offset < sizeof(msgextMenuCtrl.mtdnum_arr) - 1)
-		sprintf(msgextMenuCtrl.mtdnum_arr + offset,"%c", key);
+	int offset = strlen(m_menuCtrl.mtdnum_arr) * sizeof(char);
+	if(offset < sizeof(m_menuCtrl.mtdnum_arr) - 1)
+		sprintf(m_menuCtrl.mtdnum_arr + offset,"%c", key);
 	else
 		printf("mtdnum reached max length:128");
 	
-	int num = atoi(msgextMenuCtrl.mtdnum_arr);
-	msgextMenuCtrl.osd_mudnum = atoi(msgextMenuCtrl.mtdnum_arr);
-	printf("%s,%d,osd_mudnum=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_mudnum);
+	int num = atoi(m_menuCtrl.mtdnum_arr);
+	m_menuCtrl.osd_mudnum = atoi(m_menuCtrl.mtdnum_arr);
+	printf("%s,%d,osd_mudnum=%d\n",__FILE__,__LINE__,m_menuCtrl.osd_mudnum);
 	set_mtd_num_osd();
 	return ;
 }
 
 void CLink::set_mtd_num_osd()
 {
-	if((msgextMenuCtrl.osd_mudnum < MIN_MTDTARGET_NUM) || (msgextMenuCtrl.osd_mudnum > MAX_MTDTARGET_NUM))
-		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	   %d(超出范围%d~%d)", msgextMenuCtrl.osd_mudnum,MIN_MTDTARGET_NUM,MAX_MTDTARGET_NUM);
+	if((m_menuCtrl.osd_mudnum < MIN_MTDTARGET_NUM) || (m_menuCtrl.osd_mudnum > MAX_MTDTARGET_NUM))
+		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	   %d(超出范围%d~%d)", m_menuCtrl.osd_mudnum,MIN_MTDTARGET_NUM,MAX_MTDTARGET_NUM);
 	else
-		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	   %d", msgextMenuCtrl.osd_mudnum);
+		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	   %d", m_menuCtrl.osd_mudnum);
 	return ;
 }
 
 
 void CLink::set_mtd_trktime(char key)
 {
-	int offset = strlen(msgextMenuCtrl.trktime_arr) * sizeof(char);
-	if(offset < sizeof(msgextMenuCtrl.trktime_arr) - 1)
-		sprintf(msgextMenuCtrl.trktime_arr + offset,"%c", key);
+	int offset = strlen(m_menuCtrl.trktime_arr) * sizeof(char);
+	if(offset < sizeof(m_menuCtrl.trktime_arr) - 1)
+		sprintf(m_menuCtrl.trktime_arr + offset,"%c", key);
 	else	
 		printf("trktime reached max length:128");
 
-	int num = atoi(msgextMenuCtrl.trktime_arr);
-	msgextMenuCtrl.osd_trktime = atoi(msgextMenuCtrl.trktime_arr);
-	printf("%s,%d,osd_trktime=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_trktime);
+	int num = atoi(m_menuCtrl.trktime_arr);
+	m_menuCtrl.osd_trktime = atoi(m_menuCtrl.trktime_arr);
+	printf("%s,%d,osd_trktime=%d\n",__FILE__,__LINE__,m_menuCtrl.osd_trktime);
 	set_mtd_trktime_osd();
 	return ;
 }
@@ -420,85 +418,85 @@ void CLink::set_mtd_trktime(char key)
 
 void CLink::set_mtd_trktime_osd()
 {
-	if((msgextMenuCtrl.osd_trktime < MIN_MTDTRKTIME) || (msgextMenuCtrl.osd_trktime > MAX_MTDTRKTIME))
-		swprintf(disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒(超出范围%d~%d)", msgextMenuCtrl.osd_trktime,MIN_MTDTRKTIME,MAX_MTDTRKTIME);
+	if((m_menuCtrl.osd_trktime < MIN_MTDTRKTIME) || (m_menuCtrl.osd_trktime > MAX_MTDTRKTIME))
+		swprintf(disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒(超出范围%d~%d)", m_menuCtrl.osd_trktime,MIN_MTDTRKTIME,MAX_MTDTRKTIME);
 	else
-		swprintf(disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒", msgextMenuCtrl.osd_trktime);
+		swprintf(disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒", m_menuCtrl.osd_trktime);
 	return ;
 }
 
 
 void CLink::set_mtd_maxsize(char key)
 {
-	int offset = strlen(msgextMenuCtrl.maxsize_arr) * sizeof(char);
-	if(offset < sizeof(msgextMenuCtrl.maxsize_arr) - 1)
-		sprintf(msgextMenuCtrl.maxsize_arr + offset,"%c", key);
+	int offset = strlen(m_menuCtrl.maxsize_arr) * sizeof(char);
+	if(offset < sizeof(m_menuCtrl.maxsize_arr) - 1)
+		sprintf(m_menuCtrl.maxsize_arr + offset,"%c", key);
 	else
 		printf("maxsize reached max length:128");
 
-	int num = atoi(msgextMenuCtrl.maxsize_arr);
-	msgextMenuCtrl.osd_maxsize = atoi(msgextMenuCtrl.maxsize_arr);
-	printf("%s,%d,osd_maxsize=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_maxsize);
+	int num = atoi(m_menuCtrl.maxsize_arr);
+	m_menuCtrl.osd_maxsize = atoi(m_menuCtrl.maxsize_arr);
+	printf("%s,%d,osd_maxsize=%d\n",__FILE__,__LINE__,m_menuCtrl.osd_maxsize);
 	set_mtd_maxsize_osd();
 	return ;
 }
 
 void CLink::set_mtd_maxsize_osd()
 {
-	if((msgextMenuCtrl.osd_maxsize < MIN_MTDMINSIZE) || (msgextMenuCtrl.osd_maxsize > MAX_MTDMAXSIZE))
-		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d(超出范围)", msgextMenuCtrl.osd_maxsize);
+	if((m_menuCtrl.osd_maxsize < MIN_MTDMINSIZE) || (m_menuCtrl.osd_maxsize > MAX_MTDMAXSIZE))
+		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d(超出范围)", m_menuCtrl.osd_maxsize);
 	else
-		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d", msgextMenuCtrl.osd_maxsize);
+		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d", m_menuCtrl.osd_maxsize);
 	return;
 }
 
 
 void CLink::set_mtd_minsize(char key)
 {
-	int offset = strlen(msgextMenuCtrl.minsize_arr) * sizeof(char);
-	if(offset < sizeof(msgextMenuCtrl.minsize_arr) - 1)
-		sprintf(msgextMenuCtrl.minsize_arr + offset,"%c", key);
+	int offset = strlen(m_menuCtrl.minsize_arr) * sizeof(char);
+	if(offset < sizeof(m_menuCtrl.minsize_arr) - 1)
+		sprintf(m_menuCtrl.minsize_arr + offset,"%c", key);
 	else
 		printf("minsize reached max length:128");
 
-	int num = atoi(msgextMenuCtrl.minsize_arr);
-	msgextMenuCtrl.osd_minsize = atoi(msgextMenuCtrl.minsize_arr);
-	printf("%s,%d,osd_minsize=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_minsize);
+	int num = atoi(m_menuCtrl.minsize_arr);
+	m_menuCtrl.osd_minsize = atoi(m_menuCtrl.minsize_arr);
+	printf("%s,%d,osd_minsize=%d\n",__FILE__,__LINE__,m_menuCtrl.osd_minsize);
 	set_mtd_minsize_osd();
 	return ;
 }
 
 void CLink::set_mtd_minsize_osd()
 {
-	if((msgextMenuCtrl.osd_minsize < MIN_MTDMINSIZE) || (msgextMenuCtrl.osd_minsize > MAX_MTDMAXSIZE))
-		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d(超出范围)", msgextMenuCtrl.osd_minsize);
+	if((m_menuCtrl.osd_minsize < MIN_MTDMINSIZE) || (m_menuCtrl.osd_minsize > MAX_MTDMAXSIZE))
+		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d(超出范围)", m_menuCtrl.osd_minsize);
 	else
-		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d", msgextMenuCtrl.osd_minsize);
+		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d", m_menuCtrl.osd_minsize);
 	return;
 }
 
 
 void CLink::set_mtd_sensi(char key)
 {
-	int offset = strlen(msgextMenuCtrl.sensi_arr) * sizeof(char);
-	if(offset < sizeof(msgextMenuCtrl.sensi_arr) - 1)
-		sprintf(msgextMenuCtrl.sensi_arr + offset,"%c", key);
+	int offset = strlen(m_menuCtrl.sensi_arr) * sizeof(char);
+	if(offset < sizeof(m_menuCtrl.sensi_arr) - 1)
+		sprintf(m_menuCtrl.sensi_arr + offset,"%c", key);
 	else
 		printf("sensi reached max length:128");
 
-	int num = atoi(msgextMenuCtrl.sensi_arr);
-	msgextMenuCtrl.osd_sensi = atoi(msgextMenuCtrl.sensi_arr);
-	printf("%s,%d,osd_sensi=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_sensi);
+	int num = atoi(m_menuCtrl.sensi_arr);
+	m_menuCtrl.osd_sensi = atoi(m_menuCtrl.sensi_arr);
+	printf("%s,%d,osd_sensi=%d\n",__FILE__,__LINE__,m_menuCtrl.osd_sensi);
 	set_mtd_sensi_osd();
 	return ;
 }
 
 void CLink::set_mtd_sensi_osd()
 {
-	if((msgextMenuCtrl.osd_sensi < MIN_MTDSENSI) || (msgextMenuCtrl.osd_sensi > MAX_MTDSENSI))
-		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度       %d(超出范围%d~%d)", msgextMenuCtrl.osd_sensi,MIN_MTDSENSI,MAX_MTDSENSI);
+	if((m_menuCtrl.osd_sensi < MIN_MTDSENSI) || (m_menuCtrl.osd_sensi > MAX_MTDSENSI))
+		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度       %d(超出范围%d~%d)", m_menuCtrl.osd_sensi,MIN_MTDSENSI,MAX_MTDSENSI);
 	else
-		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度       %d", msgextMenuCtrl.osd_sensi);
+		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度       %d", m_menuCtrl.osd_sensi);
 	return;
 }
 
@@ -641,7 +639,7 @@ void CLink::app_ctrl_settrig_inter(menu_param_t *pInCmd)
 
 void CLink::menu0_handle()
 {
-	if(strcmp(init_passwd, msgextMenuCtrl.Passwd))
+	if(strcmp(init_passwd, m_menuCtrl.Passwd))
 		app_ctrl_setMenuStat(mainmenu1);
 	else
 		app_ctrl_setMenuStat(mainmenu2);
@@ -654,7 +652,7 @@ void CLink::menu1_handle()
 
 void CLink::menu2_handle()
 {
-	switch(msgextMenuCtrl.menuarray[mainmenu2].pointer)
+	switch(m_menuCtrl.menuarray[mainmenu2].pointer)
 	{
 		case 0:
 			app_ctrl_setMenuStat(submenu_DefaultWorkMode);
@@ -685,19 +683,19 @@ void CLink::menu2_handle()
 
 void CLink::submenu_DefaultWorkMode_handle()
 {
-	if(INDEX_FOURTH == msgextMenuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
+	if(INDEX_FOURTH == m_menuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
 		app_ctrl_setMenuStat(mainmenu2);
 		displayMode = MENU_MAIN_VIEW;	
 	}
-	else if(INDEX_FIRST == msgextMenuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
+	else if(INDEX_FIRST == m_menuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
 		setting_WorkMode = HANDLE_LINK_MODE;		
 		storeWorkModeFlag = true;
 	}
-	else if(INDEX_SECOND == msgextMenuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
+	else if(INDEX_SECOND == m_menuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
 		setting_WorkMode = AUTO_LINK_MODE;
 		storeWorkModeFlag = true;
 	}
-	else if(INDEX_THIRD == msgextMenuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
+	else if(INDEX_THIRD == m_menuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
 		setting_WorkMode = ONLY_BALL_MODE;
 		storeWorkModeFlag = true;
 	}	
@@ -710,7 +708,7 @@ void CLink::submenu_DefaultWorkMode_handle()
 
 void CLink::submenu_mtd_handle()
 {
-	if(0 == msgextMenuCtrl.menuarray[submenu_mtd].pointer){
+	if(0 == m_menuCtrl.menuarray[submenu_mtd].pointer){
 		if(0 == m_config[CFGID_RTS_mtden])
 		{
 			mouse_workmode = SetMteRigion_Mode;
@@ -718,98 +716,98 @@ void CLink::submenu_mtd_handle()
 			displayMode = MENU_GUN;
 		}
 	}
-	else if(1 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
+	else if(1 == m_menuCtrl.menuarray[submenu_mtd].pointer)
 	{
-		msgextMenuCtrl.mtdnum_deng = !msgextMenuCtrl.mtdnum_deng;
-		if(msgextMenuCtrl.mtdnum_deng)
+		m_menuCtrl.mtdnum_deng = !m_menuCtrl.mtdnum_deng;
+		if(m_menuCtrl.mtdnum_deng)
 			m_dtimer.startTimer(mtdnum_light_id,500);
 		else
 		{
 			m_dtimer.stopTimer(mtdnum_light_id);
 			set_mtd_num_osd();
-			if((msgextMenuCtrl.osd_mudnum >= MIN_MTDTARGET_NUM) && (msgextMenuCtrl.osd_mudnum <= MAX_MTDTARGET_NUM))
+			if((m_menuCtrl.osd_mudnum >= MIN_MTDTARGET_NUM) && (m_menuCtrl.osd_mudnum <= MAX_MTDTARGET_NUM))
 			{
-				m_config[CFGID_MTD_detnum] = msgextMenuCtrl.osd_mudnum;
+				m_config[CFGID_MTD_detnum] = m_menuCtrl.osd_mudnum;
 				storeMtdConfigFlag = true;
 			}
-			memset(msgextMenuCtrl.mtdnum_arr, 0, sizeof(msgextMenuCtrl.mtdnum_arr));
+			memset(m_menuCtrl.mtdnum_arr, 0, sizeof(m_menuCtrl.mtdnum_arr));
 		}
 	}
-	else if(2 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
+	else if(2 == m_menuCtrl.menuarray[submenu_mtd].pointer)
 	{
-		msgextMenuCtrl.trktime_deng = !msgextMenuCtrl.trktime_deng;
-		if(msgextMenuCtrl.trktime_deng)
+		m_menuCtrl.trktime_deng = !m_menuCtrl.trktime_deng;
+		if(m_menuCtrl.trktime_deng)
 			m_dtimer.startTimer(trktime_light_id,500);
 		else
 		{
 			m_dtimer.stopTimer(trktime_light_id);
 			set_mtd_trktime_osd();
-			if((msgextMenuCtrl.osd_trktime >= MIN_MTDTRKTIME) && (msgextMenuCtrl.osd_trktime <= MAX_MTDTRKTIME))
+			if((m_menuCtrl.osd_trktime >= MIN_MTDTRKTIME) && (m_menuCtrl.osd_trktime <= MAX_MTDTRKTIME))
 			{
-				processdurationMenu_osd(msgextMenuCtrl.osd_trktime);
-				m_config[CFGID_MTD_maxtrk] = msgextMenuCtrl.osd_trktime;
+				processdurationMenu_osd(m_menuCtrl.osd_trktime);
+				m_config[CFGID_MTD_maxtrk] = m_menuCtrl.osd_trktime;
 				storeMtdConfigFlag = true;
 			}
-			memset(msgextMenuCtrl.trktime_arr, 0, sizeof(msgextMenuCtrl.trktime_arr));
+			memset(m_menuCtrl.trktime_arr, 0, sizeof(m_menuCtrl.trktime_arr));
 		}
 	}
 	
-	else if(3 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
+	else if(3 == m_menuCtrl.menuarray[submenu_mtd].pointer)
 	{
-		msgextMenuCtrl.maxsize_deng = !msgextMenuCtrl.maxsize_deng;
-		if(msgextMenuCtrl.maxsize_deng)
+		m_menuCtrl.maxsize_deng = !m_menuCtrl.maxsize_deng;
+		if(m_menuCtrl.maxsize_deng)
 			m_dtimer.startTimer(maxsize_light_id,500);
 		else
 		{
 			m_dtimer.stopTimer(maxsize_light_id);
 			set_mtd_maxsize_osd();
-			if((msgextMenuCtrl.osd_maxsize >= minsize) && (msgextMenuCtrl.osd_maxsize <= MAX_MTDMAXSIZE))
+			if((m_menuCtrl.osd_maxsize >= minsize) && (m_menuCtrl.osd_maxsize <= MAX_MTDMAXSIZE))
 			{
-				maxsize = msgextMenuCtrl.osd_maxsize;
-				m_config[CFGID_MTD_maxpixel] = msgextMenuCtrl.osd_maxsize;
+				maxsize = m_menuCtrl.osd_maxsize;
+				m_config[CFGID_MTD_maxpixel] = m_menuCtrl.osd_maxsize;
 				storeMtdConfigFlag = true;
 			}
-			memset(msgextMenuCtrl.maxsize_arr, 0, sizeof(msgextMenuCtrl.maxsize_arr));
+			memset(m_menuCtrl.maxsize_arr, 0, sizeof(m_menuCtrl.maxsize_arr));
 		}
 	}
 	
-	else if(4 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
+	else if(4 == m_menuCtrl.menuarray[submenu_mtd].pointer)
 	{
-		msgextMenuCtrl.minsize_deng = !msgextMenuCtrl.minsize_deng;
-		if(msgextMenuCtrl.minsize_deng)
+		m_menuCtrl.minsize_deng = !m_menuCtrl.minsize_deng;
+		if(m_menuCtrl.minsize_deng)
 			m_dtimer.startTimer(minsize_light_id,500);
 		else
 		{
 			m_dtimer.stopTimer(minsize_light_id);
 			set_mtd_sensi_osd();
-			if((msgextMenuCtrl.osd_minsize >= MIN_MTDMINSIZE) && (msgextMenuCtrl.osd_minsize <= maxsize))
+			if((m_menuCtrl.osd_minsize >= MIN_MTDMINSIZE) && (m_menuCtrl.osd_minsize <= maxsize))
 			{
-				minsize = msgextMenuCtrl.osd_minsize;
-				m_config[CFGID_MTD_minpixel] = msgextMenuCtrl.osd_minsize;
+				minsize = m_menuCtrl.osd_minsize;
+				m_config[CFGID_MTD_minpixel] = m_menuCtrl.osd_minsize;
 				storeMtdConfigFlag = true;
 			}
-			memset(msgextMenuCtrl.minsize_arr, 0, sizeof(msgextMenuCtrl.minsize_arr));
+			memset(m_menuCtrl.minsize_arr, 0, sizeof(m_menuCtrl.minsize_arr));
 		}
 	}
-	else if(5 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
+	else if(5 == m_menuCtrl.menuarray[submenu_mtd].pointer)
 	{
-		msgextMenuCtrl.sensi_deng = !msgextMenuCtrl.sensi_deng;
-		if(msgextMenuCtrl.sensi_deng)
+		m_menuCtrl.sensi_deng = !m_menuCtrl.sensi_deng;
+		if(m_menuCtrl.sensi_deng)
 			m_dtimer.startTimer(sensi_light_id,500);
 		else
 		{
 			m_dtimer.stopTimer(sensi_light_id);
 			set_mtd_sensi_osd();
-			if((msgextMenuCtrl.osd_sensi >= MIN_MTDSENSI) && (msgextMenuCtrl.osd_sensi <= MAX_MTDSENSI))
+			if((m_menuCtrl.osd_sensi >= MIN_MTDSENSI) && (m_menuCtrl.osd_sensi <= MAX_MTDSENSI))
 			{
-				sensi = msgextMenuCtrl.osd_sensi;
-				m_config[CFGID_INPUT_SENISIVITY(CFGID_INPUT1_BKID)] = msgextMenuCtrl.osd_sensi;
+				sensi = m_menuCtrl.osd_sensi;
+				m_config[CFGID_INPUT_SENISIVITY(CFGID_INPUT1_BKID)] = m_menuCtrl.osd_sensi;
 				storeMtdConfigFlag = true;
 			}
-			memset(msgextMenuCtrl.sensi_arr, 0, sizeof(msgextMenuCtrl.sensi_arr));
+			memset(m_menuCtrl.sensi_arr, 0, sizeof(m_menuCtrl.sensi_arr));
 		}
 	}
-	else if(6 == msgextMenuCtrl.menuarray[submenu_mtd].pointer)
+	else if(6 == m_menuCtrl.menuarray[submenu_mtd].pointer)
 	{
 		app_ctrl_setMenuStat(mainmenu2);
 		storeMtdConfigFlag = true;
@@ -831,15 +829,15 @@ void CLink::app_ctrl_enter()
 		queryCurBallCamPosition();
 	else if(1 == m_mtdSetRigion)
 		;//save_polygon_roi();
-	else if(mainmenu0 == msgextMenuCtrl.MenuStat)
+	else if(mainmenu0 == m_menuCtrl.MenuStat)
 		menu0_handle();
-	else if(mainmenu1 == msgextMenuCtrl.MenuStat)
+	else if(mainmenu1 == m_menuCtrl.MenuStat)
 		menu1_handle();
-	else if(mainmenu2 == msgextMenuCtrl.MenuStat)
+	else if(mainmenu2 == m_menuCtrl.MenuStat)
 		menu2_handle();
-	else if(submenu_DefaultWorkMode == msgextMenuCtrl.MenuStat)
+	else if(submenu_DefaultWorkMode == m_menuCtrl.MenuStat)
 		submenu_DefaultWorkMode_handle();
-	else if(submenu_mtd == msgextMenuCtrl.MenuStat)
+	else if(submenu_mtd == m_menuCtrl.MenuStat)
 		submenu_mtd_handle();
 	
 	/*
@@ -1094,47 +1092,47 @@ void CLink::processdurationMenu_osd(int value)
 
 void CLink::app_ctrl_upMenu()
 {
-	int menustate = msgextMenuCtrl.MenuStat; 
+	int menustate = m_menuCtrl.MenuStat; 
 	if((menustate >= mainmenu2) && (menustate <= submenu_handleMatchPoints))
 	{
-		if((submenu_mtd == menustate) && (msgextMenuCtrl.mtdnum_deng == 1))
+		if((submenu_mtd == menustate) && (m_menuCtrl.mtdnum_deng == 1))
 		{
-			msgextMenuCtrl.osd_mudnum = (msgextMenuCtrl.osd_mudnum + 1) % (MAX_MTDTARGET_NUM+1);
-			if(msgextMenuCtrl.osd_mudnum < MIN_MTDTARGET_NUM)
-				msgextMenuCtrl.osd_mudnum = MIN_MTDTARGET_NUM;
+			m_menuCtrl.osd_mudnum = (m_menuCtrl.osd_mudnum + 1) % (MAX_MTDTARGET_NUM+1);
+			if(m_menuCtrl.osd_mudnum < MIN_MTDTARGET_NUM)
+				m_menuCtrl.osd_mudnum = MIN_MTDTARGET_NUM;
 			set_mtd_num_osd();
 		}
-		else if((submenu_mtd == menustate) && (msgextMenuCtrl.trktime_deng == 1))
+		else if((submenu_mtd == menustate) && (m_menuCtrl.trktime_deng == 1))
 		{
-			msgextMenuCtrl.osd_trktime = (msgextMenuCtrl.osd_trktime + 1) % (MAX_MTDTRKTIME+1);
-			if(msgextMenuCtrl.osd_trktime < MIN_MTDTRKTIME)
-				msgextMenuCtrl.osd_trktime = MIN_MTDTRKTIME;
+			m_menuCtrl.osd_trktime = (m_menuCtrl.osd_trktime + 1) % (MAX_MTDTRKTIME+1);
+			if(m_menuCtrl.osd_trktime < MIN_MTDTRKTIME)
+				m_menuCtrl.osd_trktime = MIN_MTDTRKTIME;
 			set_mtd_trktime_osd();
 		}
-		else if((submenu_mtd == menustate) && (msgextMenuCtrl.maxsize_deng == 1))
+		else if((submenu_mtd == menustate) && (m_menuCtrl.maxsize_deng == 1))
 		{
-			msgextMenuCtrl.osd_maxsize = (msgextMenuCtrl.osd_maxsize + 1) % (MAX_MTDMAXSIZE+1);
-			if(msgextMenuCtrl.osd_maxsize < minsize)
-				msgextMenuCtrl.osd_maxsize = minsize;
+			m_menuCtrl.osd_maxsize = (m_menuCtrl.osd_maxsize + 1) % (MAX_MTDMAXSIZE+1);
+			if(m_menuCtrl.osd_maxsize < minsize)
+				m_menuCtrl.osd_maxsize = minsize;
 			set_mtd_maxsize_osd();
 		}
-		else if((submenu_mtd == menustate) && (msgextMenuCtrl.minsize_deng == 1))
+		else if((submenu_mtd == menustate) && (m_menuCtrl.minsize_deng == 1))
 		{
-			msgextMenuCtrl.osd_minsize = (msgextMenuCtrl.osd_minsize + 1) % (MAX_MTDMAXSIZE+1);
-			if(msgextMenuCtrl.osd_minsize > maxsize)
-				msgextMenuCtrl.osd_minsize =MIN_MTDMINSIZE;
+			m_menuCtrl.osd_minsize = (m_menuCtrl.osd_minsize + 1) % (MAX_MTDMAXSIZE+1);
+			if(m_menuCtrl.osd_minsize > maxsize)
+				m_menuCtrl.osd_minsize =MIN_MTDMINSIZE;
 			set_mtd_minsize_osd();
 		}
-		else if((submenu_mtd == menustate) && (msgextMenuCtrl.sensi_deng == 1))
+		else if((submenu_mtd == menustate) && (m_menuCtrl.sensi_deng == 1))
 		{
-			msgextMenuCtrl.osd_sensi = (msgextMenuCtrl.osd_sensi + 1) % (MAX_MTDSENSI+1);
-			if(msgextMenuCtrl.osd_sensi < MIN_MTDSENSI)
-				msgextMenuCtrl.osd_sensi = MIN_MTDSENSI;
+			m_menuCtrl.osd_sensi = (m_menuCtrl.osd_sensi + 1) % (MAX_MTDSENSI+1);
+			if(m_menuCtrl.osd_sensi < MIN_MTDSENSI)
+				m_menuCtrl.osd_sensi = MIN_MTDSENSI;
 			set_mtd_sensi_osd();
 		}
-		else if(msgextMenuCtrl.menuarray[menustate].pointer > 0)
+		else if(m_menuCtrl.menuarray[menustate].pointer > 0)
 		{
-			msgextMenuCtrl.menuarray[menustate].pointer--;
+			m_menuCtrl.menuarray[menustate].pointer--;
 			upMenu();
 		}
 	}
@@ -1142,14 +1140,14 @@ void CLink::app_ctrl_upMenu()
 
 void CLink::upMenu()
 {
-	int menustate = extMenuCtrl.MenuStat;
+	int menustate = m_menuCtrl.MenuStat;
 	int pointer = dismenuarray[menustate].pointer;
 	if((menustate >= mainmenu2) && (menustate <= submenu_handleMatchPoints))
 	{
 		if(pointer > 0)
 		{
 			disMenuBuf[menustate][pointer].color = 2;
-			dismenuarray[menustate].pointer= extMenuCtrl.menuarray[menustate].pointer;
+			dismenuarray[menustate].pointer= m_menuCtrl.menuarray[menustate].pointer;
 
 			m_secondMenuIndex = dismenuarray[menustate].pointer;
 			m_firstMenuIndex = menustate;
@@ -1162,14 +1160,14 @@ void CLink::upMenu()
 
 void CLink::downMenu()
 {
-	int menustate = extMenuCtrl.MenuStat;
+	int menustate = m_menuCtrl.MenuStat;
 	int pointer = dismenuarray[menustate].pointer;
 	if((menustate >= mainmenu2) && (menustate <= submenu_handleMatchPoints))
 	{
-		if(pointer < extMenuCtrl.menuarray[menustate].submenu_cnt - 1)
+		if(pointer < m_menuCtrl.menuarray[menustate].submenu_cnt - 1)
 		{
 			disMenuBuf[menustate][pointer].color = 2;
-			dismenuarray[menustate].pointer = extMenuCtrl.menuarray[menustate].pointer;
+			dismenuarray[menustate].pointer = m_menuCtrl.menuarray[menustate].pointer;
 			disMenuBuf[menustate][dismenuarray[menustate].pointer].color = 3;
 
 			m_secondMenuIndex = dismenuarray[menustate].pointer;
@@ -1181,52 +1179,52 @@ void CLink::downMenu()
 
 void CLink::app_ctrl_downMenu()
 {
-	int menustate = msgextMenuCtrl.MenuStat; 
+	int menustate = m_menuCtrl.MenuStat; 
 	if((menustate >= mainmenu2) && (menustate <= submenu_handleMatchPoints))
 	{
-		if((submenu_mtd == menustate) && (msgextMenuCtrl.mtdnum_deng == 1))
+		if((submenu_mtd == menustate) && (m_menuCtrl.mtdnum_deng == 1))
 		{
-			if(MIN_MTDTARGET_NUM == msgextMenuCtrl.osd_mudnum)
-				msgextMenuCtrl.osd_mudnum = MAX_MTDTARGET_NUM;
+			if(MIN_MTDTARGET_NUM == m_menuCtrl.osd_mudnum)
+				m_menuCtrl.osd_mudnum = MAX_MTDTARGET_NUM;
 			else
-				msgextMenuCtrl.osd_mudnum = (msgextMenuCtrl.osd_mudnum + MAX_MTDTARGET_NUM - 1) % MAX_MTDTARGET_NUM;
+				m_menuCtrl.osd_mudnum = (m_menuCtrl.osd_mudnum + MAX_MTDTARGET_NUM - 1) % MAX_MTDTARGET_NUM;
 			set_mtd_num_osd();
 		}
-		else if((submenu_mtd == menustate) && (msgextMenuCtrl.trktime_deng == 1))
+		else if((submenu_mtd == menustate) && (m_menuCtrl.trktime_deng == 1))
 		{
-			if(MIN_MTDTRKTIME == msgextMenuCtrl.osd_trktime)
-				msgextMenuCtrl.osd_trktime = MAX_MTDTRKTIME;
+			if(MIN_MTDTRKTIME == m_menuCtrl.osd_trktime)
+				m_menuCtrl.osd_trktime = MAX_MTDTRKTIME;
 			else
-				msgextMenuCtrl.osd_trktime = (msgextMenuCtrl.osd_trktime + MAX_MTDTRKTIME - 1) % MAX_MTDTRKTIME;
+				m_menuCtrl.osd_trktime = (m_menuCtrl.osd_trktime + MAX_MTDTRKTIME - 1) % MAX_MTDTRKTIME;
 			set_mtd_trktime_osd();
 		}
-		else if((submenu_mtd == menustate) && (msgextMenuCtrl.maxsize_deng == 1))
+		else if((submenu_mtd == menustate) && (m_menuCtrl.maxsize_deng == 1))
 		{
-			if(msgextMenuCtrl.osd_maxsize == minsize)
-				msgextMenuCtrl.osd_maxsize = MAX_MTDMAXSIZE;
+			if(m_menuCtrl.osd_maxsize == minsize)
+				m_menuCtrl.osd_maxsize = MAX_MTDMAXSIZE;
 			else
-				msgextMenuCtrl.osd_maxsize = (msgextMenuCtrl.osd_maxsize + MAX_MTDMAXSIZE - 1) % MAX_MTDMAXSIZE;
+				m_menuCtrl.osd_maxsize = (m_menuCtrl.osd_maxsize + MAX_MTDMAXSIZE - 1) % MAX_MTDMAXSIZE;
 			set_mtd_maxsize_osd();
 		}
-		else if((submenu_mtd == menustate) && (msgextMenuCtrl.minsize_deng == 1))
+		else if((submenu_mtd == menustate) && (m_menuCtrl.minsize_deng == 1))
 		{
-			if(MIN_MTDMINSIZE == msgextMenuCtrl.osd_minsize)
-				msgextMenuCtrl.osd_minsize = maxsize;
+			if(MIN_MTDMINSIZE == m_menuCtrl.osd_minsize)
+				m_menuCtrl.osd_minsize = maxsize;
 			else
-				msgextMenuCtrl.osd_minsize = (msgextMenuCtrl.osd_minsize + MAX_MTDMAXSIZE - 1) % MAX_MTDMAXSIZE;
+				m_menuCtrl.osd_minsize = (m_menuCtrl.osd_minsize + MAX_MTDMAXSIZE - 1) % MAX_MTDMAXSIZE;
 			set_mtd_minsize_osd();
 		}
-		else if((submenu_mtd == menustate) && (msgextMenuCtrl.sensi_deng == 1))
+		else if((submenu_mtd == menustate) && (m_menuCtrl.sensi_deng == 1))
 		{
-			if(MIN_MTDSENSI == msgextMenuCtrl.osd_sensi)
-				msgextMenuCtrl.osd_sensi = MAX_MTDSENSI;
+			if(MIN_MTDSENSI == m_menuCtrl.osd_sensi)
+				m_menuCtrl.osd_sensi = MAX_MTDSENSI;
 			else
-				msgextMenuCtrl.osd_sensi = (msgextMenuCtrl.osd_sensi + MAX_MTDSENSI - 1) % MAX_MTDSENSI;
+				m_menuCtrl.osd_sensi = (m_menuCtrl.osd_sensi + MAX_MTDSENSI - 1) % MAX_MTDSENSI;
 			set_mtd_sensi_osd();
 		}
-		else if(msgextMenuCtrl.menuarray[menustate].pointer < msgextMenuCtrl.menuarray[menustate].submenu_cnt - 1)
+		else if(m_menuCtrl.menuarray[menustate].pointer < m_menuCtrl.menuarray[menustate].submenu_cnt - 1)
 		{
-			msgextMenuCtrl.menuarray[menustate].pointer++;
+			m_menuCtrl.menuarray[menustate].pointer++;
 			downMenu();
 		}
 	}
