@@ -79,6 +79,7 @@ public:
 	void OnJosEvent(int key, int param);
 
 	OSDFUNC drawtext;
+	
 
 public:
 	
@@ -127,6 +128,10 @@ public:
 	void sendIpcSaveMtd();
 	int MenuFunc();
 	void MtdOSDFunc();
+	void osdshow();
+	
+	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);
+	
 
 	
 

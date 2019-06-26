@@ -1731,9 +1731,8 @@ void CDisplayer::gl_display(void)
 		}
 		glDisable(GL_BLEND);
 
-		//OSDFunc();
-		linkage.MenuFunc();
-		linkage.MtdOSDFunc();
+		linkage.osdshow();
+
 
 		
 		#if 0

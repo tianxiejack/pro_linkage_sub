@@ -1228,10 +1228,65 @@ void CLink::app_ctrl_downMenu()
 	return ;
 }
 
+void CLink::osdshow()
+{		
+	MenuFunc();
+	MtdOSDFunc();
+
+	return ;
+}
+
+
+void CLink::getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a)
+{
+	switch(color)
+	{
+		case 1:
+			r = 0;
+			g = 0;
+			b = 0;
+			break;
+		case 2:
+			r = 255;
+			g = 255;
+			b = 255;
+			break;
+		case 3:
+			r = 255;
+			g = 0;
+			b = 0;
+			break;
+		case 4:
+			r = 255;
+			g = 255;
+			b = 0;
+			break;
+		case 5:
+			r = 0;
+			g = 0;
+			b = 255;
+			break;
+		case 6:
+			r = 0;
+			g = 255;
+			b = 0;
+			break;
+		default:
+			break;
+	}
+	
+	if(a > 0x0a)
+		a = 0x0a;
+	if(a == 0x0a)
+		a = 0;
+	else
+		a = 255 - a*16;
+	return ;
+}
 
 int CLink::MenuFunc()
 {
-	unsigned char r, g, b, a, color, colorbak, Enable;
+	unsigned char r, g, b, a, color, Enable;
 	short x, y;
 	char font,fontsize;
 	
@@ -1257,50 +1312,9 @@ int CLink::MenuFunc()
 			 font = 1;
 			 fontsize = 4;
 
-			switch(color)
-			{
-				case 1:
-					r = 0;
-					g = 0;
-					b = 0;
-					break;
-				case 2:
-					r = 255;
-					g = 255;
-					b = 255;
-					break;
-				case 3:
-					r = 255;
-					g = 0;
-					b = 0;
-					break;
-				case 4:
-					r = 255;
-					g = 255;
-					b = 0;
-					break;
-				case 5:
-					r = 0;
-					g = 0;
-					b = 255;
-					break;
-				case 6:
-					r = 0;
-					g = 255;
-					b = 0;
-					break;
-				case 7:
-					color = colorbak;
-					break;
-			}
-
-			if(a > 0x0a)
-				a = 0x0a;
-			if(a == 0x0a)
-				a = 0;
-			else
-				a = 255 - a*16;
-			drawtext(x, y, disMenu[index][i],font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
+			 getRGBA(color,r,g,b,a);
+			 	
+			 drawtext(x, y, disMenu[index][i],font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
 		}
 	}
 	
@@ -1311,7 +1325,7 @@ int CLink::MenuFunc()
 
 void CLink::MtdOSDFunc()
 {
-	unsigned char r, g, b, a, color, colorbak, Enable;
+	unsigned char r, g, b, a, color, Enable;
 	short x, y;
 	char font,fontsize;
 
@@ -1330,50 +1344,9 @@ void CLink::MtdOSDFunc()
 			 font = 1;
 			 fontsize = 4;
 
-			switch(color)
-			{
-				case 1:
-					r = 0;
-					g = 0;
-					b = 0;
-					break;
-				case 2:
-					r = 255;
-					g = 255;
-					b = 255;
-					break;
-				case 3:
-					r = 255;
-					g = 0;
-					b = 0;
-					break;
-				case 4:
-					r = 255;
-					g = 255;
-					b = 0;
-					break;
-				case 5:
-					r = 0;
-					g = 0;
-					b = 255;
-					break;
-				case 6:
-					r = 0;
-					g = 255;
-					b = 0;
-					break;
-				case 7:
-					color = colorbak;
-					break;
-			}
-
-			if(a > 0x0a)
-				a = 0x0a;
-			if(a == 0x0a)
-				a = 0;
-			else
-				a = 255 - a*16;
-			drawtext(x, y, disMtd[0][i],font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
+			 getRGBA(color,r,g,b,a);
+			 
+			 drawtext(x, y, disMtd[0][i],font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
 		}
 	}
 	return;
