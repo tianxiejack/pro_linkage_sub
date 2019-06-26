@@ -74,11 +74,8 @@ public:
 	void app_ctrl_setMenuStat(int index);
 	void app_ctrl_setMenu_jos(int menu_state);
 	void setWorkMode(GB_WorkMode workmode);
-	
 	void setDisplayMode(MenuDisplay mode);
-
 	void app_ctrl_setnumber(char key);
-
 	void set_mouse_show(int param)
 	{
 		mouse_show = param;
@@ -89,12 +86,14 @@ public:
 		m_josMode = value;
 	};
 	void set_jos_mouse_mode(jos_mouse_Mode mode);
+	void set_mtd_num(char key);
+	void set_mtd_trktime(char key);
 
 
 public:
 	menu_param_t msgextMenuCtrl;
 	GB_WorkMode g_AppWorkMode ;
-	DISPLAYMODE g_CurDisplayMode;
+	MenuDisplay g_CurDisplayMode;
 	MenuDisplay displayMode ;
 
 	menu_param_t extMenuCtrl;
@@ -119,6 +118,10 @@ public:
 
 	
 	jos_mouse_Mode m_josMode = mouse_mode;
+
+	int pol_draw;
+	PointNode polRect[MAX_CHAN][100];
+	int pol_tempX, pol_tempY, pol_rectn[MAX_CHAN];
 
 	
 };

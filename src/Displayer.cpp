@@ -2164,16 +2164,16 @@ void CDisplayer::linkageSwitchMode(void)
 
 	switch(linkage.displayMode) 
 	{
-		case MAIN_VIEW:	
+		case MENU_MAIN_VIEW:	
 			RenderVideoOnOrthoView(VIDEO_1, m_WinWidth/4, m_WinHeight/2, m_WinWidth/2, m_WinHeight/2);
 			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]/2);	
-			if( linkage.g_CurDisplayMode != MAIN_VIEW)
-				linkage.g_CurDisplayMode = MAIN_VIEW;			
+			if( linkage.g_CurDisplayMode != MENU_MAIN_VIEW)
+				linkage.g_CurDisplayMode = MENU_MAIN_VIEW;			
 			break;
-		case GUN_FULL_SCREEN:				
+		case MENU_GUN:				
 			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]);
-			if( linkage.g_CurDisplayMode != GUN_FULL_SCREEN)
-				linkage.g_CurDisplayMode = GUN_FULL_SCREEN;
+			if( linkage.g_CurDisplayMode != MENU_GUN)
+				linkage.g_CurDisplayMode = MENU_GUN;
 			break;
 			
 		default:
