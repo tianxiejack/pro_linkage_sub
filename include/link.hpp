@@ -88,6 +88,9 @@ public:
 	void set_jos_mouse_mode(jos_mouse_Mode mode);
 	void set_mtd_num(char key);
 	void set_mtd_trktime(char key);
+	void set_mtd_maxsize(char key);
+	void set_mtd_minsize(char key);
+	void set_mtd_sensi(char key);
 
 
 public:

@@ -171,49 +171,15 @@ void CLink::app_ctrl_setnumber(char key)
 		set_mtd_num(key);	
 	else if((submenu_mtd == msgextMenuCtrl.MenuStat) && (msgextMenuCtrl.trktime_deng == 1))
 		set_mtd_trktime(key);
-	/*
-	else if((submenu_mtd == pMenuStatus->MenuStat) && (pMenuStatus->maxsize_deng == 1))
-	{
-		int offset = strlen(pMenuStatus->maxsize_arr) * sizeof(char);
-		if(offset < sizeof(pMenuStatus->maxsize_arr) - 1)
-			sprintf(pMenuStatus->maxsize_arr + offset,"%c", key);
-		else
-			printf("maxsize reached max length:128");
+	else if((submenu_mtd == msgextMenuCtrl.MenuStat) && (msgextMenuCtrl.maxsize_deng == 1))
+		set_mtd_maxsize(key);
+	else if((submenu_mtd == msgextMenuCtrl.MenuStat) && (msgextMenuCtrl.minsize_deng == 1))
+		set_mtd_minsize(key);
+	else if((submenu_mtd == msgextMenuCtrl.MenuStat) && (msgextMenuCtrl.sensi_deng == 1))
+		set_mtd_sensi(key);
 
-		int num = atoi(pMenuStatus->maxsize_arr);
-		pMenuStatus->osd_maxsize = atoi(pMenuStatus->maxsize_arr);
-		printf("%s,%d,osd_maxsize=%d\n",__FILE__,__LINE__,pMenuStatus->osd_maxsize);
-		MSGDRIV_send(MSGID_EXT_SETMTDMAXSIZE, 0);
-	}
-	else if((submenu_mtd == pMenuStatus->MenuStat) && (pMenuStatus->minsize_deng == 1))
-	{
-		int offset = strlen(pMenuStatus->minsize_arr) * sizeof(char);
-		if(offset < sizeof(pMenuStatus->minsize_arr) - 1)
-			sprintf(pMenuStatus->minsize_arr + offset,"%c", key);
-		else
-			printf("minsize reached max length:128");
-
-		int num = atoi(pMenuStatus->minsize_arr);
-		pMenuStatus->osd_minsize = atoi(pMenuStatus->minsize_arr);
-		printf("%s,%d,osd_minsize=%d\n",__FILE__,__LINE__,pMenuStatus->osd_minsize);
-		MSGDRIV_send(MSGID_EXT_SETMTDMINSIZE, 0);
-	}
-	else if((submenu_mtd == pMenuStatus->MenuStat) && (pMenuStatus->sensi_deng == 1))
-	{
-		int offset = strlen(pMenuStatus->sensi_arr) * sizeof(char);
-		if(offset < sizeof(pMenuStatus->sensi_arr) - 1)
-			sprintf(pMenuStatus->sensi_arr + offset,"%c", key);
-		else
-			printf("sensi reached max length:128");
-
-		int num = atoi(pMenuStatus->sensi_arr);
-		pMenuStatus->osd_sensi = atoi(pMenuStatus->sensi_arr);
-		printf("%s,%d,osd_sensi=%d\n",__FILE__,__LINE__,pMenuStatus->osd_sensi);
-		MSGDRIV_send(MSGID_EXT_SETMTDSENSI, 0);
-	}
-	*/
+	return ;
 }
-
 
 
 void CLink::menuOsdInit()
@@ -439,3 +405,62 @@ void CLink::set_mtd_trktime(char key)
 	return ;
 }
 
+void CLink::set_mtd_maxsize(char key)
+{
+	int offset = strlen(msgextMenuCtrl.maxsize_arr) * sizeof(char);
+	if(offset < sizeof(msgextMenuCtrl.maxsize_arr) - 1)
+		sprintf(msgextMenuCtrl.maxsize_arr + offset,"%c", key);
+	else
+		printf("maxsize reached max length:128");
+
+	int num = atoi(msgextMenuCtrl.maxsize_arr);
+	msgextMenuCtrl.osd_maxsize = atoi(msgextMenuCtrl.maxsize_arr);
+	printf("%s,%d,osd_maxsize=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_maxsize);
+
+	if((msgextMenuCtrl.osd_maxsize < MIN_MTDMINSIZE) || (msgextMenuCtrl.osd_maxsize > MAX_MTDMAXSIZE))
+		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d(超出范围)", msgextMenuCtrl.osd_maxsize);
+	else
+		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d", msgextMenuCtrl.osd_maxsize);
+	return ;
+}
+
+
+void CLink::set_mtd_minsize(char key)
+{
+	int offset = strlen(msgextMenuCtrl.minsize_arr) * sizeof(char);
+	if(offset < sizeof(msgextMenuCtrl.minsize_arr) - 1)
+		sprintf(msgextMenuCtrl.minsize_arr + offset,"%c", key);
+	else
+		printf("minsize reached max length:128");
+
+	int num = atoi(msgextMenuCtrl.minsize_arr);
+	msgextMenuCtrl.osd_minsize = atoi(msgextMenuCtrl.minsize_arr);
+	printf("%s,%d,osd_minsize=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_minsize);
+
+
+	if((msgextMenuCtrl.osd_minsize < MIN_MTDMINSIZE) || (msgextMenuCtrl.osd_minsize > MAX_MTDMAXSIZE))
+		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d(超出范围)", msgextMenuCtrl.osd_minsize);
+	else
+		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d", msgextMenuCtrl.osd_minsize);
+	return ;
+}
+
+
+void CLink::set_mtd_sensi(char key)
+{
+	int offset = strlen(msgextMenuCtrl.sensi_arr) * sizeof(char);
+	if(offset < sizeof(msgextMenuCtrl.sensi_arr) - 1)
+		sprintf(msgextMenuCtrl.sensi_arr + offset,"%c", key);
+	else
+		printf("sensi reached max length:128");
+
+	int num = atoi(msgextMenuCtrl.sensi_arr);
+	msgextMenuCtrl.osd_sensi = atoi(msgextMenuCtrl.sensi_arr);
+	printf("%s,%d,osd_sensi=%d\n",__FILE__,__LINE__,msgextMenuCtrl.osd_sensi);
+		
+	if((msgextMenuCtrl.osd_sensi < MIN_MTDSENSI) || (msgextMenuCtrl.osd_sensi > MAX_MTDSENSI))
+		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度       %d(超出范围%d~%d)", msgextMenuCtrl.osd_sensi,MIN_MTDSENSI,MAX_MTDSENSI);
+	else
+		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度       %d", msgextMenuCtrl.osd_sensi);
+	return ;
+}
