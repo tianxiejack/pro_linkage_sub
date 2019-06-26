@@ -27,6 +27,7 @@ CLink::CLink()
 	
 void CLink::init()
 {
+	m_autofr = new CAutoManualFindRelation(outputWHF[0],outputWHF[1], 6, 6);
 	menuOsdInit();
 
 
@@ -123,24 +124,26 @@ void CLink::app_ctrl_setMenu_jos(int menu_state)
 	return ;
 }
 
+
 void CLink::app_ctrl_setnumber(char key)
 {
 	menu_param_t *pMenuStatus = &msgextMenuCtrl;
 
-	/*
-	if(MENU_TRIG_INTER_MODE == g_displayMode)
+	
+	if(MENU_GUN == displayMode)
 	{
 		if(key == '0')
 		{
-			plat->m_autofr.deleteallPoints();
-			plat->set_jos_mouse_mode(mouse_mode);
+			m_autofr->deleteallPoints();
+			set_jos_mouse_mode(mouse_mode);
 		}
 		else if(key == '1')
 		{
-			app_ctrl_save_trig_inter();
+			m_autofr->writeParams();
 		}
 	}
-	
+	/*
+
 	else if(mainmenu0 == pMenuStatus->MenuStat)
 	{
 		int offset = strlen(pMenuStatus->Passwd) * sizeof(char);		
@@ -438,6 +441,20 @@ void CLink::menuLoadIpcParam(int* config)
 		extMenuCtrl.osd_sensi = config[CFGID_INPUT_SENISIVITY(CFGID_INPUT1_BKID)];
 	}
 	return ;
+}
+
+
+void CLink::set_jos_mouse_mode(jos_mouse_Mode mode)
+{
+	printf("%s, %d,set_jos_mouse_mode=%d\n", __FILE__,__LINE__, mode);
+	set_josctrl_mode(mode);
+	#if 0
+	SENDST trkmsg2={0};
+	trkmsg2.cmd_ID = jos_mouse_mode;
+	trkmsg2.param[0] = mode;
+	ipc_sendmsg(&trkmsg2, IPC_FRIMG_MSG);
+	waittochange
+	#endif
 }
 
 

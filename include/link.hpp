@@ -5,7 +5,9 @@
 
 #include "configtable.h"
 #include "ipc_custom_head.h"
+#include "autoManualFindRelation.hpp"
 
+using namespace cr_automanualfindrelation;
 
 enum
 {
@@ -80,7 +82,13 @@ public:
 	void set_mouse_show(int param)
 	{
 		mouse_show = param;
-	}
+	};
+	
+	void set_josctrl_mode(jos_mouse_Mode value)
+	{
+		m_josMode = value;
+	};
+	void set_jos_mouse_mode(jos_mouse_Mode mode);
 
 
 public:
@@ -107,7 +115,10 @@ public:
 	int curBaudRate;
 	int setrigion_flagv20;
 	int m_mtdSetRigion;
+	CAutoManualFindRelation* m_autofr;
 
+	
+	jos_mouse_Mode m_josMode = mouse_mode;
 
 	
 };

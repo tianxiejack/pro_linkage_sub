@@ -62,6 +62,44 @@ typedef enum
 	shm_rdwr
 }shm_perms;
 
+
+typedef enum
+{
+	cursor_move = 1,
+	jos_button,
+	jos_Dir,
+	mouse_button,
+	enter,
+	jos_menu,
+	workMode,
+	ctrlMode
+}josType;
+
+typedef enum{
+	manual_linkage = 1,
+	Auto_linkage,
+	ballctrl
+}work_Mode;
+
+typedef enum{
+	jos = 1,
+	mouse
+}jos_Mode;
+
+typedef enum{
+	jos_mode = 1,
+	mouse_mode,
+	exit_calibrate_mode
+}jos_mouse_Mode;
+
+typedef enum{
+	cursor_up = 1,
+	cursor_down,
+	cursor_left,
+	cursor_right,
+}josDir;
+
+
 typedef struct
 {
 	unsigned int intPrm[PARAMLEN/4];
