@@ -288,6 +288,8 @@ void CProcess::loadIPCParam()
 	
 	OSA_semCreate(&g_linkage_getPos, 1, 0);
 
+	m_display.linkage.menuLoadIpcParam(getSysconfig());
+	return ;
 }
 
 
@@ -1580,13 +1582,12 @@ void CProcess::OnMouseRightDwn(int x, int y){};
 void CProcess::OnMouseRightUp(int x, int y){};
 void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 {
-	switch( key ) 
+	static int f;
+	switch(key) 
 	{
-		case 1:
-			m_display.linkage.app_ctrl_setMenuStat(0);
-			break;
 		case 2:
-			m_display.linkage.app_ctrl_setMenuStat(2);	
+			f = (f+1)%2;
+			m_display.linkage.OnJosEvent(JOSF2_ENTER_MENU,f);
 			break;
 
 		default:

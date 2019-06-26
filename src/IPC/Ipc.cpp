@@ -1378,4 +1378,9 @@ void cfg_dbg_setCmd(int cmd, int prm)
 	return ;
 }
 
+int* getSysconfig()
+{
+	return sysConfig;
+}
+
 

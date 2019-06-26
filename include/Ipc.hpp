@@ -20,5 +20,6 @@ void cfg_dbg_setDefault(int * configTab);
 void cfg_dbg_getDefault(int * configTab, unsigned char *configUser);
 void cfg_dbg_setCmd(int cmd, int prm);
 
+int* getSysconfig();
 #endif /* IPC_HPP_ */
 

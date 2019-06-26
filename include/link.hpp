@@ -64,6 +64,7 @@ public:
 
 	void init();
 	void menuOsdInit();
+	void menuLoadIpcParam(int* config);
 	void OnJosEvent(int key, int param);
 
 public:

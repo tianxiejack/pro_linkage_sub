@@ -193,14 +193,6 @@ void CLink::menuOsdInit()
 
 	disMenuBuf[mainmenu0][2].posy = 4 * (int)((float)outputWHF[1] *0.056f);
 	disMenuBuf[mainmenu0][3].posy = 5 * (int)((float)outputWHF[1] *0.056f);
-	//disMenuBuf[submenu_DefaultWorkMode][2].posy = 4 * (int)((float)outputWHF[1] *0.056f);
-
-	/*
-	disMenuBuf[submenu_gridMapCalibrate][1].posx= (int)((float)outputWHF[0] *0.75f);
-	disMenuBuf[submenu_gridMapCalibrate][1].posy = (int)((float)outputWHF[1] /200.0f);
-	disMenuBuf[submenu_gridMapCalibrate][2].posx = (int)((float)outputWHF[0] *0.917f);
-	disMenuBuf[submenu_gridMapCalibrate][2].posy = (int)((float)outputWHF[1] /200.0f);
-	*/
 	
 	disMenuBuf[submenu_setball][2].posy = 4 * (int)((float)outputWHF[1] *0.056f);
 	disMenuBuf[submenu_setcom][4].posy = 6 * (int)((float)outputWHF[1] *0.056f);
@@ -264,5 +256,41 @@ void CLink::menuOsdInit()
 		}
 #endif	
 }
+
+
+void CLink::menuLoadIpcParam(int* config)
+{
+	extMenuCtrl.resol_type_tmp = extMenuCtrl.resol_type = oresoltype;
+	extMenuCtrl.MenuStat = -1;
+	extMenuCtrl.Trig_Inter_Mode = 0;
+	memset(extMenuCtrl.Passwd, 0, sizeof(extMenuCtrl.Passwd));
+	memset(extMenuCtrl.disPasswd, 0, sizeof(extMenuCtrl.disPasswd));
+
+	int cnt[menumaxid] = {4,5,3,4,7,6,3,5,5,3}; 
+	memset(extMenuCtrl.menuarray, 0, sizeof(extMenuCtrl.menuarray));
+	for(int i = 0; i < menumaxid; i++)
+	{
+		extMenuCtrl.menuarray[i].id = i;
+		extMenuCtrl.menuarray[i].pointer = 0;
+		extMenuCtrl.menuarray[i].submenu_cnt = cnt[i];
+	}
+		
+	if(config == NULL)
+	{
+		extMenuCtrl.osd_mudnum = 1;
+		extMenuCtrl.osd_trktime = 1;
+		extMenuCtrl.osd_maxsize = 10000;
+		extMenuCtrl.osd_minsize = 9;
+		extMenuCtrl.osd_sensi = 30; 				
+	}else{	
+		extMenuCtrl.osd_mudnum = config[CFGID_MTD_detnum];
+		extMenuCtrl.osd_trktime = config[CFGID_MTD_maxtrk];
+		extMenuCtrl.osd_maxsize = config[CFGID_MTD_maxpixel];
+		extMenuCtrl.osd_minsize = config[CFGID_MTD_minpixel];
+		extMenuCtrl.osd_sensi = config[CFGID_INPUT_SENISIVITY(CFGID_INPUT1_BKID)];
+	}
+	return ;
+}
+
 
 

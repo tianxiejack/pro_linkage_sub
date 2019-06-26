@@ -516,6 +516,8 @@ int CDisplayer::init(DS_InitPrm *pPrm)
 
 	gl_Loadinit();
 
+	linkage.init();
+	
 	return 0;
 }
 
@@ -2203,10 +2205,10 @@ int CDisplayer::MenuFunc(int index)
 	unsigned char r, g, b, a, color, colorbak, Enable;
 	short x, y;
 	char font,fontsize;
-printf("index = %d \n" , index );
+
 	if(linkage.setrigion_flagv20)
 		return -1;
-		
+
 	if(-1 == index)
 		return -1;
 
