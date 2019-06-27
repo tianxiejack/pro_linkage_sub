@@ -15,8 +15,11 @@
 bool CLink::storeWorkModeFlag = false;
 bool CLink::storeMtdConfigFlag = false;
 
+static CLink* sThis = NULL;
+
 CLink::CLink()
 {
+	sThis = this;
 	displayMode = MENU_MAIN_VIEW;
 	g_AppWorkMode = HANDLE_LINK_MODE;
 	mouse_show = 0;
@@ -41,6 +44,7 @@ void CLink::init(OSDFUNC func)
 {
 	m_autofr = new CAutoManualFindRelation(outputWHF[0],outputWHF[1], 6, 6);
 	menuOsdInit();
+	TimerCreate();
 	drawtext = func;
 }
 
@@ -206,7 +210,7 @@ void CLink::menuOsdInit()
 			/*{"枪机内参标定","球机内参标定","返回"},*/
 			{"手动联动模式","自动联动模式","单控球机模式","返回"},
 		    {""},
-			{"检测区域选择","目标个数 	1","跟踪持续时间 1秒","最大目标面积 10000像素","最小目标面积 9像素","灵敏度		30","返回"},
+			{"检测区域选择","目标个数      1","跟踪持续时间 1秒","最大目标面积 10000像素","最小目标面积 9像素","灵敏度		30","返回"},
 			{"扫描方式均为逐行扫描","格式 1920x1080@60Hz","应用","返回"},
 			{"使用串口设置","使用网络设置","返回"},
 			{"波特率 	9600","球机地址   001","球机协议   PALCO-D","工作模式	485半双工","返回"},
@@ -238,8 +242,8 @@ void CLink::menuOsdInit()
 	}
 
 //=====================================================================
-
-		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	 %d", m_menuCtrl.osd_mudnum);
+		set_mtd_num_osd();
+		//swprintf(disMenu[submenu_mtd][1], 33, L"目标个数       %d", m_menuCtrl.osd_mudnum);
 		swprintf(disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒",m_menuCtrl.osd_trktime);
 		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d像素", m_menuCtrl.osd_maxsize);
 		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d像素", m_menuCtrl.osd_minsize);
@@ -399,9 +403,9 @@ void CLink::set_mtd_num(char key)
 void CLink::set_mtd_num_osd()
 {
 	if((m_menuCtrl.osd_mudnum < MIN_MTDTARGET_NUM) || (m_menuCtrl.osd_mudnum > MAX_MTDTARGET_NUM))
-		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	   %d(超出范围%d~%d)", m_menuCtrl.osd_mudnum,MIN_MTDTARGET_NUM,MAX_MTDTARGET_NUM);
+		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	    %d(超出范围%d~%d)", m_menuCtrl.osd_mudnum,MIN_MTDTARGET_NUM,MAX_MTDTARGET_NUM);
 	else
-		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	   %d", m_menuCtrl.osd_mudnum);
+		swprintf(disMenu[submenu_mtd][1], 33, L"目标个数	    %d个", m_menuCtrl.osd_mudnum);
 	return ;
 }
 
@@ -951,6 +955,17 @@ void CLink::Tcallback(void *p)
 	unsigned char resolapplybuf2[128] = "0:取消  1:保存";
 	int a = *(int *)p;
 
+	if(a == sThis->mtdnum_light_id)
+	{
+		if(mtdnum_dianmie)
+		{
+			sThis->set_mtd_num_osd();
+		}
+		else
+			swprintf(sThis->disMenu[submenu_mtd][1], 33, L"目标个数      个");
+		mtdnum_dianmie = !mtdnum_dianmie;
+	}
+
 	/*
 	if(a == resol_light_id)
 	{
@@ -976,19 +991,6 @@ void CLink::Tcallback(void *p)
 				memset(sThis->m_display.disMenu[submenu_setimg][5], 0, sizeof(sThis->m_display.disMenu[submenu_setimg][5]));
 			}
 		}
-	}
-	else if(a == sThis->mtdnum_light_id)
-	{
-		if(mtdnum_dianmie)
-		{
-			if((sThis->extMenuCtrl.osd_mudnum < MIN_MTDTARGET_NUM) || (sThis->extMenuCtrl.osd_mudnum > MAX_MTDTARGET_NUM))
-				swprintf(sThis->m_display.disMenu[submenu_mtd][1], 33, L"目标个数     %d(超出范围%d~%d)", sThis->extMenuCtrl.osd_mudnum,MIN_MTDTARGET_NUM,MAX_MTDTARGET_NUM);
-			else
-				swprintf(sThis->m_display.disMenu[submenu_mtd][1], 33, L"目标个数     %d", sThis->extMenuCtrl.osd_mudnum);
-		}
-		else
-			swprintf(sThis->m_display.disMenu[submenu_mtd][1], 33, L"目标个数");
-		mtdnum_dianmie = !mtdnum_dianmie;
 	}
 	else if(a == sThis->trktime_light_id)
 	{
@@ -1358,7 +1360,7 @@ void CLink::reminderOSD_calib()
 	int fontx2 =500;
 	int fonty2 = 50;
 	jos_mouse_Mode mode = get_josctrl_mode();
-	switch(1)
+	switch(mode)
 	{
 		case jos_mode:
 			drawtext(fontx,fonty,L"控球模式",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
