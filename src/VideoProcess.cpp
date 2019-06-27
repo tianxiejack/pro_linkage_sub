@@ -784,13 +784,22 @@ void CVideoProcess::mouse_eventv_polygon(int button, int state, int x, int y)
 			printf("reach max point num:%d\n", MAX_POLYGON_POINT_CNT);
 			return;
 		}
-
-		map1080p2normal_point(&floatx, &floaty);
+		map1080p2normal_point(&floatx, &floaty);		
 		mapnormal2curchannel_point(&floatx, &floaty, vdisWH[curId][0], vdisWH[curId][1]);
 						
 		m_display.linkage.polRect[curId][m_display.linkage.pol_rectn[curId]].x = floatx;
 		m_display.linkage.polRect[curId][m_display.linkage.pol_rectn[curId]].y = floaty;
 		m_display.linkage.pol_rectn[curId]++;
+
+		#if 0
+		for(int k=0 ; k <m_display.linkage.pol_rectn[curId] ; k++)
+		{
+			printf("count = %d , x, y = (%d , %d )\n" , 
+			k,
+			m_display.linkage.polRect[curId][k].x,
+			m_display.linkage.polRect[curId][k].y);
+		}
+		#endif
 	}
 	return;
 }
@@ -945,7 +954,7 @@ int CVideoProcess::init()
 	DS_InitPrm dsInit;
 	memset(&dsInit, 0, sizeof(DS_InitPrm));
 	dsInit.motionfunc = mousemotion_event;
-	dsInit.menufunc = menu_event;
+	//dsInit.menufunc = menu_event;
 	dsInit.mousefunc = mouse_event;
 	dsInit.passivemotionfunc = mousemove_event;
 	dsInit.setrigion = processrigionMenu;

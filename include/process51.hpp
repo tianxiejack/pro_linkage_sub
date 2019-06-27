@@ -196,6 +196,8 @@ public:
 	unsigned int stringip2int(string str);
 	vector<string> csplit(const string& str, const string& delim);
 
+	void DrawMtdPolygonRoi();
+
 };
 
 

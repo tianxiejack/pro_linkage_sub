@@ -597,9 +597,7 @@ void CLink::save_polygon_roi()
 	}
 
 	if(polyWarnRoi.size() != 0)
-	{
 		SaveMtdSelectArea("SaveMtdArea.yml", polyWarnRoi);
-	}
 
 	for(int i = 0; i < areanum; i++)
 	{
@@ -1431,16 +1429,14 @@ void CLink::SaveMtdSelectArea(const char* filename, std::vector< std::vector< cv
 	char paramName[40];
 	memset(paramName,0,sizeof(paramName));
 	m_fsWriteMtd.open(filename,FileStorage::WRITE);
-	/*
+
 	if(m_fsWriteMtd.isOpened())
 	{		
-
 		memset(paramName,0,sizeof(paramName));
 		sprintf(paramName,"AreaCount");	
 		int total_size = edge_contours.size();
 		m_fsWriteMtd<< paramName  << total_size;
 
-	
 		for(int m = 0; m<edge_contours.size(); m++ )
 		{			
 			memset(paramName,0,sizeof(paramName));
@@ -1448,13 +1444,11 @@ void CLink::SaveMtdSelectArea(const char* filename, std::vector< std::vector< cv
 			int count  =  edge_contours[m].size();
 			m_fsWriteMtd<< paramName << count;
 		}
-
 				
 		for(int i = 0; i < edge_contours.size(); i++)
 		{
 			for(int j = 0; j < edge_contours[i].size(); j++)
-			{
-				
+			{	
 				sprintf(paramName,"Point_%d_%d_x",i,j);				
 				m_fsWriteMtd<<paramName <<edge_contours[i][j].x;
 				
@@ -1463,9 +1457,8 @@ void CLink::SaveMtdSelectArea(const char* filename, std::vector< std::vector< cv
 				m_fsWriteMtd<<paramName <<edge_contours[i][j].y;		
 			}		
 		}		
-		m_fsWriteMtd.release();		
-		
+		m_fsWriteMtd.release();			
 	}
-	*/
+	return;
 }
 

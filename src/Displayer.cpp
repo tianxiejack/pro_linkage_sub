@@ -1144,20 +1144,14 @@ void* CDisplayer::displayerload(void *pPrm)
 	int i=0;	
 	while(1)
 	{
-		
 		OSA_semWait(&(gThis->tskdisSemmain),OSA_TIMEOUT_FOREVER);
-		for(i=0; i<DS_DC_CNT; i++)
+		
+		if(!gThis->updata_osd[i])
 		{
-			if(i == gThis->m_renders[0].video_chId)
-			{
-				if(!gThis->updata_osd[i])
-				{
-					unsigned int  size=gThis->m_imgOsd[i].cols*gThis->m_imgOsd[i].rows*gThis->m_imgOsd[i].channels();
-					memcpy(gThis->m_disOsd[i].data,gThis->m_imgOsd[i].data,size);
-					gThis->updata_osd[i]=true;
-				}
-			}
-		}
+			unsigned int size=gThis->m_imgOsd[i].cols*gThis->m_imgOsd[i].rows*gThis->m_imgOsd[i].channels();
+			memcpy(gThis->m_disOsd[i].data,gThis->m_imgOsd[i].data,size);
+			gThis->updata_osd[i]=true;
+		}	
 	}
 }
 
@@ -1513,7 +1507,6 @@ void CDisplayer::gl_textureLoad(void)
 		{
 			if(updata_osd[i])
 			{
-			
 				glBindTexture(GL_TEXTURE_2D, textureId_osd[i]);
 				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_imgOsd[i].cols, m_imgOsd[i].rows, GL_BGRA_EXT, GL_UNSIGNED_BYTE, m_disOsd[i].data);
 				updata_osd[i] = false;

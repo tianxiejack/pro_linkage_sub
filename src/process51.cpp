@@ -607,7 +607,7 @@ void CProcess::DrawCross(cv::Rect rec,int fcolour ,int sensor,bool bShow /*= tru
 	lineparm.height	=	rec.height;
 	lineparm.frcolor	=	colour;
 	if(sensor>=MAX_CHAN)
-		sensor = 1;
+		sensor = 0;
 	Drawcvcrossaim(m_display.m_imgOsd[sensor],&lineparm);
 }
 
@@ -1537,16 +1537,21 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 			Osdflag[osdindex]=0;
 		}
 	}
+	center.x = 960;
+	center.y = 600;
 
+	cv::circle( m_display.m_imgOsd[0], center, 3 , cvScalar(255,0,255,255), 2, 8, 0);
+
+	//DrawMtdPolygonRoi();
 
 	prisensorstatus=extInCtrl->SensorStat;
 	
 /////////////////////////////////////////////
 	
-	static unsigned int count = 0;
-	if((count & 1) == 1)
+	//static unsigned int count = 0;
+	//if((count & 1) == 1)
 		OSA_semSignal(&(sThis->m_display.tskdisSemmain));
-	count++;
+	//count++;
 	return true;
 }
 
@@ -3444,6 +3449,57 @@ vector<string> CProcess::csplit(const string& str, const string& delim)
 		p = strtok(NULL, d);
 	}
 	return res;
+}
+
+
+void CProcess::DrawMtdPolygonRoi()
+{
+	int drawpolyRectId = 0;
+	Osd_cvPoint start;
+	Osd_cvPoint end;
+	int polycolor= 3;
+	static int drawflag = 0;
+	
+	if(drawflag)
+	{
+		if(polyrectnbak[drawpolyRectId] > 1)
+		{
+			int i = 0;
+			for(i = 0; i < polyrectnbak[drawpolyRectId]-1; i++)
+			{
+				start.x = polyRectbak[drawpolyRectId][i].x;
+				start.y = polyRectbak[drawpolyRectId][i].y;
+				end.x = polyRectbak[drawpolyRectId][i+1].x;
+				end.y = polyRectbak[drawpolyRectId][i+1].y;
+				DrawcvLine(m_display.m_imgOsd[drawpolyRectId],&start,&end,0,1);
+			}
+		}	
+		drawflag = 0;
+	}
+
+	if(m_display.linkage.setrigion_flagv20)
+	{
+		memcpy(polyRectbak, m_display.linkage.polRect, sizeof(polRect));
+		memcpy(polyrectnbak, m_display.linkage.pol_rectn, sizeof(pol_rectn));
+
+		if(polyrectnbak[drawpolyRectId] > 1)
+		{
+			int i = 0;
+			for(i = 0; i < polyrectnbak[drawpolyRectId]-1; i++)
+			{
+				start.x = polyRectbak[drawpolyRectId][i].x;
+				start.y = polyRectbak[drawpolyRectId][i].y;
+				end.x = polyRectbak[drawpolyRectId][i+1].x;
+				end.y = polyRectbak[drawpolyRectId][i+1].y;
+				DrawcvLine(m_display.m_imgOsd[drawpolyRectId],&start,&end,polycolor,1);
+			
+				printf("drawing start(%d,%d) , end(%d,%d)\n",
+					start.x,start.y,end.x,end.y);
+			}
+		}
+		drawflag = 1;
+	}
+	return;
 }
 
 
