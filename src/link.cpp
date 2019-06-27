@@ -140,7 +140,7 @@ void CLink::app_ctrl_setMenu_jos(int menu_state)
 
 void CLink::app_ctrl_setnumber(char key)
 {
-	if(GUN == displayMode)
+	if(GUN_FULL == displayMode)
 	{
 		if(key == '0')
 		{
@@ -627,7 +627,7 @@ void CLink::app_ctrl_settrig_inter(menu_param_t *pInCmd)
 		pMenuStatus->Trig_Inter_Mode = pInCmd->Trig_Inter_Mode;
 		if(pMenuStatus->Trig_Inter_Mode)
 		{
-			displayMode = GUN;
+			displayMode = GUN_FULL;
 			set_showpip_stat(true);
 			set_drawpoints_stat(true);
 		}
@@ -716,7 +716,7 @@ void CLink::submenu_mtd_handle()
 		if(0 == m_config[CFGID_RTS_mtden])
 		{
 			app_ctrl_setMtdRigionStat(1);
-			displayMode = GUN;
+			displayMode = GUN_FULL;
 		}
 	}
 	else if(1 == m_menuCtrl.menuarray[submenu_mtd].pointer)
@@ -827,7 +827,7 @@ void CLink::submenu_mtd_handle()
 
 void CLink::app_ctrl_enter()
 {
-	if(GUN == displayMode)
+	if(GUN_FULL == displayMode)
 		queryCurBallCamPosition();
 	else if(1 == m_mtdSetRigion)
 		;//save_polygon_roi();

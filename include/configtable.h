@@ -59,7 +59,7 @@ typedef struct
 
 typedef enum _display{
 	MAIN_VIEW=0,
-	GUN,
+	GUN_FULL,
 	GUN_PIP_BALL,
 	MENU_DISPLAY_COUNT		
 }DisplayMode_t;

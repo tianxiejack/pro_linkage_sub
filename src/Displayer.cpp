@@ -2169,7 +2169,7 @@ void CDisplayer::linkageSwitchMode(void)
 			RenderVideoOnOrthoView(VIDEO_1, m_WinWidth/4, m_WinHeight/2, m_WinWidth/2, m_WinHeight/2);
 			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]/2);	
 			break;
-		case GUN:				
+		case GUN_FULL:				
 			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]);
 			break;
 		default:

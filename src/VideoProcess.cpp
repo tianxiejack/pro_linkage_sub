@@ -702,22 +702,138 @@ int CVideoProcess::mapnormal2curchannel_rect(mouserectf *rect, int w, int h)
 	return -1;
 }
 
+
+int CVideoProcess::get_joyradius()
+{
+	return vdisWH[0][1]/8;
+}
+
+cv::Point CVideoProcess::get_joycenter()
+{
+	return cv::Point(vdisWH[0][0]/8+20, vdisWH[0][1]/2 - vdisWH[0][0]/8);
+}
+
+void CVideoProcess::mapout2inresol(cv::Point *tmppoint)
+{
+	int outputWHF_bak[3];
+	memcpy(&outputWHF_bak, &outputWHF, sizeof(outputWHF_bak));
+	tmppoint->x = tmppoint->x * vdisWH[1][0] / outputWHF_bak[0];
+	tmppoint->y = tmppoint->y * vdisWH[1][1] / outputWHF_bak[1];	
+}
+
+int CVideoProcess::InJoys(int x, int y)
+{
+	int tmpx = x;
+	int tmpy = y;
+	cv::Point tmp = cv::Point(x, y);
+	int jradius = get_joyradius();
+	cv::Point jcenter = get_joycenter();
+
+	mapout2inresol(&tmp);
+	tmp.x = abs(tmp.x - jcenter.x);
+	tmp.y = abs(tmp.y - jcenter.y);
+	if(sqrt(tmp.x * tmp.x + tmp.y * tmp.y) <= jradius)
+	{
+		//printf("%s,%d,int joy\n", __FILE__,__LINE__);
+		return 1;
+	}
+	else
+	{
+		//printf("%s,%d, not in joy\n", __FILE__,__LINE__);
+		return 0;
+	}
+}
+
+void CVideoProcess::mousehandle_mainView(int button, int state, int x, int y)
+{
+
+
+	
+}
+
+void CVideoProcess::mousehandle_gunfull(int button, int state, int x, int y)
+{
+	if(m_display.linkage.setrigion_flagv20)
+	{
+		mouse_eventv_polygon(button, state, x, y);
+		return;
+	}
+	
+
+	return;
+}
+
+void CVideoProcess::mousehandle_gunpicpball(int button, int state, int x, int y)
+{
+
+
+	
+}
+
+void CVideoProcess::mouse_eventv_polygon(int button, int state, int x, int y)
+{
+	/*
+	unsigned int curId = pThis->m_curChId;
+	
+	float floatx,floaty;
+	floatx = x;
+	floaty = y;
+
+	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{		
+		if(pThis->pol_rectn[curId] > MAX_POLYGON_POINT_CNT)
+		{
+			printf("reach max point num:%d\n", MAX_POLYGON_POINT_CNT);
+			return;
+		}
+		pThis->map1080p2normal_point(&floatx, &floaty);
+		pThis->mapnormal2curchannel_point(&floatx, &floaty, vdisWH[curId][0], vdisWH[curId][1]);
+						
+		pThis->polRect[curId][pThis->pol_rectn[curId]].x = floatx;
+		pThis->polRect[curId][pThis->pol_rectn[curId]].y = floaty;
+		pThis->pol_rectn[curId]++;
+	}
+	*/
+}
+
+
+
 void CVideoProcess::mouse_event(int button, int state, int x, int y)
 {
 	unsigned int curId;
-	int Critical_Point;	
+	static int tempX=0,tempY=0;
+	static bool isRectangleStartPointValid = false;
+	static bool isRectValid = false;
 	
 	if(pThis->m_display.linkage.displayMode == MAIN_VIEW)
 		curId = 1;	
 	else
 		curId = pThis->m_curChId;
 
+	switch(pThis->m_display.linkage.displayMode)
+	{
+		case MAIN_VIEW:
+			//mousehandle_mainView();
+			break;
+			
+		case GUN_FULL:
+			pThis->mousehandle_gunfull(button, state, x, y);
+			break;
+			
+		case GUN_PIP_BALL:
+			//mousehandle_gunpicpball();
+			break;
+
+		default:
+			break;
+	}
 
 
 
 
 
 }
+
 
 void CVideoProcess::mousemove_event(GLint xMouse, GLint yMouse)
 {

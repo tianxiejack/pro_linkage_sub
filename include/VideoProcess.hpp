@@ -311,6 +311,19 @@ public:
 	CSceneProcess m_sceneObj;
 	Rect2d getSceneRectBK;
 
+
+public:
+	int get_joyradius();
+	cv::Point get_joycenter();
+	void mapout2inresol(cv::Point *tmppoint);
+	int InJoys(int x, int y);
+
+	void mousehandle_mainView(int button, int state, int x, int y);
+	void mousehandle_gunfull(int button, int state, int x, int y);
+	void mousehandle_gunpicpball(int button, int state, int x, int y);
+	void mouse_eventv_polygon(int button, int state, int x, int y);
+
+
 };
 
 
