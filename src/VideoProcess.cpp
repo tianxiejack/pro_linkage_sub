@@ -756,7 +756,6 @@ void CVideoProcess::mousehandle_gunfull(int button, int state, int x, int y)
 	if(m_display.linkage.setrigion_flagv20)
 	{
 		mouse_eventv_polygon(button, state, x, y);
-		return;
 	}
 	
 
@@ -772,8 +771,7 @@ void CVideoProcess::mousehandle_gunpicpball(int button, int state, int x, int y)
 
 void CVideoProcess::mouse_eventv_polygon(int button, int state, int x, int y)
 {
-	/*
-	unsigned int curId = pThis->m_curChId;
+	int curId = 0;
 	
 	float floatx,floaty;
 	floatx = x;
@@ -781,19 +779,20 @@ void CVideoProcess::mouse_eventv_polygon(int button, int state, int x, int y)
 
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{		
-		if(pThis->pol_rectn[curId] > MAX_POLYGON_POINT_CNT)
+		if(m_display.linkage.pol_rectn[curId] > MAX_POLYGON_POINT_CNT)
 		{
 			printf("reach max point num:%d\n", MAX_POLYGON_POINT_CNT);
 			return;
 		}
-		pThis->map1080p2normal_point(&floatx, &floaty);
-		pThis->mapnormal2curchannel_point(&floatx, &floaty, vdisWH[curId][0], vdisWH[curId][1]);
+
+		map1080p2normal_point(&floatx, &floaty);
+		mapnormal2curchannel_point(&floatx, &floaty, vdisWH[curId][0], vdisWH[curId][1]);
 						
-		pThis->polRect[curId][pThis->pol_rectn[curId]].x = floatx;
-		pThis->polRect[curId][pThis->pol_rectn[curId]].y = floaty;
-		pThis->pol_rectn[curId]++;
+		m_display.linkage.polRect[curId][m_display.linkage.pol_rectn[curId]].x = floatx;
+		m_display.linkage.polRect[curId][m_display.linkage.pol_rectn[curId]].y = floaty;
+		m_display.linkage.pol_rectn[curId]++;
 	}
-	*/
+	return;
 }
 
 

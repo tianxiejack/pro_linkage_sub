@@ -33,6 +33,15 @@ enum devvideo{
 #define INDEX_FIFTH        4
 
 
+typedef struct
+{
+	int x;
+	int y;
+	int w;
+	int h;
+}mouserect;
+
+
 typedef enum{
 	mainmenu0=0,
 	mainmenu1,

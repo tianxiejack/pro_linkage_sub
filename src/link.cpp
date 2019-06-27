@@ -36,15 +36,20 @@ CLink::CLink()
 	drawpoints_stat = false;
 
 	m_firstLevel = m_secondLever = 0;
+	m_ScreenWidth = 1920;
+	m_ScreenHeight = 1080;
+
+	m_pMovDetector = NULL;
 }
 
 	
-void CLink::init(OSDFUNC func)
+void CLink::init(OSDFUNC func,CMvDectInterface *pMov)
 {
 	m_autofr = new CAutoManualFindRelation(outputWHF[0],outputWHF[1], 6, 6);
 	menuOsdInit();
 	TimerCreate();
 	drawtext = func;
+	m_pMovDetector = pMov;
 }
 
 
@@ -163,9 +168,6 @@ void CLink::app_ctrl_setnumber(char key)
 			printf("password reached max length:128");
 		
 		printf("%s,%d,passwd=%s\n",__FILE__,__LINE__,m_menuCtrl.Passwd);
-	}
-	else if(submenu_setimg == m_menuCtrl.MenuStat)
-	{
 	}
 	else if((1 == m_mtdSetRigion) && (key == '2'))
 	{
@@ -558,8 +560,7 @@ void CLink::SetDefaultWorkMode( GB_WorkMode workmode )
 
 void CLink::save_polygon_roi()
 {
-	/*
-	unsigned int curId = m_curChId;
+	int curId = 0;
 	float floatx,floaty;
 	int setx, sety = 0;
 	int areanum = 1;
@@ -568,7 +569,7 @@ void CLink::save_polygon_roi()
 		swprintf(disMtd[0][4], 33, L"点数:%d,保存成功", pol_rectn[curId]);
 	else{
 		swprintf(disMtd[0][4], 33, L"点数小于3,保存失败");
-		return -1;
+		return ;
 	}
 
 	polyWarnRoi.resize(areanum);
@@ -600,21 +601,22 @@ void CLink::save_polygon_roi()
 		SaveMtdSelectArea("SaveMtdArea.yml", polyWarnRoi);
 	}
 
+	for(int i = 0; i < areanum; i++)
+	{
+		m_pMovDetector->setWarningRoi(polyWarnRoi[i], i);
+	}
+
+#if 0
 	printf("polygon mtd area num:%d\n", polyWarnRoi.size());
+
 	for(int i = 0; i< polyWarnRoi.size(); i++)
 	{
 		for(int j = 0; j < polyWarnRoi[i].size(); j++)
 			printf("(%d, %d),", polyWarnRoi[i][j].x,polyWarnRoi[i][j].y);
 		printf("\n");
 	}
-
-	for(int i = 0; i < areanum; i++)
-	{
-		m_pMovDetector->setWarningRoi(polyWarnRoi[i], i);
-	}
-
-	edge_contours_notMap = polyWarnRoi ; 
-	*/
+#endif	
+	return ;
 }
 
 
@@ -830,7 +832,7 @@ void CLink::app_ctrl_enter()
 	if(GUN_FULL == displayMode)
 		queryCurBallCamPosition();
 	else if(1 == m_mtdSetRigion)
-		;//save_polygon_roi();
+		save_polygon_roi();
 	else if(mainmenu0 == m_menuCtrl.MenuStat)
 		menu0_handle();
 	else if(mainmenu1 == m_menuCtrl.MenuStat)
@@ -1374,5 +1376,96 @@ void CLink::reminderOSDFunc()
 			break;
 	}
 	return;
+}
+
+int CLink::map1080p2normal_point(float *x, float *y)
+{
+	if(NULL != x)
+		*x /= m_ScreenWidth;
+	if(NULL != y)
+		*y /= m_ScreenHeight;
+
+	return 0;
+}
+
+int CLink::mapnormal2curchannel_point(float *x, float *y, int w, int h)
+{
+	if(NULL != x)
+		*x *= w;
+	if(NULL != y)
+		*y *= h;
+	
+	return 0;
+}
+
+int CLink::mapfullscreen2gun_pointv20(int *x, int *y)
+{
+	mouserect rect1080p;
+	mouserect rectgun;
+	
+	rect1080p.x = 0;
+	rect1080p.y = 0;
+	rect1080p.w = m_ScreenWidth;// 1920;
+	rect1080p.h = m_ScreenHeight;
+
+	rectgun.x = 0;
+	rectgun.y = m_ScreenHeight/2;
+	rectgun.w = m_ScreenWidth;// 1920;
+	rectgun.h = m_ScreenHeight/2;
+	
+	return maprect_point(x, y, rect1080p, rectgun);
+}
+
+int CLink::maprect_point(int *x, int *y, mouserect rectsrc,mouserect rectdest)
+{
+	if(NULL != x)
+		*x = (*x-rectsrc.x)*rectdest.w/rectsrc.w+rectdest.x;
+	if(NULL != y)
+		*y = (*y-rectsrc.y)*rectdest.h/rectsrc.h+rectdest.y;
+	return 0;
+}
+
+
+void CLink::SaveMtdSelectArea(const char* filename, std::vector< std::vector< cv::Point > > edge_contours)
+{
+	char paramName[40];
+	memset(paramName,0,sizeof(paramName));
+	m_fsWriteMtd.open(filename,FileStorage::WRITE);
+	/*
+	if(m_fsWriteMtd.isOpened())
+	{		
+
+		memset(paramName,0,sizeof(paramName));
+		sprintf(paramName,"AreaCount");	
+		int total_size = edge_contours.size();
+		m_fsWriteMtd<< paramName  << total_size;
+
+	
+		for(int m = 0; m<edge_contours.size(); m++ )
+		{			
+			memset(paramName,0,sizeof(paramName));
+			sprintf(paramName,"AreaIndex_%d",m);
+			int count  =  edge_contours[m].size();
+			m_fsWriteMtd<< paramName << count;
+		}
+
+				
+		for(int i = 0; i < edge_contours.size(); i++)
+		{
+			for(int j = 0; j < edge_contours[i].size(); j++)
+			{
+				
+				sprintf(paramName,"Point_%d_%d_x",i,j);				
+				m_fsWriteMtd<<paramName <<edge_contours[i][j].x;
+				
+				memset(paramName,0,sizeof(paramName));
+				sprintf(paramName,"Point_%d_%d_y",i,j);				
+				m_fsWriteMtd<<paramName <<edge_contours[i][j].y;		
+			}		
+		}		
+		m_fsWriteMtd.release();		
+		
+	}
+	*/
 }
 

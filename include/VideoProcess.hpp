@@ -18,16 +18,6 @@
 #include "DetecterFactory.hpp"
 #include "Detector.hpp"
 
-
-
-typedef struct
-{
-	int x;
-	int y;
-	int w;
-	int h;
-}mouserect;
-
 typedef struct
 {
 	float x;
@@ -79,6 +69,10 @@ typedef struct{
 	char number;
 	TRK_RECT_INFO trkobj;
 }TRK_INFO_APP;
+
+
+#define MAX_POLYGON_POINT_CNT 100
+
 
 class CVideoProcess
 {
@@ -158,7 +152,7 @@ public:
 	int setrigon_flag;
 
 	int pol_draw;
-	PointNode polRect[MAX_CHAN][100];
+	PointNode polRect[MAX_CHAN][MAX_POLYGON_POINT_CNT];
 	int pol_tempX, pol_tempY, pol_rectn[MAX_CHAN];
 	int setrigon_polygon;
 	static bool motionlessflag;

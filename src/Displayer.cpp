@@ -516,7 +516,7 @@ int CDisplayer::init(DS_InitPrm *pPrm)
 
 	gl_Loadinit();
 
-	linkage.init(chinese_osd);
+	linkage.init(chinese_osd,plat->m_pMovDetector);
 	
 	return 0;
 }

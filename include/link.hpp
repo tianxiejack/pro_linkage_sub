@@ -7,6 +7,8 @@
 #include "ipc_custom_head.h"
 #include "autoManualFindRelation.hpp"
 #include "DxTimer.hpp"
+#include "mvdectInterface.hpp"
+#include <opencv2/core.hpp>
 
 using namespace cr_automanualfindrelation;
 
@@ -65,7 +67,7 @@ public:
 	CLink();
 	~CLink(){};
 
-	void init(OSDFUNC func);
+	void init(OSDFUNC func,CMvDectInterface *pMov);
 	void menuOsdInit();
 	void menuLoadIpcParam(int* config);
 	void OnJosEvent(int key, int param);
@@ -139,7 +141,11 @@ public:
 	void set_drawpoints_stat(bool value){drawpoints_stat = value;};
 	bool get_drawpoints_stat(){return drawpoints_stat;};
 
-	
+	void SaveMtdSelectArea(const char* filename, std::vector< std::vector< cv::Point > > edge_contours);
+
+
+
+
 	
 public:
 	int* m_config;
@@ -176,6 +182,7 @@ public:
 
 
 	std::vector< std::vector< cv::Point > > polyWarnRoi;
+	std::vector< std::vector< cv::Point > > edge_contours;
 
 
 	char *init_passwd;
@@ -193,6 +200,22 @@ public:
 	int m_firstLevel,m_secondLever;
 
 	bool draw_pip_stat,drawpoints_stat;
+
+
+	
+	int map1080p2normal_point(float *x, float *y);
+	int mapnormal2curchannel_point(float *x, float *y, int w, int h);
+	int m_ScreenWidth,m_ScreenHeight;
+	int maprect_point(int *x, int *y, mouserect rectsrc,mouserect rectdest);
+	int mapfullscreen2gun_pointv20(int *x, int *y);
+
+	CMvDectInterface *m_pMovDetector;
+	cv::FileStorage m_fsReadMtd;
+	cv::FileStorage m_fsWriteMtd;
+
+
+	
+
 };
 
 
