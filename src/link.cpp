@@ -210,7 +210,7 @@ void CLink::menuOsdInit()
 			/*{"枪机内参标定","球机内参标定","返回"},*/
 			{"手动联动模式","自动联动模式","单控球机模式","返回"},
 		    {""},
-			{"检测区域选择","目标个数      1","跟踪持续时间 1秒","最大目标面积 10000像素","最小目标面积 9像素","灵敏度		30","返回"},
+			{"检测区域选择","目标个数      1","跟踪持续时间 1秒","最大目标面积 10000","最小目标面积 9","灵敏度		30","返回"},
 			{"扫描方式均为逐行扫描","格式 1920x1080@60Hz","应用","返回"},
 			{"使用串口设置","使用网络设置","返回"},
 			{"波特率 	9600","球机地址   001","球机协议   PALCO-D","工作模式	485半双工","返回"},
@@ -243,11 +243,15 @@ void CLink::menuOsdInit()
 
 //=====================================================================
 		set_mtd_num_osd();
+		set_mtd_trktime_osd();
+		set_mtd_maxsize_osd();
+		set_mtd_minsize_osd();
+		set_mtd_sensi_osd();
 		//swprintf(disMenu[submenu_mtd][1], 33, L"目标个数       %d", m_menuCtrl.osd_mudnum);
-		swprintf(disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒",m_menuCtrl.osd_trktime);
-		swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d像素", m_menuCtrl.osd_maxsize);
-		swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d像素", m_menuCtrl.osd_minsize);
-		swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度		%d", m_menuCtrl.osd_sensi);
+		//swprintf(disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒",m_menuCtrl.osd_trktime);
+		//swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d像素", m_menuCtrl.osd_maxsize);
+		//swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d像素", m_menuCtrl.osd_minsize);
+		//swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度		%d", m_menuCtrl.osd_sensi);
 
 //=====================================================================
 
@@ -958,12 +962,50 @@ void CLink::Tcallback(void *p)
 	if(a == sThis->mtdnum_light_id)
 	{
 		if(mtdnum_dianmie)
-		{
 			sThis->set_mtd_num_osd();
+		else{
+			if(sThis->m_menuCtrl.osd_mudnum >= 10)
+				swprintf(sThis->disMenu[submenu_mtd][1], 33, L"目标个数       个");
+			else
+				swprintf(sThis->disMenu[submenu_mtd][1], 33, L"目标个数      个");
 		}
-		else
-			swprintf(sThis->disMenu[submenu_mtd][1], 33, L"目标个数      个");
 		mtdnum_dianmie = !mtdnum_dianmie;
+	}
+	else if(a == sThis->trktime_light_id)
+	{
+		if(trktime_dianmie)
+			sThis->set_mtd_trktime_osd();
+		else{
+			if(sThis->m_menuCtrl.osd_trktime >= 10)
+				swprintf(sThis->disMenu[submenu_mtd][2], 33, L"跟踪持续时间   秒");
+			else
+				swprintf(sThis->disMenu[submenu_mtd][2], 33, L"跟踪持续时间  秒");
+		}
+		trktime_dianmie = !trktime_dianmie;
+	}
+	else if(a == sThis->maxsize_light_id)
+	{
+		if(maxsize_dianmie)
+			sThis->set_mtd_maxsize_osd();
+		else
+			swprintf(sThis->disMenu[submenu_mtd][3], 33, L"最大目标面积      ");
+		maxsize_dianmie = !maxsize_dianmie;
+	}
+	else if(a == sThis->minsize_light_id)
+	{
+		if(minsize_dianmie)
+			sThis->set_mtd_minsize_osd();
+		else
+			swprintf(sThis->disMenu[submenu_mtd][4], 33, L"最小目标面积  ");
+		minsize_dianmie = !minsize_dianmie;
+	}
+	else if(a == sThis->sensi_light_id)
+	{
+		if(sensi_dianmie)
+			sThis->set_mtd_sensi_osd();
+		else
+			swprintf(sThis->disMenu[submenu_mtd][5], 33, L"灵敏度");
+		sensi_dianmie = !sensi_dianmie;
 	}
 
 	/*
@@ -991,58 +1033,6 @@ void CLink::Tcallback(void *p)
 				memset(sThis->m_display.disMenu[submenu_setimg][5], 0, sizeof(sThis->m_display.disMenu[submenu_setimg][5]));
 			}
 		}
-	}
-	else if(a == sThis->trktime_light_id)
-	{
-		if(trktime_dianmie)
-		{
-			if((sThis->extMenuCtrl.osd_trktime < MIN_MTDTRKTIME) || (sThis->extMenuCtrl.osd_trktime > MAX_MTDTRKTIME))
-				swprintf(sThis->m_display.disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒(超出范围%d~%d秒)", sThis->extMenuCtrl.osd_trktime,MIN_MTDTRKTIME,MAX_MTDTRKTIME);
-			else
-				swprintf(sThis->m_display.disMenu[submenu_mtd][2], 33, L"跟踪持续时间 %d秒", sThis->extMenuCtrl.osd_trktime);
-		}
-		else
-			swprintf(sThis->m_display.disMenu[submenu_mtd][2], 33, L"跟踪持续时间  秒");
-		trktime_dianmie = !trktime_dianmie;
-	}
-	else if(a == sThis->maxsize_light_id)
-	{
-		if(maxsize_dianmie)
-		{
-			if((sThis->extMenuCtrl.osd_maxsize < sThis->minsize) || (sThis->extMenuCtrl.osd_maxsize > MAX_MTDMAXSIZE))
-				swprintf(sThis->m_display.disMenu[submenu_mtd][3], 33, L"最大目标面积 %d(超出范围)", sThis->extMenuCtrl.osd_maxsize);
-			else
-				swprintf(sThis->m_display.disMenu[submenu_mtd][3], 33, L"最大目标面积 %d", sThis->extMenuCtrl.osd_maxsize);
-		}
-		else
-			swprintf(sThis->m_display.disMenu[submenu_mtd][3], 33, L"最大目标面积      ");
-		maxsize_dianmie = !maxsize_dianmie;
-	}
-	else if(a == sThis->minsize_light_id)
-	{
-		if(minsize_dianmie)
-		{
-			if((sThis->extMenuCtrl.osd_minsize < MIN_MTDMINSIZE) || (sThis->extMenuCtrl.osd_minsize > sThis->maxsize))
-				swprintf(sThis->m_display.disMenu[submenu_mtd][4], 33, L"最小目标面积 %d(超出范围)", sThis->extMenuCtrl.osd_minsize);
-			else
-				swprintf(sThis->m_display.disMenu[submenu_mtd][4], 33, L"最小目标面积 %d", sThis->extMenuCtrl.osd_minsize);
-		}
-		else
-			swprintf(sThis->m_display.disMenu[submenu_mtd][4], 33, L"最小目标面积  ");
-		minsize_dianmie = !minsize_dianmie;
-	}
-	else if(a == sThis->sensi_light_id)
-	{
-		if(sensi_dianmie)
-		{
-			if((sThis->extMenuCtrl.osd_sensi < MIN_MTDSENSI) || (sThis->extMenuCtrl.osd_sensi > MAX_MTDSENSI))
-				swprintf(sThis->m_display.disMenu[submenu_mtd][5], 33, L"灵敏度       %d(超出范围%d~%d)", sThis->extMenuCtrl.osd_sensi,MIN_MTDSENSI,MAX_MTDSENSI);
-			else
-				swprintf(sThis->m_display.disMenu[submenu_mtd][5], 33, L"灵敏度       %d", sThis->extMenuCtrl.osd_sensi);
-		}
-		else
-			swprintf(sThis->m_display.disMenu[submenu_mtd][5], 33, L"灵敏度");
-		sensi_dianmie = !sensi_dianmie;
 	}
 	else if( a == sThis->baud_light_id ){
 		if(baud_dianmie)
