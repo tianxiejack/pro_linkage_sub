@@ -20,7 +20,7 @@ static CLink* sThis = NULL;
 CLink::CLink()
 {
 	sThis = this;
-	displayMode = MENU_MAIN_VIEW;
+	displayMode = MAIN_VIEW;
 	g_AppWorkMode = HANDLE_LINK_MODE;
 	mouse_show = 0;
 	oresoltype = r1920x1080_f60;
@@ -28,7 +28,6 @@ CLink::CLink()
 	setrigion_flagv20 = 0;
 	setting_WorkMode = HANDLE_LINK_MODE;
 	
-	mouse_workmode = DrawRectangle_Mode;
 	m_josMode = mouse_mode;
 
 	init_passwd ="0000";
@@ -49,7 +48,7 @@ void CLink::init(OSDFUNC func)
 }
 
 
-void CLink::setDisplayMode(MenuDisplay mode)
+void CLink::setDisplayMode(DisplayMode_t mode)
 {
 	displayMode = mode;
 	return ;
@@ -141,7 +140,7 @@ void CLink::app_ctrl_setMenu_jos(int menu_state)
 
 void CLink::app_ctrl_setnumber(char key)
 {
-	if(MENU_GUN == displayMode)
+	if(GUN == displayMode)
 	{
 		if(key == '0')
 		{
@@ -173,7 +172,7 @@ void CLink::app_ctrl_setnumber(char key)
 		app_ctrl_setMtdRigionStat(0);
 		app_ctrl_setMenuStat(submenu_mtd);
 		
-		displayMode = MENU_MAIN_VIEW;
+		displayMode = MAIN_VIEW;
 		memset(disMtd[0][4], 0, sizeof(disMenu[0][4]));
 	}
 	else if((1 == m_mtdSetRigion) && (key == '1'))
@@ -252,7 +251,6 @@ void CLink::menuOsdInit()
 		//swprintf(disMenu[submenu_mtd][3], 33, L"最大目标面积 %d像素", m_menuCtrl.osd_maxsize);
 		//swprintf(disMenu[submenu_mtd][4], 33, L"最小目标面积 %d像素", m_menuCtrl.osd_minsize);
 		//swprintf(disMenu[submenu_mtd][5], 33, L"灵敏度		%d", m_menuCtrl.osd_sensi);
-
 //=====================================================================
 
 	for(int j = 0; j < 5; j++)
@@ -629,13 +627,13 @@ void CLink::app_ctrl_settrig_inter(menu_param_t *pInCmd)
 		pMenuStatus->Trig_Inter_Mode = pInCmd->Trig_Inter_Mode;
 		if(pMenuStatus->Trig_Inter_Mode)
 		{
-			displayMode = MENU_GUN;
+			displayMode = GUN;
 			set_showpip_stat(true);
 			set_drawpoints_stat(true);
 		}
 		else
 		{
-			displayMode = MENU_MAIN_VIEW;
+			displayMode = MAIN_VIEW;
 			set_drawpoints_stat(false);
 		}
 	}
@@ -691,7 +689,7 @@ void CLink::submenu_DefaultWorkMode_handle()
 {
 	if(INDEX_FOURTH == m_menuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
 		app_ctrl_setMenuStat(mainmenu2);
-		displayMode = MENU_MAIN_VIEW;	
+		displayMode = MAIN_VIEW;	
 	}
 	else if(INDEX_FIRST == m_menuCtrl.menuarray[submenu_DefaultWorkMode].pointer) {
 		setting_WorkMode = HANDLE_LINK_MODE;		
@@ -717,9 +715,8 @@ void CLink::submenu_mtd_handle()
 	if(0 == m_menuCtrl.menuarray[submenu_mtd].pointer){
 		if(0 == m_config[CFGID_RTS_mtden])
 		{
-			mouse_workmode = SetMteRigion_Mode;
 			app_ctrl_setMtdRigionStat(1);
-			displayMode = MENU_GUN;
+			displayMode = GUN;
 		}
 	}
 	else if(1 == m_menuCtrl.menuarray[submenu_mtd].pointer)
@@ -830,7 +827,7 @@ void CLink::submenu_mtd_handle()
 
 void CLink::app_ctrl_enter()
 {
-	if(MENU_GUN == displayMode)
+	if(GUN == displayMode)
 		queryCurBallCamPosition();
 	else if(1 == m_mtdSetRigion)
 		;//save_polygon_roi();

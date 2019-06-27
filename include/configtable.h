@@ -57,11 +57,12 @@ typedef struct
 	int end;
 }AppMenu;
 
-typedef enum _MenuDisplay{
-	MENU_MAIN_VIEW=0,
-	MENU_GUN,
+typedef enum _display{
+	MAIN_VIEW=0,
+	GUN,
+	GUN_PIP_BALL,
 	MENU_DISPLAY_COUNT		
-}MenuDisplay;
+}DisplayMode_t;
 
 typedef enum _GB_WorkMode{ // This App Has three work mode : Handle, Auto, and Only Contrl Ball camera
 	HANDLE_LINK_MODE =0,

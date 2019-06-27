@@ -23,14 +23,6 @@ enum DrawBehavior
 	DRAW_COUNT
 };
 
-typedef enum _SelectMode{
-	Click_Mode =0,
-	DrawRectangle_Mode,
-	SetMteRigion_Mode,
-	Mode_Count
-}SelectMode;
-
-
 typedef struct{
 		int button;
 		int state;
@@ -86,7 +78,7 @@ public:
 	void app_ctrl_setMenuStat(int index);
 	void app_ctrl_setMenu_jos(int menu_state);
 	void setWorkMode(GB_WorkMode workmode);
-	void setDisplayMode(MenuDisplay mode);
+	void setDisplayMode(DisplayMode_t mode);
 	void app_ctrl_setnumber(char key);
 
 	void set_jos_mouse_mode(jos_mouse_Mode mode);
@@ -153,11 +145,10 @@ public:
 	int* m_config;
 
 	GB_WorkMode g_AppWorkMode ;
-	MenuDisplay displayMode ;
+	DisplayMode_t displayMode ;
 	GB_WorkMode setting_WorkMode;
 	
 	menu_param_t m_menuCtrl; // msgextMenuCtrl
-	//MenuDisplay g_displayMode ;
 
 
 	int m_menuindex;
@@ -185,8 +176,6 @@ public:
 
 
 	std::vector< std::vector< cv::Point > > polyWarnRoi;
-
-	SelectMode mouse_workmode;
 
 
 	char *init_passwd;

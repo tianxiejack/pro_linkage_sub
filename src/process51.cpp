@@ -1717,7 +1717,7 @@ void CProcess::OnKeyDwn(unsigned char key)
 
 	if(key == 'Q' || key == 'q') 
 	{
-		MenuDisplay nextMode = MenuDisplay((int)(m_display.linkage.displayMode+1) % MENU_DISPLAY_COUNT);
+		DisplayMode_t nextMode = DisplayMode_t((int)(m_display.linkage.displayMode+1) % MENU_DISPLAY_COUNT);
 		m_display.linkage.setDisplayMode(nextMode);
 	}
 

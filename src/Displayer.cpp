@@ -2165,11 +2165,11 @@ void CDisplayer::linkageSwitchMode(void)
 
 	switch(linkage.displayMode) 
 	{
-		case MENU_MAIN_VIEW:	
+		case MAIN_VIEW:	
 			RenderVideoOnOrthoView(VIDEO_1, m_WinWidth/4, m_WinHeight/2, m_WinWidth/2, m_WinHeight/2);
 			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]/2);	
 			break;
-		case MENU_GUN:				
+		case GUN:				
 			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]);
 			break;
 		default:
