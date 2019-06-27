@@ -1537,15 +1537,8 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 			Osdflag[osdindex]=0;
 		}
 	}
-	center.x = 960;
-	center.y = 600;
-	
-	rectangle(m_display.m_imgOsd[1],Point(300, 300),Point(900, 900),
-						cvScalar(255,255,0,255), 1, 8);
 
-	cv::circle( m_display.m_imgOsd[1], center, 3 , cvScalar(255,0,255,255), 2, 8, 0);
-
-	//DrawMtdPolygonRoi();
+	DrawMtdPolygonRoi();
 
 	prisensorstatus=extInCtrl->SensorStat;
 	
@@ -3462,7 +3455,7 @@ void CProcess::DrawMtdPolygonRoi()
 	Osd_cvPoint end;
 	int polycolor= 3;
 	static int drawflag = 0;
-	
+	int drawId = 1;
 	if(drawflag)
 	{
 		if(polyrectnbak[drawpolyRectId] > 1)
@@ -3474,7 +3467,7 @@ void CProcess::DrawMtdPolygonRoi()
 				start.y = polyRectbak[drawpolyRectId][i].y;
 				end.x = polyRectbak[drawpolyRectId][i+1].x;
 				end.y = polyRectbak[drawpolyRectId][i+1].y;
-				DrawcvLine(m_display.m_imgOsd[drawpolyRectId],&start,&end,0,1);
+				DrawcvLine(m_display.m_imgOsd[drawId],&start,&end,0,1);
 			}
 		}	
 		drawflag = 0;
@@ -3494,10 +3487,7 @@ void CProcess::DrawMtdPolygonRoi()
 				start.y = polyRectbak[drawpolyRectId][i].y;
 				end.x = polyRectbak[drawpolyRectId][i+1].x;
 				end.y = polyRectbak[drawpolyRectId][i+1].y;
-				DrawcvLine(m_display.m_imgOsd[drawpolyRectId],&start,&end,polycolor,1);
-			
-				printf("drawing start(%d,%d) , end(%d,%d)\n",
-					start.x,start.y,end.x,end.y);
+				DrawcvLine(m_display.m_imgOsd[drawId],&start,&end,polycolor,1);
 			}
 		}
 		drawflag = 1;

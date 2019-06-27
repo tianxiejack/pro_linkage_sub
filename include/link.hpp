@@ -135,7 +135,7 @@ public:
 	void set_josctrl_mode(jos_mouse_Mode value){m_josMode = value;};
 	jos_mouse_Mode get_josctrl_mode(){ return m_josMode;};
 	void app_ctrl_setMtdRigionStat(int parm){setrigion_flagv20 = parm;};
-
+	int app_ctrl_getMtdRigionStat(){ return setrigion_flagv20;};
 	void set_showpip_stat(bool value){draw_pip_stat = value;};
 	bool get_showpip_stat(){return draw_pip_stat;};
 	void set_drawpoints_stat(bool value){drawpoints_stat = value;};
@@ -170,7 +170,6 @@ public:
 	int oresoltype;
 	int curBaudRate;
 	int setrigion_flagv20;
-	int m_mtdSetRigion;
 	CAutoManualFindRelation* m_autofr;
 
 	

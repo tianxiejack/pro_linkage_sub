@@ -145,17 +145,32 @@ void CLink::app_ctrl_setMenu_jos(int menu_state)
 
 void CLink::app_ctrl_setnumber(char key)
 {
-	if(GUN_FULL == displayMode)
+	if(1 == app_ctrl_getMtdRigionStat())
 	{
-		if(key == '0')
+		if(key == '2')
 		{
-			m_autofr->deleteallPoints();
-			set_jos_mouse_mode(mouse_mode);
+			app_ctrl_setMtdRigionStat(0);
+			app_ctrl_setMenuStat(submenu_mtd);
+			
+			displayMode = MAIN_VIEW;
+			memset(disMtd[0][4], 0, sizeof(disMenu[0][4]));
 		}
 		else if(key == '1')
-			m_autofr->writeParams();
+		{
+			memset(pol_rectn, 0, sizeof(pol_rectn));
+			memset(polRect, 0, sizeof(polRect));
+		}	
+
+		//if(key == '0')
+		//{
+		//	m_autofr->deleteallPoints();
+		//	set_jos_mouse_mode(mouse_mode);
+		//}
+		//	else if(key == '1')
+		//	m_autofr->writeParams();
 	}
-	else if(mainmenu0 == m_menuCtrl.MenuStat)
+	
+	if(mainmenu0 == m_menuCtrl.MenuStat)
 	{
 		int offset = strlen(m_menuCtrl.Passwd) * sizeof(char);		
 		if(offset < sizeof(m_menuCtrl.Passwd) - 1)
@@ -168,19 +183,6 @@ void CLink::app_ctrl_setnumber(char key)
 			printf("password reached max length:128");
 		
 		printf("%s,%d,passwd=%s\n",__FILE__,__LINE__,m_menuCtrl.Passwd);
-	}
-	else if((1 == m_mtdSetRigion) && (key == '2'))
-	{
-		app_ctrl_setMtdRigionStat(0);
-		app_ctrl_setMenuStat(submenu_mtd);
-		
-		displayMode = MAIN_VIEW;
-		memset(disMtd[0][4], 0, sizeof(disMenu[0][4]));
-	}
-	else if((1 == m_mtdSetRigion) && (key == '1'))
-	{
-		memset(pol_rectn, 0, sizeof(pol_rectn));
-		memset(polRect, 0, sizeof(polRect));
 	}
 	else if((submenu_mtd == m_menuCtrl.MenuStat) && (m_menuCtrl.mtdnum_deng == 1))
 		set_mtd_num(key);	
@@ -827,11 +829,13 @@ void CLink::submenu_mtd_handle()
 
 void CLink::app_ctrl_enter()
 {
-	if(GUN_FULL == displayMode)
-		queryCurBallCamPosition();
-	else if(1 == m_mtdSetRigion)
+	//if(GUN_FULL == displayMode)
+	//	queryCurBallCamPosition();
+	
+	if(1 == app_ctrl_getMtdRigionStat())
 		save_polygon_roi();
-	else if(mainmenu0 == m_menuCtrl.MenuStat)
+	
+	if(mainmenu0 == m_menuCtrl.MenuStat)
 		menu0_handle();
 	else if(mainmenu1 == m_menuCtrl.MenuStat)
 		menu1_handle();
