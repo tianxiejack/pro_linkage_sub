@@ -1145,13 +1145,17 @@ void* CDisplayer::displayerload(void *pPrm)
 	while(1)
 	{
 		OSA_semWait(&(gThis->tskdisSemmain),OSA_TIMEOUT_FOREVER);
-		
-		if(!gThis->updata_osd[i])
-		{
-			unsigned int size=gThis->m_imgOsd[i].cols*gThis->m_imgOsd[i].rows*gThis->m_imgOsd[i].channels();
-			memcpy(gThis->m_disOsd[i].data,gThis->m_imgOsd[i].data,size);
-			gThis->updata_osd[i]=true;
-		}	
+
+		for(i=0; i<DS_DC_CNT; i++)
+			if(i == gThis->m_renders[0].video_chId)
+			{
+				if(!gThis->updata_osd[i])
+				{
+					unsigned int  size=gThis->m_imgOsd[i].cols*gThis->m_imgOsd[i].rows*gThis->m_imgOsd[i].channels();
+					memcpy(gThis->m_disOsd[i].data,gThis->m_imgOsd[i].data,size);
+					gThis->updata_osd[i]=true;
+				}
+			}	
 	}
 }
 

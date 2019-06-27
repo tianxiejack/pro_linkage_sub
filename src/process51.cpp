@@ -1539,8 +1539,11 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 	}
 	center.x = 960;
 	center.y = 600;
+	
+	rectangle(m_display.m_imgOsd[1],Point(300, 300),Point(900, 900),
+						cvScalar(255,255,0,255), 1, 8);
 
-	cv::circle( m_display.m_imgOsd[0], center, 3 , cvScalar(255,0,255,255), 2, 8, 0);
+	cv::circle( m_display.m_imgOsd[1], center, 3 , cvScalar(255,0,255,255), 2, 8, 0);
 
 	//DrawMtdPolygonRoi();
 
