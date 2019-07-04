@@ -37,26 +37,8 @@ void State::StateInit()
 
 void State::create()
 {
-}
-
-
-void State::OperationInterface(StateManger* con)
-{
-
-
-	return ;
-}
-
-void State::OperationChangeState(StateManger* con)
-{
-}
-
-
-int State::ChangeState(StateManger* con, char nextState)
-{
-
-
 	
 }
+
 
 

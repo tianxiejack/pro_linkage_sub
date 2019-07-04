@@ -8,7 +8,6 @@
 #include "osa_sem.h"
 #include "stateManager.hpp"
 
-
 using namespace cv;
 
 

@@ -29,4 +29,7 @@ int LevelTwo::curStateInterface()
 
 }
 
+void LevelTwo::updateOsd()
+{
+}
 

@@ -120,7 +120,7 @@ typedef struct _MENU_POS{
 	bool isShow;
 }MENU_POS;
 
-#define MAX_SUBMENU 7
+#define MAX_SUBMENU 8
 
 typedef struct osdbuffer
 {

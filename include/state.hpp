@@ -30,14 +30,15 @@ public:
 	void StateInit();
 	void create();
 	virtual ~State();
-	virtual void OperationInterface(StateManger* con);
-	virtual void OperationChangeState(StateManger* con) = 0;
-	virtual int ChangeState(StateManger* con, char nextState);
+
+public:
+	virtual void updateOsd() = 0;
+
 	
 public:
 	static state_enum m_curState;
 	static DxTimer* m_timer;
-	static State* m_level1 , *m_level2;
+	static State *m_level1 , *m_level2;
 
 };
 
@@ -52,6 +53,9 @@ private:
 	static LevelOne* pThis;
 	void OperationChangeState(StateManger* con);
 	int curStateInterface();
+
+	
+	void updateOsd();
 	
 };
 
@@ -66,7 +70,8 @@ private:
 	static LevelTwo* pThis;
 	void OperationChangeState(StateManger* con);
 	int curStateInterface();
-	
+
+	void updateOsd();
 };
 
 /*

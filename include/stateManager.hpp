@@ -25,20 +25,20 @@ public:
 	void GetParams(int* p);
 	int CurStateInterface();
 
-
 	void init(OSDFUNC func,CMvDectInterface *pMov);
 	void menuOsdInit();
 	void menuLoadIpcParam(int* config);
 	void OnJosEvent(int key, int param);
+	void updateOsd();
 
-	OSDFUNC drawtext;
 
+	OSDFUNC m_drawtext;
+	CMvDectInterface * m_pMv;
 	
 
 private:
 	//friend class State;
 	bool ChangeState(State* state);
-	void OperationInterface();
 	void OperationChangState();
 
 private:

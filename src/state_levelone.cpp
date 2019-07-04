@@ -28,4 +28,8 @@ int LevelOne::curStateInterface()
 {
 }
 
+void LevelOne::updateOsd()
+{
+}
+
 

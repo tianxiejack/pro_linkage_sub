@@ -7,7 +7,6 @@
 #include "osd_cv.h"
 #include "app_status.h"
 #include "configtable.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -16,6 +15,7 @@
 #include <iostream>
 #include "Ipc.hpp"
 #include "encTrans.hpp"
+
 
 extern int ScalerLarge,ScalerMid,ScalerSmall;
 extern LinkagePos_t linkagePos; 
@@ -507,6 +507,7 @@ void CProcess::OnDestroy(){};
 void CProcess::OnInit()
 {
 	m_stateManger = new StateManger();
+	m_stateManger->init(m_display.chinese_osd,m_pMovDetector);
 	
 	return ;
 }
