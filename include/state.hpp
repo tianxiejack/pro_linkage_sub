@@ -11,6 +11,8 @@
 
 #include "stateManager.hpp"
 #include "DxTimer.hpp"
+#include "configtable.h"
+
 
 typedef enum{
 	LEVELONE,
@@ -69,20 +71,5 @@ private:
 
 	void updateOsd();
 };
-
-/*
-class LevelThree:public State
-{
-public:
-	LevelThree();
-	virtual ~LevelThree();
-	
-private:
-	static LevelThree* pThis;
-	int curStateInterface();
-	
-};
-*/
-
 
 #endif /* STATE_HPP_ */

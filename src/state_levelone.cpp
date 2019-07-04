@@ -19,6 +19,7 @@ LevelOne::~LevelOne()
 
 void LevelOne::updateOsd()
 {
+	
 }
 
 
