@@ -51,8 +51,6 @@ public:
 	
 private:
 	static LevelOne* pThis;
-	void OperationChangeState(StateManger* con);
-	int curStateInterface();
 
 	
 	void updateOsd();
@@ -68,8 +66,6 @@ public:
 	
 private:
 	static LevelTwo* pThis;
-	void OperationChangeState(StateManger* con);
-	int curStateInterface();
 
 	void updateOsd();
 };
@@ -83,7 +79,6 @@ public:
 	
 private:
 	static LevelThree* pThis;
-	void OperationChangeState(StateManger* con);
 	int curStateInterface();
 	
 };

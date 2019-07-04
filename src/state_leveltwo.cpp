@@ -18,17 +18,6 @@ LevelTwo::~LevelTwo()
 
 }
 
-  
-
-void LevelTwo::OperationChangeState(StateManger* con)
-{
-}
-
-int LevelTwo::curStateInterface()
-{
-
-}
-
 void LevelTwo::updateOsd()
 {
 }

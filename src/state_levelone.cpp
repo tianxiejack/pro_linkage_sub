@@ -10,23 +10,12 @@
 
 LevelOne::LevelOne()
 {
-
 }
 
 LevelOne::~LevelOne()
 {
-
 }
 
-
-void LevelOne::OperationChangeState(StateManger* con)
-{
-}
-
-
-int LevelOne::curStateInterface()
-{
-}
 
 void LevelOne::updateOsd()
 {
