@@ -11,7 +11,7 @@ DxTimer* State::m_timer = NULL;
 State* State::m_level1 = NULL;
 State* State::m_level2 = NULL;
 OSDFUNC State::drawFunc = NULL;
-
+char State::m_curState = LEVELONE;
 
 State::State()
 {	
@@ -39,6 +39,24 @@ void State::create()
 {
 	
 }
+
+
+int State::ChangeState(StateManger* con, char nextState)
+{
+	m_curState = nextState;
+	switch(m_curState)
+	{
+		case LEVELTWO:
+			con->ChangeState(m_level2);
+			break;
+
+		default:
+			break;
+	}
+
+	return m_curState;
+}
+
 
 
 void State::getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a)
@@ -87,6 +105,4 @@ void State::getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b
 		a = 255 - a*16;
 	return ;
 }
-
-
 

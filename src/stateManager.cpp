@@ -45,4 +45,10 @@ void StateManger::updateOsd()
 }
 
 
+void StateManger::ChangeState(State* state)
+{
+	this->m_state = state;
+	return;
+}
+
 

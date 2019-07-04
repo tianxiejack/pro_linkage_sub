@@ -22,3 +22,15 @@ void LevelTwo::showOsd()
 {
 }
 
+void LevelTwo::inputNumber(char key)
+{
+	
+}
+
+void LevelTwo::enter()
+{
+	
+}
+
+
+

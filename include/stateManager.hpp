@@ -19,6 +19,13 @@ public:
 	StateManger();
 	~StateManger();
 
+
+
+
+
+
+
+
 	void* returnIpc();
 	void GetParams(int* p);
 	int CurStateInterface();
@@ -29,19 +36,18 @@ public:
 	void OnJosEvent(int key, int param);
 	void updateOsd();
 
-	CMvDectInterface * m_pMv;
 	
 
 private:
-	//friend class State;
-	bool ChangeState(State* state);
+	friend class State;
+	void ChangeState(State* state);
 	void OperationChangState();
 
 private:
 	int m_curState;
-
-public:
 	State* m_state;
+	CMvDectInterface * m_pMv;
+	
 };
 
 
