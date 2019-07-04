@@ -28,10 +28,8 @@ StateManger::~StateManger()
 
 void StateManger::init(OSDFUNC func,CMvDectInterface *pMov)
 {
-	m_drawtext = func;
 	m_pMv = pMov;
-	m_state->StateInit();
-
+	m_state->StateInit(func);
 	updateOsd();
 }
 
@@ -39,7 +37,7 @@ void StateManger::init(OSDFUNC func,CMvDectInterface *pMov)
 void StateManger::updateOsd()
 {
 	
-	m_state->updateOsd();
+	m_state->showOsd();
 	
 
 

@@ -8,10 +8,9 @@
 #include "state.hpp"
 
 DxTimer* State::m_timer = NULL;
-
 State* State::m_level1 = NULL;
 State* State::m_level2 = NULL;
-
+OSDFUNC State::drawFunc = NULL;
 
 
 State::State()
@@ -23,7 +22,7 @@ State::~State()
 }
 
 
-void State::StateInit()
+void State::StateInit(OSDFUNC func)
 {
 	if(m_level1 == NULL)
 		m_level1 = new LevelOne();
@@ -31,6 +30,7 @@ void State::StateInit()
 		m_level2 = new LevelTwo();
 	if(m_timer == NULL)
 		m_timer = new DxTimer();
+	drawFunc = func;
 	return ;
 }
 
@@ -38,6 +38,54 @@ void State::StateInit()
 void State::create()
 {
 	
+}
+
+
+void State::getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a)
+{
+	switch(color)
+	{
+		case 1:
+			r = 0;
+			g = 0;
+			b = 0;
+			break;
+		case 2:
+			r = 255;
+			g = 255;
+			b = 255;
+			break;
+		case 3:
+			r = 255;
+			g = 0;
+			b = 0;
+			break;
+		case 4:
+			r = 255;
+			g = 255;
+			b = 0;
+			break;
+		case 5:
+			r = 0;
+			g = 0;
+			b = 255;
+			break;
+		case 6:
+			r = 0;
+			g = 255;
+			b = 0;
+			break;
+		default:
+			break;
+	}
+
+	if(a > 0x0a)
+		a = 0x0a;
+	if(a == 0x0a)
+		a = 0;
+	else
+		a = 255 - a*16;
+	return ;
 }
 
 

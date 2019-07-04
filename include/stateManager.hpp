@@ -10,9 +10,7 @@
 
 #include "state.hpp"
 #include "mvdectInterface.hpp"
-
-
-typedef void (*OSDFUNC)(int x,int y,wchar_t* text,char font,char fontsize,unsigned char r,unsigned char g,unsigned char b,unsigned char a,int win_width,int win_height);
+#include "statecommon.h"
 
 class State;
 class StateManger
@@ -31,8 +29,6 @@ public:
 	void OnJosEvent(int key, int param);
 	void updateOsd();
 
-
-	OSDFUNC m_drawtext;
 	CMvDectInterface * m_pMv;
 	
 

@@ -120,8 +120,6 @@ typedef struct _MENU_POS{
 	bool isShow;
 }MENU_POS;
 
-#define MAX_SUBMENU 8
-
 typedef struct osdbuffer
 {
 	volatile unsigned char osdID;

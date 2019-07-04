@@ -12,6 +12,8 @@
 
 using namespace cr_automanualfindrelation;
 
+#define MAX_SUBMENU 8
+
 enum
 {
 	JOSF1_OPEN_AUTOLINKMODE = 1,

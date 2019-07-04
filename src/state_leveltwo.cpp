@@ -18,7 +18,7 @@ LevelTwo::~LevelTwo()
 
 }
 
-void LevelTwo::updateOsd()
+void LevelTwo::showOsd()
 {
 }
 

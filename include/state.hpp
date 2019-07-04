@@ -12,7 +12,7 @@
 #include "stateManager.hpp"
 #include "DxTimer.hpp"
 #include "configtable.h"
-
+#include "statecommon.h"
 
 typedef enum{
 	LEVELONE,
@@ -24,24 +24,28 @@ typedef enum{
 }state_enum;
 
 
+
+
 class StateManger;
 class State
 {
 public:
 	State();
-	void StateInit();
+	void StateInit(OSDFUNC func);
 	void create();
 	virtual ~State();
 
-public:
-	virtual void updateOsd() = 0;
 
+
+public:
+	virtual void showOsd() = 0;
+	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);
 	
 public:
 	static state_enum m_curState;
 	static DxTimer* m_timer;
 	static State *m_level1 , *m_level2;
-
+	static OSDFUNC drawFunc;
 };
 
 
@@ -51,12 +55,19 @@ public:
 	LevelOne();
 	virtual ~LevelOne();
 	
+	void initOsd();
+	void showOsd();
+
+	void showMenuOsd();
+
 private:
 	static LevelOne* pThis;
 
-	
-	void updateOsd();
-	
+
+
+	osdInfo_t disMenuBuf;
+
+
 };
 
 
@@ -66,10 +77,12 @@ public:
 	LevelTwo();
 	virtual ~LevelTwo();
 	
+	void showOsd();
+
 private:
 	static LevelTwo* pThis;
 
-	void updateOsd();
+
 };
 
 #endif /* STATE_HPP_ */
