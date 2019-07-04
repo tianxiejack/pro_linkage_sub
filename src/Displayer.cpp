@@ -516,7 +516,7 @@ int CDisplayer::init(DS_InitPrm *pPrm)
 
 	gl_Loadinit();
 
-	linkage.init(chinese_osd,plat->m_pMovDetector);
+	//linkage.init(chinese_osd,plat->m_pMovDetector);
 	
 	return 0;
 }
@@ -1728,7 +1728,7 @@ void CDisplayer::gl_display(void)
 		}
 		glDisable(GL_BLEND);
 
-		linkage.osdshow();
+		//linkage.osdshow();
 
 
 		
@@ -2160,7 +2160,7 @@ void CDisplayer::linkageSwitchMode(void)
 	int winId, chId;
 	unsigned int mask = 0;
 
-	switch(linkage.displayMode) 
+	switch(0)//(linkage.displayMode) 
 	{
 		case MAIN_VIEW:	
 			RenderVideoOnOrthoView(VIDEO_1, m_WinWidth/4, m_WinHeight/2, m_WinWidth/2, m_WinHeight/2);

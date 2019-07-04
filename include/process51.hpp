@@ -6,6 +6,7 @@
 #include "osd_cv.h"
 
 #include "osa_sem.h"
+#include "stateManager.hpp"
 
 
 using namespace cv;
@@ -197,6 +198,11 @@ public:
 	vector<string> csplit(const string& str, const string& delim);
 
 	void DrawMtdPolygonRoi();
+
+
+
+public:
+	StateManger* m_stateManger;
 
 };
 

@@ -297,7 +297,7 @@ void CProcess::loadIPCParam()
 	
 	OSA_semCreate(&g_linkage_getPos, 1, 0);
 
-	m_display.linkage.menuLoadIpcParam(getSysconfig());
+	//m_display.linkage.menuLoadIpcParam(getSysconfig());
 
 	return ;
 }
@@ -503,9 +503,13 @@ void CProcess::OnCreate()
 	MSGAPI_initial();
 }
 
-	
 void CProcess::OnDestroy(){};
-void CProcess::OnInit(){};
+void CProcess::OnInit()
+{
+	m_stateManger = new StateManger();
+	
+	return ;
+}
 void CProcess::OnConfig(){};
 void CProcess::OnRun()
 {
@@ -1598,15 +1602,15 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 	{
 		case 2:
 			f = (f+1)%2;
-			m_display.linkage.OnJosEvent(JOSF2_ENTER_MENU,f);
+			//m_display.linkage.OnJosEvent(JOSF2_ENTER_MENU,f);
 			break;
 
 		case SPECIAL_KEY_UP:
-			m_display.linkage.app_ctrl_upMenu();
+			//m_display.linkage.app_ctrl_upMenu();
 			break;
 					
 		case SPECIAL_KEY_DOWN:
-			m_display.linkage.app_ctrl_downMenu();
+			//m_display.linkage.app_ctrl_downMenu();
 			break; 
 			
 		default:
@@ -1718,8 +1722,8 @@ void CProcess::OnKeyDwn(unsigned char key)
 
 	if(key == 'Q' || key == 'q') 
 	{
-		DisplayMode_t nextMode = DisplayMode_t((int)(m_display.linkage.displayMode+1) % MENU_DISPLAY_COUNT);
-		m_display.linkage.setDisplayMode(nextMode);
+		//DisplayMode_t nextMode = DisplayMode_t((int)(m_display.linkage.displayMode+1) % MENU_DISPLAY_COUNT);
+		//m_display.linkage.setDisplayMode(nextMode);
 	}
 
 
@@ -1736,12 +1740,12 @@ void CProcess::OnKeyDwn(unsigned char key)
 
 	if((key >= '0') && (key <= '9'))
 	{
-		m_display.linkage.app_ctrl_setnumber(key);
+		//m_display.linkage.app_ctrl_setnumber(key);
 	}
 
 	if(key == 13)
 	{
-		m_display.linkage.app_ctrl_enter();
+		//m_display.linkage.app_ctrl_enter();
 	}
 
 	
@@ -3472,7 +3476,7 @@ void CProcess::DrawMtdPolygonRoi()
 		}	
 		drawflag = 0;
 	}
-
+/*
 	if(m_display.linkage.setrigion_flagv20)
 	{
 		memcpy(polyRectbak, m_display.linkage.polRect, sizeof(polRect));
@@ -3492,6 +3496,7 @@ void CProcess::DrawMtdPolygonRoi()
 		}
 		drawflag = 1;
 	}
+	*/
 	return;
 }
 

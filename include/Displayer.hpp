@@ -325,7 +325,7 @@ public:
 	void MtdOSDFunc();
 
 	//DISPLAYMODE displayMode;
-	CLink linkage;
+	//CLink linkage;
 };
 
 #define mallocwidth 1920

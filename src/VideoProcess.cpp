@@ -753,9 +753,9 @@ void CVideoProcess::mousehandle_mainView(int button, int state, int x, int y)
 
 void CVideoProcess::mousehandle_gunfull(int button, int state, int x, int y)
 {
-	if(m_display.linkage.setrigion_flagv20)
+	//if(m_display.linkage.setrigion_flagv20)
 	{
-		mouse_eventv_polygon(button, state, x, y);
+	//	mouse_eventv_polygon(button, state, x, y);
 	}
 	
 
@@ -778,7 +778,9 @@ void CVideoProcess::mouse_eventv_polygon(int button, int state, int x, int y)
 	floaty = y;
 
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-	{		
+	{	
+
+		/*
 		if(m_display.linkage.pol_rectn[curId] > MAX_POLYGON_POINT_CNT)
 		{
 			printf("reach max point num:%d\n", MAX_POLYGON_POINT_CNT);
@@ -790,7 +792,7 @@ void CVideoProcess::mouse_eventv_polygon(int button, int state, int x, int y)
 		m_display.linkage.polRect[curId][m_display.linkage.pol_rectn[curId]].x = floatx;
 		m_display.linkage.polRect[curId][m_display.linkage.pol_rectn[curId]].y = floaty;
 		m_display.linkage.pol_rectn[curId]++;
-
+		*/
 		#if 0
 		for(int k=0 ; k <m_display.linkage.pol_rectn[curId] ; k++)
 		{
@@ -812,7 +814,8 @@ void CVideoProcess::mouse_event(int button, int state, int x, int y)
 	static int tempX=0,tempY=0;
 	static bool isRectangleStartPointValid = false;
 	static bool isRectValid = false;
-	
+
+	#if 0
 	if(pThis->m_display.linkage.displayMode == MAIN_VIEW)
 		curId = 1;	
 	else
@@ -836,9 +839,7 @@ void CVideoProcess::mouse_event(int button, int state, int x, int y)
 			break;
 	}
 
-
-
-
+	#endif
 
 }
 
