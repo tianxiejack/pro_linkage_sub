@@ -58,7 +58,6 @@ int State::ChangeState(StateManger* con, char nextState)
 }
 
 
-
 void State::getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a)
 {
 	switch(color)

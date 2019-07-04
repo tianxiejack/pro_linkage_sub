@@ -8,7 +8,7 @@
 #include "state.hpp"
 
 
-LevelOne::LevelOne():inputtingStat(true)
+LevelOne::LevelOne():inputtingStat(true),m_menuShow(false)
 {
 	init_passwd ="0000";
 	initOsd();
@@ -20,7 +20,25 @@ LevelOne::~LevelOne()
 
 void LevelOne::initOsd()
 {
+	inputPWOsd();
+	return;
+}
 
+void LevelOne::buttonMenu()
+{
+	m_menuShow = !m_menuShow;
+	if(m_menuShow == true)
+	{
+		clearPw();
+		inputtingStat = true;
+		inputPWOsd();
+	}
+	return;
+}
+
+void LevelOne::clearPw()
+{
+	memset(m_passwd,0,sizeof(m_passwd));
 	return;
 }
 
@@ -28,19 +46,20 @@ void LevelOne::enter()
 {
 	if(inputtingStat)
 	{
-		if(strcmp(init_passwd, m_passwd)){
+		if(!strcmp(init_passwd, m_passwd)){
 			inputtingStat = true;
 			printf("watching :::!!!!!!! enter next state \n");
 		}
 		else{
+			printf("watching :::!!!!!!! error pw \n");
 			inputtingStat = false;
 			inputErrorPWOsd();
+			clearPw();
 		}
 	}else{
 		inputPWOsd();
 		inputtingStat = true;
 	}
-
 	return;
 }
 
@@ -65,14 +84,13 @@ void LevelOne::inputNumber(char key)
 }
 
 
-
-
 void LevelOne::inputErrorPWOsd()
 {
-	unsigned char menubuf[MAX_SUBMENU][128] = 	{"请输入密码呼出菜单", "密码输入错误，","按回车后再次输入", "按回车确认", "按F2退出"};
-	disMenuBuf.cnt = 5;
+	unsigned char menubuf[MAX_SUBMENU][128] = 	{"请输入密码呼出菜单", "密码输入错误","按回车后再次输入",  "按F2退出"};
+	disMenuBuf.cnt = 4;
 	for(int j = 0; j < disMenuBuf.cnt; j++)
 	{
+		
 		disMenuBuf.osdBuffer_t[j].bshow = true;
 		disMenuBuf.osdBuffer_t[j].alpha = 2;
 		disMenuBuf.osdBuffer_t[j].color = 2;
@@ -81,6 +99,9 @@ void LevelOne::inputErrorPWOsd()
 		setlocale(LC_ALL, "zh_CN.UTF-8");
 		swprintf(disMenuBuf.osdBuffer_t[j].disMenu, 33, L"%s", menubuf[j]);
 	}
+	disMenuBuf.osdBuffer_t[1].color = 3;
+	disMenuBuf.osdBuffer_t[2].color = 3;
+
 	return;
 
 
@@ -106,7 +127,8 @@ void LevelOne::inputPWOsd()
 
 void LevelOne::showOsd()
 {
-	showMenuOsd();
+	if(m_menuShow)
+		showMenuOsd();
 	return;
 }
 

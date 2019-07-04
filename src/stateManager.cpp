@@ -36,11 +36,7 @@ void StateManger::init(OSDFUNC func,CMvDectInterface *pMov)
 
 void StateManger::updateOsd()
 {
-	
-	m_state->showOsd();
-	
-
-
+	m_state->showOsd();	
 	return ;
 }
 
@@ -50,5 +46,39 @@ void StateManger::ChangeState(State* state)
 	this->m_state = state;
 	return;
 }
+
+void StateManger::specialEvent(char key)
+{
+	switch(key)
+	{
+		case JOSF1_AUTOLINKMODE:
+			{
+				//GB_WorkMode nextMode = (GB_WorkMode)(param - 1);
+				//setWorkMode(nextMode);
+			}
+			break;
+		case JOSF2_MENU:			
+				m_state->buttonMenu();
+			break;
+		default:
+			break;
+	}
+
+	return;
+}
+
+
+void StateManger::normalKeyEvent(char key)
+{
+	m_state->inputNumber(key);
+	return;
+}
+
+void StateManger::enterKeyEvent()
+{
+	m_state->enter();
+	return;
+}
+
 
 

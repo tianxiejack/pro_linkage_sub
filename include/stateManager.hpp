@@ -20,10 +20,10 @@ public:
 	~StateManger();
 
 
-
-
-
-
+	void updateOsd();
+	void specialEvent(char key);
+	void normalKeyEvent(char key);
+	void enterKeyEvent();
 
 
 	void* returnIpc();
@@ -33,8 +33,6 @@ public:
 	void init(OSDFUNC func,CMvDectInterface *pMov);
 	void menuOsdInit();
 	void menuLoadIpcParam(int* config);
-	void OnJosEvent(int key, int param);
-	void updateOsd();
 
 	
 

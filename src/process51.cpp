@@ -1602,7 +1602,7 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 	switch(key) 
 	{
 		case 2:
-			f = (f+1)%2;
+			m_stateManger->specialEvent(key);
 			//m_display.linkage.OnJosEvent(JOSF2_ENTER_MENU,f);
 			break;
 
@@ -1625,58 +1625,6 @@ void CProcess::OnKeyDwn(unsigned char key)
 	char flag = 0;
 	CMD_EXT *pIStuts = extInCtrl;
 	CMD_EXT tmpCmd = {0};
-
-	if(key == 'a' || key == 'A')
-	{
-		tmpCmd.SensorStat = (pIStuts->SensorStat + 1)%MAX_CHAN;
-		app_ctrl_setSensor(&tmpCmd);		
-	}
-
-	if(key == 'b' || key == 'B')
-	{
-		//pIStuts->PicpSensorStat = (pIStuts->PicpSensorStat + 1) % (eSen_Max+1);
-		if(pIStuts->PicpSensorStat==0xff)
-			pIStuts->PicpSensorStat=1;
-		else 
-			pIStuts->PicpSensorStat=0xff;
-		
-		msgdriv_event(MSGID_EXT_INPUT_ENPICP, NULL);
-	}
-
-	if(key == 'c'|| key == 'C')
-	{
-		if(pIStuts->AvtTrkStat)
-			pIStuts->AvtTrkStat = eTrk_mode_acq;
-		else
-			pIStuts->AvtTrkStat = eTrk_mode_target;
-		msgdriv_event(MSGID_EXT_INPUT_TRACK, NULL);
-	}
-
-	if(key == 'd'|| key == 'D')
-	{
-	
-		if(pIStuts->MmtStat[pIStuts->SensorStat])
-			pIStuts->MmtStat[pIStuts->SensorStat] = eImgAlg_Disable;
-		else
-			pIStuts->MmtStat[pIStuts->SensorStat] = eImgAlg_Enable;
-		msgdriv_event(MSGID_EXT_INPUT_ENMTD, NULL);
-	}
-
-	if (key == 'e' || key == 'E')
-	{
-		if(pIStuts->SceneAvtTrkStat == eTrk_mode_acq )
-			pIStuts->SceneAvtTrkStat = eTrk_mode_target;
-		else
-			pIStuts->SceneAvtTrkStat = eTrk_mode_acq;
-
-
-		MSGDRIV_send(MSGID_EXT_INPUT_SCENETRK, 0); 
-	}
-
-	if (key == 'f' || key == 'F')
-	{
-		backflag = true;
-	}
 		
 	if (key == 'l' || key == 'L')
 	{
@@ -1703,49 +1651,21 @@ void CProcess::OnKeyDwn(unsigned char key)
 		//printf("pIStuts->MtdState[pIStuts->SensorStat]  = %d\n",pIStuts->MtdState[pIStuts->SensorStat] );
 	}
 
-	if (key == 't' || key == 'T')
-		{
-		}
-	if (key == 'f' || key == 'F')
-		{
-			if(pIStuts->ImgFrezzStat[pIStuts->SensorStat])
-				pIStuts->ImgFrezzStat[pIStuts->SensorStat] = eImgAlg_Disable;
-			else
-				pIStuts->ImgFrezzStat[pIStuts->SensorStat] = eImgAlg_Enable;
-			
-			msgdriv_event(MSGID_EXT_INPUT_ENFREZZ, NULL);
-		}
-	
-	if (key == 'p'|| key == 'P')
-		{
-			msgdriv_event(MSGID_EXT_INPUT_PICPCROP, NULL);
-		}
-
 	if(key == 'Q' || key == 'q') 
 	{
 		//DisplayMode_t nextMode = DisplayMode_t((int)(m_display.linkage.displayMode+1) % MENU_DISPLAY_COUNT);
 		//m_display.linkage.setDisplayMode(nextMode);
 	}
 
-
-	if(key == 'w'|| key == 'W')
-		{
-			if(pIStuts->ImgMmtshow[pIStuts->SensorStat])
-				pIStuts->ImgMmtshow[pIStuts->SensorStat] = eImgAlg_Disable;
-			else
-				pIStuts->ImgMmtshow[pIStuts->SensorStat] = eImgAlg_Enable;
-			
-			msgdriv_event(MSGID_EXT_INPUT_MMTSHOW, NULL);
-			OSA_printf("MSGID_EXT_INPUT_MMTSHOW\n");
-		}
-
 	if((key >= '0') && (key <= '9'))
 	{
+		m_stateManger->normalKeyEvent(key);
 		//m_display.linkage.app_ctrl_setnumber(key);
 	}
 
 	if(key == 13)
 	{
+		m_stateManger->enterKeyEvent();
 		//m_display.linkage.app_ctrl_enter();
 	}
 

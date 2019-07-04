@@ -23,6 +23,13 @@ typedef enum{
 }state_enum;
 
 
+enum
+{
+	JOSF1_AUTOLINKMODE = 1,
+	JOSF2_MENU,
+};
+
+
 typedef struct
 {
 	bool bshow;

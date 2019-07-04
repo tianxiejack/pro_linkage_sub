@@ -34,9 +34,13 @@ public:
 
 
 
-public:
-	virtual int ChangeState(StateManger* con, char nextState);
 
+public:
+	virtual void buttonWorkMode(){};
+	virtual void buttonMenu(){};
+	
+	virtual int ChangeState(StateManger* con, char nextState);
+	
 	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);
 
 
@@ -63,8 +67,11 @@ public:
 public:
 	void initOsd();
 	void showMenuOsd();
-	
+	void buttonMenu();
 
+
+
+	void clearPw();
 	void inputPWOsd();
 	void inputErrorPWOsd();
 
@@ -77,7 +84,8 @@ private:
 	char m_passwd[128];
 	char m_dispasswd[128];
 	char *init_passwd;
-
+	bool m_menuShow;
+	
 };
 
 
