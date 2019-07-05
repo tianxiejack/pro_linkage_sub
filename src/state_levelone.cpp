@@ -8,7 +8,7 @@
 #include "state.hpp"
 
 
-LevelOne::LevelOne():inputtingStat(true),m_menuShow(false)
+LevelOne::LevelOne():inputtingStat(false),m_menuShow(false)
 {
 	init_passwd ="0000";
 	initOsd();
@@ -33,6 +33,8 @@ void LevelOne::buttonMenu()
 		inputtingStat = true;
 		inputPWOsd();
 	}
+	else
+		inputtingStat = false;
 	return;
 }
 
@@ -44,21 +46,25 @@ void LevelOne::clearPw()
 
 void LevelOne::enter()
 {
-	if(inputtingStat)
+	if(m_menuShow)
 	{
-		if(!strcmp(init_passwd, m_passwd)){
+		if(inputtingStat)
+		{
+			if(!strcmp(init_passwd, m_passwd)){
+				inputtingStat = true;
+				clearPw();
+				printf("watching :::!!!!!!! enter next state \n");
+			}
+			else{
+				printf("watching :::!!!!!!! error pw \n");
+				inputtingStat = false;
+				inputErrorPWOsd();
+				clearPw();
+			}
+		}else{
+			inputPWOsd();
 			inputtingStat = true;
-			printf("watching :::!!!!!!! enter next state \n");
 		}
-		else{
-			printf("watching :::!!!!!!! error pw \n");
-			inputtingStat = false;
-			inputErrorPWOsd();
-			clearPw();
-		}
-	}else{
-		inputPWOsd();
-		inputtingStat = true;
 	}
 	return;
 }
