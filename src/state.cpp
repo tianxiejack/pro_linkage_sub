@@ -29,7 +29,7 @@ void State::StateInit(OSDFUNC pDraw , CHANGESTAT pChangeStat)
 		m_timer = new DxTimer();
 	
 	if(m_pMenu == NULL)
-		m_pMenu = new CMenu(pDraw);
+		m_pMenu = new CMenu(pDraw,pChangeStat);
 
 	m_changeStatFunc = pChangeStat;
 		

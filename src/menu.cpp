@@ -7,20 +7,23 @@
 
 
 #include "menu.hpp"
-
 #include <string.h>
 #include "locale.h"
 #include <stdio.h>
 #include <wchar.h>
 
-CMenu::CMenu(OSDFUNC pfun):m_menuPointer(-1),m_menuStat(MENU_BLANK)
+
+CHANGESTAT CMenu::m_changeStatFunc = NULL;
+
+
+CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pchStatfun):m_menuPointer(-1),m_menuStat(MENU_BLANK)
 {
 	init_passwd = "0000";
 	drawFunc = pfun;
+	m_changeStatFunc = pchStatfun;
 	disMenuBuf.cnt = 0;
 	memset(m_passwd,0,sizeof(m_passwd));
 	memset(m_dispasswd,0,sizeof(m_dispasswd));
-	
 }
 
 CMenu::~CMenu()
@@ -31,25 +34,42 @@ CMenu::~CMenu()
 void CMenu::menuButton()
 {
 	if(m_menuStat == MENU_BLANK)
-	{
-		m_menuStat = MENU_INPUTPW;
-		clearPw();
-		lv_1_inputPWosd();
-	}
-	else if(m_menuStat == MENU_INPUTPW)
-	{
-		m_menuStat = MENU_BLANK;
-		disMenuBuf.cnt = 0;
-	}
-	else if(m_menuStat == MENU_ERRORPW)
-	{
-		m_menuStat = MENU_BLANK;
-		disMenuBuf.cnt = 0;
-	}
-
+		gotoInputPW();
+	else if(m_menuStat == MENU_INPUTPW || m_menuStat == MENU_ERRORPW)
+		gotoBlankMenu();
 
 	return;
 }
+
+void CMenu::gotoBlankMenu()
+{
+	m_menuStat = MENU_BLANK;
+	disMenuBuf.cnt = 0;
+	return;
+}
+
+void CMenu::gotoInputPW()
+{
+	clearPw();
+	lv_1_inputPWosd();
+	m_menuStat = MENU_INPUTPW;
+	return;
+}
+
+void CMenu::gotoErrorPW()
+{
+	lv_1_errorPWosd();
+	m_menuStat = MENU_ERRORPW;
+	return;
+}
+
+void CMenu::gotoMainMenu()
+{
+	lv_2_osd();
+	m_menuStat = MENU_MAIN;
+	return;
+}
+
 
 
 void CMenu::enter()
@@ -57,21 +77,15 @@ void CMenu::enter()
 	if(m_menuStat == MENU_INPUTPW)
 	{
 		if(!strcmp(init_passwd, m_passwd)){
-			clearPw();
-			//ChangeState(LEVELTWO);
-			printf("watching :::!!!!!!! enter next state \n");
+			gotoMainMenu();
 		}
 		else{
-			printf("watching :::!!!!!!! error pw \n");
-			lv_1_errorPWosd();
-			m_menuStat = MENU_ERRORPW;
+			printf("watching!!!!!!! error pw \n");
+			gotoErrorPW();
 		}
 	}	
 	else if(m_menuStat == MENU_ERRORPW)
-	{
-		lv_1_inputPWosd();
-		m_menuStat = MENU_INPUTPW;
-	}
+		gotoInputPW();
 	
 	return;
 }
