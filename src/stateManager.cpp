@@ -70,6 +70,13 @@ void StateManger::callbackChangeStat(char nextmode)
 	return;
 }
 
+void StateManger::callbackChangeDefaultWorkMode(char workmode)
+{
+
+	return;
+}
+
+
 
 void StateManger::normalKeyEvent(char key)
 {

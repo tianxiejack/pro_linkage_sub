@@ -24,7 +24,7 @@ public:
 	void downMenu();
 
 	void showMenuOsd();
-	void menuhandle_main();
+
 
 
 	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);
@@ -33,6 +33,8 @@ public:
 	void clearPw();
 
 
+	void menuhandle_main();
+	void menuhandle_workmode();
 
 
 	void gotoInputPW();

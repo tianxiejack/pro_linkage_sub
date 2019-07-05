@@ -104,20 +104,43 @@ void CMenu::menuhandle_main()
 	switch(m_menuPointer)
 	{
 		case 0:
-			
+			gotoWorkMode();
 			break;
 		case 1:
 		
 			break;
 
 		default:
-
 			break;
 	}
 
 
 	return;
 }
+
+
+void CMenu::menuhandle_workmode()
+{
+	switch(m_menuPointer)
+	{
+		case 0:
+				
+			break;
+		case 1:
+		
+			break;
+
+
+
+
+		default:
+			break;
+	}
+
+
+	return;
+}
+
 
 
 void CMenu::enter()
@@ -135,6 +158,8 @@ void CMenu::enter()
 		gotoInputPW();
 	else if(m_menuStat == MENU_MAIN)
 		menuhandle_main();
+	else if(m_menuStat == MENU_WORKMODE)
+		menuhandle_workmode();
 
 		
 	

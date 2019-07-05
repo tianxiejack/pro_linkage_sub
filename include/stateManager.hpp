@@ -27,7 +27,7 @@ public:
 	void showOsd();
 	
 	static void callbackChangeStat(char nextmode);
-
+	static void callbackChangeDefaultWorkMode(char workmode);
 
 
 
