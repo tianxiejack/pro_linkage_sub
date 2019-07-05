@@ -18,6 +18,9 @@ CMenu::CMenu(OSDFUNC pfun):m_menuPointer(-1),m_menuStat(MENU_BLANK)
 	init_passwd = "0000";
 	drawFunc = pfun;
 	disMenuBuf.cnt = 0;
+	memset(m_passwd,0,sizeof(m_passwd));
+	memset(m_dispasswd,0,sizeof(m_dispasswd));
+	
 }
 
 CMenu::~CMenu()
@@ -33,9 +36,42 @@ void CMenu::menuButton()
 		clearPw();
 		lv_1_inputPWosd();
 	}
+	else if(m_menuStat == MENU_INPUTPW)
+	{
+		m_menuStat = MENU_BLANK;
+		disMenuBuf.cnt = 0;
+	}
 	
 
 
+	return;
+}
+
+
+void CMenu::enter()
+{
+	
+	
+	return;
+}
+
+
+void CMenu::normalKey(char key)
+{	
+	if(m_menuStat == MENU_INPUTPW)
+	{
+		int offset = strlen(m_passwd) * sizeof(char);		
+		if(offset < sizeof(m_passwd) - 1)
+		{
+			sprintf(m_passwd + offset,"%c", key);
+			sprintf(m_dispasswd + offset,"%c", '*');
+			swprintf(disMenuBuf.osdBuffer[1].disMenu, 33, L"%s", m_dispasswd);		
+		}
+		else
+			printf("password reached max length:128");
+		
+		printf("%s --> LINE:%d ****** passwd=%s\n",__FILE__,__LINE__,m_passwd);
+	}
 	return;
 }
 

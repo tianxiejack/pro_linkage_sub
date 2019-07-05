@@ -63,22 +63,7 @@ void CLinkManual::enter()
 
 void CLinkManual::inputNumber(char key)
 {
-	#if 0
-	if(inputtingStat)
-	{
-		int offset = strlen(m_passwd) * sizeof(char);		
-		if(offset < sizeof(m_passwd) - 1)
-		{
-			sprintf(m_passwd + offset,"%c", key);
-			sprintf(m_dispasswd + offset,"%c", '*');
-			swprintf(disMenuBuf.osdBuffer[1].disMenu, 33, L"%s", m_dispasswd);		
-		}
-		else
-			printf("password reached max length:128");
-		
-		printf("%s,%d,passwd=%s\n",__FILE__,__LINE__,m_passwd);
-	}
-	#endif
+	m_pMenu->normalKey(key);
 	return;
 }
 

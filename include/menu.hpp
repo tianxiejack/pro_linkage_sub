@@ -18,8 +18,8 @@ public:
 
 
 	void menuButton();
-
-	
+	void normalKey(char key);
+	void enter();
 
 	void showMenuOsd();
 
@@ -36,6 +36,8 @@ private:
 	char *init_passwd;
 	osdInfo_t disMenuBuf;
 	char m_passwd[128];
+	char m_dispasswd[128];
+	
 
 
 	CHAR m_menuPointer;
