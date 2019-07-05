@@ -11,18 +11,27 @@
 #define MAX_SUBMENU 8
 
 typedef void (*OSDFUNC)(int x,int y,wchar_t* text,char font,char fontsize,unsigned char r,unsigned char g,unsigned char b,unsigned char a,int win_width,int win_height);
-
+typedef void (*CHANGESTAT)(char nextMode);
 
 typedef enum{
 	LEVELONE,
 	LEVELTWO,
 	SETWORKMODE,
-	SETCALIB,
-	SETMTD,
-	SETMTD_REGION,
-	SETMTD_UNREGION,
 	LEVELMAX,
 }state_enum;
+
+
+typedef enum{
+	MENU_INPUTPW = 0,
+	MENU_ERRORPW,
+	MENU_MAIN,
+	MENU_WORKMODE,
+	MENU_CALIB,
+	MENU_MTD,
+	MENU_MTD_REGION,
+	MENU_MTD_UNREGION,
+	MENU_MAX,
+}MenuState_t;
 
 
 enum

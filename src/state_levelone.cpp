@@ -1,31 +1,20 @@
-/*
- * state_levelone.cpp
- *
- *  Created on: 2019年7月4日
- *      Author: alex
- */
 
 #include "state.hpp"
 
 
-LevelOne::LevelOne():inputtingStat(false),m_menuShow(false)
+LevelOne::LevelOne():inputtingStat(false)
 {
-	init_passwd ="0000";
-	initOsd();
 }
 
 LevelOne::~LevelOne()
 {
 }
 
-void LevelOne::initOsd()
-{
-	inputPWOsd();
-	return;
-}
-
 void LevelOne::buttonMenu()
 {
+	//m_pMenu->menuButton();
+
+	#if 0
 	m_menuShow = !m_menuShow;
 	if(m_menuShow == true)
 	{
@@ -35,17 +24,14 @@ void LevelOne::buttonMenu()
 	}
 	else
 		inputtingStat = false;
+	#endif
 	return;
 }
 
-void LevelOne::clearPw()
-{
-	memset(m_passwd,0,sizeof(m_passwd));
-	return;
-}
 
 void LevelOne::enter()
 {
+	#if 0
 	if(m_menuShow)
 	{
 		if(inputtingStat)
@@ -68,12 +54,14 @@ void LevelOne::enter()
 			inputtingStat = true;
 		}
 	}
+	#endif
 	return;
 }
 
 
 void LevelOne::inputNumber(char key)
 {
+	#if 0
 	if(inputtingStat)
 	{
 		int offset = strlen(m_passwd) * sizeof(char);		
@@ -88,52 +76,17 @@ void LevelOne::inputNumber(char key)
 		
 		printf("%s,%d,passwd=%s\n",__FILE__,__LINE__,m_passwd);
 	}
-	return;
-}
-
-
-void LevelOne::inputErrorPWOsd()
-{
-	unsigned char menubuf[MAX_SUBMENU][128] = 	{"请输入密码呼出菜单", "密码输入错误","按回车后再次输入",  "按F2退出"};
-	disMenuBuf.cnt = 4;
-	for(int j = 0; j < disMenuBuf.cnt; j++)
-	{
-		
-		disMenuBuf.osdBuffer[j].bshow = true;
-		disMenuBuf.osdBuffer[j].alpha = 2;
-		disMenuBuf.osdBuffer[j].color = 2;
-		disMenuBuf.osdBuffer[j].posx = (int)((float)outputWHF[0] *0.78125f);
-		disMenuBuf.osdBuffer[j].posy = (j + 1) * (int)((float)outputWHF[1] *0.056f);
-		setlocale(LC_ALL, "zh_CN.UTF-8");
-		swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"%s", menubuf[j]);
-	}
-	disMenuBuf.osdBuffer[1].color = 3;
-	disMenuBuf.osdBuffer[2].color = 3;
-	return;
-}
-
-void LevelOne::inputPWOsd()
-{
-	unsigned char menubuf[MAX_SUBMENU][128] = {"请输入密码呼出菜单", "", "按回车确认", "按F2退出"};
-	disMenuBuf.cnt = 4;
-	for(int j = 0; j < disMenuBuf.cnt; j++)
-	{
-		disMenuBuf.osdBuffer[j].bshow = true;
-		disMenuBuf.osdBuffer[j].alpha = 2;
-		disMenuBuf.osdBuffer[j].color = 2;
-		disMenuBuf.osdBuffer[j].posx = (int)((float)outputWHF[0] *0.78125f);
-		disMenuBuf.osdBuffer[j].posy = (j + 1) * (int)((float)outputWHF[1] *0.056f);
-		setlocale(LC_ALL, "zh_CN.UTF-8");
-		swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"%s", menubuf[j]);
-	}
+	#endif
 	return;
 }
 
 
 void LevelOne::showOsd()
 {
+	#if 0
 	if(m_menuShow)
 		showMenuOsd(disMenuBuf);
+	#endif
 	return;
 }
 

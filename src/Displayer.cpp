@@ -1729,7 +1729,7 @@ void CDisplayer::gl_display(void)
 		glDisable(GL_BLEND);
 
 		//linkage.osdshow();
-		plat->m_stateManger->updateOsd();
+		//plat->m_stateManger->updateOsd();
 
 		
 		#if 0

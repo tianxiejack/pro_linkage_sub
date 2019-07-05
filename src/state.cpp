@@ -1,18 +1,13 @@
-/*
- * state.cpp
- *
- *  Created on: 2019年7月4日
- *      Author: alex
- */
 
 #include "state.hpp"
+
 
 DxTimer* State::m_timer = NULL;
 State* State::m_level1 = NULL;
 State* State::m_level2 = NULL;
-OSDFUNC State::drawFunc = NULL;
 char State::m_curState = LEVELONE;
-StateManger* State::m_pStatManager = NULL;
+//CMenu* State::m_pMenu = NULL;
+CHANGESTAT State::m_changeStatFunc = NULL;
 
 
 State::State()
@@ -24,7 +19,7 @@ State::~State()
 }
 
 
-void State::StateInit(OSDFUNC func,StateManger* con)
+void State::StateInit(OSDFUNC pDraw , CHANGESTAT pChangeStat)
 {
 	if(m_level1 == NULL)
 		m_level1 = new LevelOne();
@@ -32,8 +27,12 @@ void State::StateInit(OSDFUNC func,StateManger* con)
 		m_level2 = new LevelTwo();
 	if(m_timer == NULL)
 		m_timer = new DxTimer();
-	drawFunc = func;
-	m_pStatManager = con;
+	
+//	if(m_pMenu == NULL)
+	//	m_pMenu = new CMenu(pDraw);
+
+	m_changeStatFunc = pChangeStat;
+		
 	return ;
 }
 
@@ -50,31 +49,13 @@ int State::ChangeState(char nextState)
 	switch(m_curState)
 	{
 		case LEVELONE:
-			m_pStatManager->ChangeState(m_level1);
+			m_changeStatFunc(LEVELONE);
 			break;
 			
 		case LEVELTWO:
-			m_pStatManager->ChangeState(m_level2);
 			break;
 			
 		case SETWORKMODE:
-			m_pStatManager->ChangeState(m_level2);
-			break;
-
-		case SETCALIB:
-
-			break;
-			
-		case SETMTD:
-
-			break;
-			
-		case SETMTD_REGION:
-
-			break;
-			
-		case SETMTD_UNREGION:
-
 			break;
 
 		default:
@@ -86,6 +67,7 @@ int State::ChangeState(char nextState)
 
 void State::showMenuOsd(osdInfo_t& disMenuBuf)
 {
+	#if 0
 	unsigned char r, g, b, a, color;
 	short x, y;
 
@@ -104,6 +86,7 @@ void State::showMenuOsd(osdInfo_t& disMenuBuf)
 			drawFunc(x, y,disMenuBuf.osdBuffer[i].disMenu, font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
 		}
 	}
+	#endif
 	return;
 }
 

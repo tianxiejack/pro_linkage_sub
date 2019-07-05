@@ -13,6 +13,8 @@
 #include <wchar.h>
 
 
+StateManger* StateManger::pThis = NULL;
+
 
 StateManger::StateManger()
 {
@@ -29,15 +31,7 @@ StateManger::~StateManger()
 void StateManger::init(OSDFUNC func,CMvDectInterface *pMov)
 {
 	m_pMv = pMov;
-	m_state->StateInit(func,this);
-	updateOsd();
-}
-
-
-void StateManger::updateOsd()
-{
-	m_state->showOsd();	
-	return ;
+	m_state->StateInit(func,callbackChangeStat);
 }
 
 
@@ -64,6 +58,14 @@ void StateManger::specialEvent(char key)
 		default:
 			break;
 	}
+
+	return;
+}
+
+
+void StateManger::callbackChangeStat(char nextmode)
+{
+	
 
 	return;
 }

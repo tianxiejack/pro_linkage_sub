@@ -20,7 +20,7 @@ CSetWorkMode::~CSetWorkMode()
 
 void CSetWorkMode::showOsd()
 {
-	showMenuOsd(&disMenuBuf);
+	//showMenuOsd(&disMenuBuf);
 	return;
 }
 
@@ -49,19 +49,7 @@ void CSetWorkMode::downMenu()
 
 void CSetWorkMode::initOsd()
 {
-	unsigned char menubuf[MAX_SUBMENU][128] =  	{"手动联动模式","自动联动模式","单控球机模式","返回"};
-	disMenuBuf.cnt = 4;
-	for(int j = 0; j < disMenuBuf.cnt; j++)
-	{
-		disMenuBuf.osdBuffer[j].bshow = true;
-		disMenuBuf.osdBuffer[j].alpha = 2;
-		disMenuBuf.osdBuffer[j].color = 2;
-		disMenuBuf.osdBuffer[j].posx = (int)((float)outputWHF[0] *0.78125f);
-		disMenuBuf.osdBuffer[j].posy = (j + 1) * (int)((float)outputWHF[1] *0.056f);
-		setlocale(LC_ALL, "zh_CN.UTF-8");
-		swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"%s", menubuf[j]);
-	}
-	disMenuBuf.osdBuffer[m_menuPointer].color = 3;
+
 	return;
 }
 

@@ -8,20 +8,17 @@
 #ifndef STATE_HPP_
 #define STATE_HPP_
 
-
-#include "stateManager.hpp"
 #include "DxTimer.hpp"
 #include "configtable.h"
 #include "statecommon.h"
+#include "menu.hpp"
 
 
-
-class StateManger;
 class State
 {
 public:
 	State();
-	void StateInit(OSDFUNC func,StateManger* con);
+	void StateInit(OSDFUNC pDraw , CHANGESTAT pChangeStat);
 	void create();
 	virtual ~State();
 
@@ -47,9 +44,13 @@ public:
 public:
 	static char m_curState;
 	static DxTimer* m_timer;
+	
 	static State *m_level1 , *m_level2, *m_level_setworkmode;
-	static OSDFUNC drawFunc;
-	static StateManger* m_pStatManager;
+
+	//static CMenu* m_pMenu ;
+	static CHANGESTAT m_changeStatFunc;
+
+
 };
 
 
@@ -64,12 +65,7 @@ public:
 	void enter();
 
 public:
-	void initOsd();
 	void buttonMenu();
-
-	void clearPw();
-	void inputPWOsd();
-	void inputErrorPWOsd();
 
 private:
 	osdInfo_t disMenuBuf;
@@ -78,7 +74,6 @@ private:
 	char m_passwd[128];
 	char m_dispasswd[128];
 	char *init_passwd;
-	bool m_menuShow;
 };
 
 

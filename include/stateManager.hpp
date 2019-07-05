@@ -19,8 +19,6 @@ public:
 	StateManger();
 	~StateManger();
 
-
-	void updateOsd();
 	void specialEvent(char key);
 	void normalKeyEvent(char key);
 	void enterKeyEvent();
@@ -28,6 +26,11 @@ public:
 	void downMenu();
 
 	
+	static void callbackChangeStat(char nextmode);
+
+
+
+
 
 	void* returnIpc();
 	void GetParams(int* p);
@@ -48,7 +51,7 @@ private:
 	int m_curState;
 	State* m_state;
 	CMvDectInterface * m_pMv;
-	
+	static StateManger* pThis;
 };
 
 
