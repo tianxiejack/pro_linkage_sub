@@ -22,7 +22,7 @@ State::~State()
 void State::StateInit(OSDFUNC pDraw , CHANGESTAT pChangeStat)
 {
 	if(m_level1 == NULL)
-		m_level1 = new LevelOne();
+		m_level1 = new CLinkManual();
 	if(m_level2 == NULL)
 		m_level2 = new LevelTwo();
 	if(m_timer == NULL)

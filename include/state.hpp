@@ -51,11 +51,11 @@ public:
 };
 
 
-class LevelOne:public State
+class CLinkManual:public State
 {
 public:
-	LevelOne();
-	virtual ~LevelOne();
+	CLinkManual();
+	virtual ~CLinkManual();
 	
 	void showOsd();
 	void inputNumber(char key);

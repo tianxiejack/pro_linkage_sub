@@ -45,6 +45,7 @@ void CMenu::clearPw()
 	memset(m_passwd,0,sizeof(m_passwd));
 }
 
+
 void CMenu::lv_1_inputPWosd()
 {
 	unsigned char menubuf[MAX_SUBMENU][128] = {"请输入密码呼出菜单", "", "按回车确认", "按F2退出"};

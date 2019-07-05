@@ -2,15 +2,15 @@
 #include "state.hpp"
 
 
-LevelOne::LevelOne()
+CLinkManual::CLinkManual()
 {
 }
 
-LevelOne::~LevelOne()
+CLinkManual::~CLinkManual()
 {
 }
 
-void LevelOne::buttonMenu()
+void CLinkManual::buttonMenu()
 {
 	m_pMenu->menuButton();
 
@@ -31,7 +31,7 @@ void LevelOne::buttonMenu()
 }
 
 
-void LevelOne::enter()
+void CLinkManual::enter()
 {
 	#if 0
 	if(m_menuShow)
@@ -61,7 +61,7 @@ void LevelOne::enter()
 }
 
 
-void LevelOne::inputNumber(char key)
+void CLinkManual::inputNumber(char key)
 {
 	#if 0
 	if(inputtingStat)
@@ -83,7 +83,7 @@ void LevelOne::inputNumber(char key)
 }
 
 
-void LevelOne::showOsd()
+void CLinkManual::showOsd()
 {
 	m_pMenu->showMenuOsd();
 	#if 0
