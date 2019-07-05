@@ -65,12 +65,7 @@ public:
 	void buttonMenu();
 
 private:
-	osdInfo_t disMenuBuf;
-	bool inputtingStat;
 
-	char m_passwd[128];
-	char m_dispasswd[128];
-	char *init_passwd;
 };
 
 

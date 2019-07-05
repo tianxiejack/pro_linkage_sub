@@ -2,7 +2,7 @@
 #include "state.hpp"
 
 
-LevelOne::LevelOne():inputtingStat(false)
+LevelOne::LevelOne()
 {
 }
 
@@ -85,6 +85,7 @@ void LevelOne::inputNumber(char key)
 
 void LevelOne::showOsd()
 {
+	m_pMenu->showMenuOsd();
 	#if 0
 	if(m_menuShow)
 		showMenuOsd(disMenuBuf);

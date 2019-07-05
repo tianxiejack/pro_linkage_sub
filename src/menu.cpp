@@ -13,10 +13,11 @@
 #include <stdio.h>
 #include <wchar.h>
 
-CMenu::CMenu(OSDFUNC pfun):m_menuPointer(-1)
+CMenu::CMenu(OSDFUNC pfun):m_menuPointer(-1),m_menuStat(MENU_BLANK)
 {
 	init_passwd = "0000";
 	drawFunc = pfun;
+	disMenuBuf.cnt = 0;
 }
 
 CMenu::~CMenu()
@@ -26,9 +27,9 @@ CMenu::~CMenu()
 
 void CMenu::menuButton()
 {
-	if(-1 == m_menuPointer)
+	if(m_menuStat == MENU_BLANK)
 	{
-		m_menuPointer = MENU_INPUTPW;
+		m_menuStat = MENU_INPUTPW;
 		clearPw();
 		lv_1_inputPWosd();
 	}

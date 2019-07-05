@@ -38,8 +38,8 @@ private:
 	char m_passwd[128];
 
 
-	char m_menuPointer;
-	
+	CHAR m_menuPointer;
+	CHAR m_menuStat;
 };
 
 

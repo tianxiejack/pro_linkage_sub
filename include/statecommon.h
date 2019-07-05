@@ -13,6 +13,8 @@
 typedef void (*OSDFUNC)(int x,int y,wchar_t* text,char font,char fontsize,unsigned char r,unsigned char g,unsigned char b,unsigned char a,int win_width,int win_height);
 typedef void (*CHANGESTAT)(char nextMode);
 
+#define CHAR signed char
+
 typedef enum{
 	LEVELONE,
 	LEVELTWO,
@@ -22,7 +24,8 @@ typedef enum{
 
 
 typedef enum{
-	MENU_INPUTPW = 0,
+	MENU_BLANK,
+	MENU_INPUTPW,
 	MENU_ERRORPW,
 	MENU_MAIN,
 	MENU_WORKMODE,
