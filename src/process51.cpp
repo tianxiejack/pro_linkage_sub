@@ -1607,10 +1607,12 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 			break;
 
 		case SPECIAL_KEY_UP:
+			m_stateManger->upMenu();
 			//m_display.linkage.app_ctrl_upMenu();
 			break;
 					
 		case SPECIAL_KEY_DOWN:
+			m_stateManger->downMenu();
 			//m_display.linkage.app_ctrl_downMenu();
 			break; 
 			

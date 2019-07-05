@@ -8,7 +8,7 @@
 #include "state.hpp"
 
 
-LevelTwo::LevelTwo()
+LevelTwo::LevelTwo():m_menuPointer(0)
 {
 	initOsd();
 }
@@ -40,14 +40,22 @@ void LevelTwo::initOsd()
 	disMenuBuf.cnt = 3;
 	for(int j = 0; j < disMenuBuf.cnt; j++)
 	{
-		disMenuBuf.osdBuffer_t[j].bshow = true;
-		disMenuBuf.osdBuffer_t[j].alpha = 2;
-		disMenuBuf.osdBuffer_t[j].color = 2;
-		disMenuBuf.osdBuffer_t[j].posx = (int)((float)outputWHF[0] *0.78125f);
-		disMenuBuf.osdBuffer_t[j].posy = (j + 1) * (int)((float)outputWHF[1] *0.056f);
+		disMenuBuf.osdBuffer[j].bshow = true;
+		disMenuBuf.osdBuffer[j].alpha = 2;
+		disMenuBuf.osdBuffer[j].color = 2;
+		disMenuBuf.osdBuffer[j].posx = (int)((float)outputWHF[0] *0.78125f);
+		disMenuBuf.osdBuffer[j].posy = (j + 1) * (int)((float)outputWHF[1] *0.056f);
 		setlocale(LC_ALL, "zh_CN.UTF-8");
-		swprintf(disMenuBuf.osdBuffer_t[j].disMenu, 33, L"%s", menubuf[j]);
+		swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"%s", menubuf[j]);
 	}
+	disMenuBuf.osdBuffer[m_menuPointer].color = 3;
+	return;
+}
+
+
+void LevelTwo::operationChangeState()
+{
+	m_menuPointer = 0;
 	return;
 }
 
@@ -56,6 +64,23 @@ void LevelTwo::buttonMenu()
 {
 	ChangeState(LEVELONE);
 	return;
+}
+
+
+void LevelTwo::upMenu()
+{
+	disMenuBuf.osdBuffer[m_menuPointer].color = 2;
+	m_menuPointer = (m_menuPointer+disMenuBuf.cnt-1)%disMenuBuf.cnt;
+	disMenuBuf.osdBuffer[m_menuPointer].color = 3;
+	return;
+}
+
+void LevelTwo::downMenu()
+{
+	disMenuBuf.osdBuffer[m_menuPointer].color = 2;
+	m_menuPointer = (++m_menuPointer)%disMenuBuf.cnt;
+	disMenuBuf.osdBuffer[m_menuPointer].color = 3;
+	return;	
 }
 
 

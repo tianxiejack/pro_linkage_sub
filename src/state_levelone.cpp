@@ -81,7 +81,7 @@ void LevelOne::inputNumber(char key)
 		{
 			sprintf(m_passwd + offset,"%c", key);
 			sprintf(m_dispasswd + offset,"%c", '*');
-			swprintf(disMenuBuf.osdBuffer_t[1].disMenu, 33, L"%s", m_dispasswd);		
+			swprintf(disMenuBuf.osdBuffer[1].disMenu, 33, L"%s", m_dispasswd);		
 		}
 		else
 			printf("password reached max length:128");
@@ -99,16 +99,16 @@ void LevelOne::inputErrorPWOsd()
 	for(int j = 0; j < disMenuBuf.cnt; j++)
 	{
 		
-		disMenuBuf.osdBuffer_t[j].bshow = true;
-		disMenuBuf.osdBuffer_t[j].alpha = 2;
-		disMenuBuf.osdBuffer_t[j].color = 2;
-		disMenuBuf.osdBuffer_t[j].posx = (int)((float)outputWHF[0] *0.78125f);
-		disMenuBuf.osdBuffer_t[j].posy = (j + 1) * (int)((float)outputWHF[1] *0.056f);
+		disMenuBuf.osdBuffer[j].bshow = true;
+		disMenuBuf.osdBuffer[j].alpha = 2;
+		disMenuBuf.osdBuffer[j].color = 2;
+		disMenuBuf.osdBuffer[j].posx = (int)((float)outputWHF[0] *0.78125f);
+		disMenuBuf.osdBuffer[j].posy = (j + 1) * (int)((float)outputWHF[1] *0.056f);
 		setlocale(LC_ALL, "zh_CN.UTF-8");
-		swprintf(disMenuBuf.osdBuffer_t[j].disMenu, 33, L"%s", menubuf[j]);
+		swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"%s", menubuf[j]);
 	}
-	disMenuBuf.osdBuffer_t[1].color = 3;
-	disMenuBuf.osdBuffer_t[2].color = 3;
+	disMenuBuf.osdBuffer[1].color = 3;
+	disMenuBuf.osdBuffer[2].color = 3;
 	return;
 }
 
@@ -118,13 +118,13 @@ void LevelOne::inputPWOsd()
 	disMenuBuf.cnt = 4;
 	for(int j = 0; j < disMenuBuf.cnt; j++)
 	{
-		disMenuBuf.osdBuffer_t[j].bshow = true;
-		disMenuBuf.osdBuffer_t[j].alpha = 2;
-		disMenuBuf.osdBuffer_t[j].color = 2;
-		disMenuBuf.osdBuffer_t[j].posx = (int)((float)outputWHF[0] *0.78125f);
-		disMenuBuf.osdBuffer_t[j].posy = (j + 1) * (int)((float)outputWHF[1] *0.056f);
+		disMenuBuf.osdBuffer[j].bshow = true;
+		disMenuBuf.osdBuffer[j].alpha = 2;
+		disMenuBuf.osdBuffer[j].color = 2;
+		disMenuBuf.osdBuffer[j].posx = (int)((float)outputWHF[0] *0.78125f);
+		disMenuBuf.osdBuffer[j].posy = (j + 1) * (int)((float)outputWHF[1] *0.056f);
 		setlocale(LC_ALL, "zh_CN.UTF-8");
-		swprintf(disMenuBuf.osdBuffer_t[j].disMenu, 33, L"%s", menubuf[j]);
+		swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"%s", menubuf[j]);
 	}
 	return;
 }

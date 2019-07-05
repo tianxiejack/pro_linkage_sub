@@ -24,7 +24,10 @@ public:
 	void specialEvent(char key);
 	void normalKeyEvent(char key);
 	void enterKeyEvent();
+	void upMenu();
+	void downMenu();
 
+	
 
 	void* returnIpc();
 	void GetParams(int* p);

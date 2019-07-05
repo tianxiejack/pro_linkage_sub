@@ -60,7 +60,6 @@ int State::ChangeState(char nextState)
 		default:
 			break;
 	}
-
 	return m_curState;
 }
 
@@ -75,14 +74,14 @@ void State::showMenuOsd(osdInfo_t& disMenuBuf)
 
 	for(int i = 0; i < disMenuBuf.cnt; i++)
 	{
-		if(disMenuBuf.osdBuffer_t[i].bshow)
+		if(disMenuBuf.osdBuffer[i].bshow)
 		{
-			x = disMenuBuf.osdBuffer_t[i].posx;
-			y = disMenuBuf.osdBuffer_t[i].posy;
-			a = disMenuBuf.osdBuffer_t[i].alpha;
-			color = disMenuBuf.osdBuffer_t[i].color;
+			x = disMenuBuf.osdBuffer[i].posx;
+			y = disMenuBuf.osdBuffer[i].posy;
+			a = disMenuBuf.osdBuffer[i].alpha;
+			color = disMenuBuf.osdBuffer[i].color;
 			getRGBA(color,r,g,b,a);
-			drawFunc(x, y,disMenuBuf.osdBuffer_t[i].disMenu, font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
+			drawFunc(x, y,disMenuBuf.osdBuffer[i].disMenu, font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
 		}
 	}
 	return;

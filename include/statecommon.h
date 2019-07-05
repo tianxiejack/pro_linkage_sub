@@ -42,7 +42,7 @@ typedef struct
 
 typedef struct{
 	int cnt;
-	osdInfopos_t osdBuffer_t[MAX_SUBMENU];
+	osdInfopos_t osdBuffer[MAX_SUBMENU];
 }osdInfo_t;
 
 

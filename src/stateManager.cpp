@@ -43,7 +43,8 @@ void StateManger::updateOsd()
 
 void StateManger::ChangeState(State* state)
 {
-	this->m_state = state;
+	m_state = state;
+	m_state->operationChangeState();
 	return;
 }
 
@@ -81,4 +82,15 @@ void StateManger::enterKeyEvent()
 }
 
 
+void StateManger::upMenu()
+{
+	m_state->upMenu();
+	return;
+}
+
+void StateManger::downMenu()
+{
+	m_state->downMenu();
+	return;
+}
 
