@@ -30,9 +30,8 @@ public:
 public:
 	virtual void buttonWorkMode(){};
 	virtual void buttonMenu(){};
-	virtual void upMenu(){};
-	virtual void downMenu(){};
-	virtual void showMenuOsd(osdInfo_t& disMenuBuf);
+	void upMenu();
+	void downMenu();
 	virtual int ChangeState(char nextState);
 	virtual void operationChangeState(){};
 	
@@ -84,8 +83,6 @@ public:
 	void initOsd();
 	void buttonMenu();
 	void operationChangeState();
-	void upMenu();
-	void downMenu();
 
 	
 private:

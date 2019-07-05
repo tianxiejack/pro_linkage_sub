@@ -20,8 +20,11 @@ public:
 	void menuButton();
 	void normalKey(char key);
 	void enter();
+	void upMenu();
+	void downMenu();
 
 	void showMenuOsd();
+	void menuhandle_main();
 
 
 	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);
@@ -36,7 +39,7 @@ public:
 	void gotoErrorPW();
 	void gotoMainMenu();
 	void gotoBlankMenu();
-
+	void gotoWorkMode();
 	
 
 public:

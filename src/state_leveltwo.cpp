@@ -58,21 +58,3 @@ void LevelTwo::buttonMenu()
 	return;
 }
 
-
-void LevelTwo::upMenu()
-{
-	disMenuBuf.osdBuffer[m_menuPointer].color = 2;
-	m_menuPointer = (m_menuPointer+disMenuBuf.cnt-1)%disMenuBuf.cnt;
-	disMenuBuf.osdBuffer[m_menuPointer].color = 3;
-	return;
-}
-
-void LevelTwo::downMenu()
-{
-	disMenuBuf.osdBuffer[m_menuPointer].color = 2;
-	m_menuPointer = (++m_menuPointer)%disMenuBuf.cnt;
-	disMenuBuf.osdBuffer[m_menuPointer].color = 3;
-	return;	
-}
-
-

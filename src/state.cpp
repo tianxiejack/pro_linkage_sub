@@ -5,7 +5,7 @@
 DxTimer* State::m_timer = NULL;
 State* State::m_level1 = NULL;
 State* State::m_level2 = NULL;
-char State::m_curState = LEVELONE;
+char State::m_curState = LINKMANUAL;
 CHANGESTAT State::m_changeStatFunc = NULL;
 CMenu* State::m_pMenu = NULL;
 
@@ -48,8 +48,8 @@ int State::ChangeState(char nextState)
 	m_curState = nextState;
 	switch(m_curState)
 	{
-		case LEVELONE:
-			m_changeStatFunc(LEVELONE);
+		case LINKMANUAL:
+			m_changeStatFunc(LINKMANUAL);
 			break;
 			
 		case LEVELTWO:
@@ -65,28 +65,15 @@ int State::ChangeState(char nextState)
 }
 
 
-void State::showMenuOsd(osdInfo_t& disMenuBuf)
+void State::upMenu()
 {
-	#if 0
-	unsigned char r, g, b, a, color;
-	short x, y;
+	m_pMenu->upMenu();
+	return;
+}
 
-	char font = 1;
-	char fontsize = 4;
-
-	for(int i = 0; i < disMenuBuf.cnt; i++)
-	{
-		if(disMenuBuf.osdBuffer[i].bshow)
-		{
-			x = disMenuBuf.osdBuffer[i].posx;
-			y = disMenuBuf.osdBuffer[i].posy;
-			a = disMenuBuf.osdBuffer[i].alpha;
-			color = disMenuBuf.osdBuffer[i].color;
-			getRGBA(color,r,g,b,a);
-			drawFunc(x, y,disMenuBuf.osdBuffer[i].disMenu, font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
-		}
-	}
-	#endif
+void State::downMenu()
+{
+	m_pMenu->downMenu();
 	return;
 }
 

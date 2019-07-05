@@ -19,7 +19,7 @@ StateManger* StateManger::pThis = NULL;
 StateManger::StateManger()
 {
 	m_state = new CLinkManual();
-	m_curState = LEVELONE;
+	m_curState = LINKMANUAL;
 }
 
 StateManger::~StateManger()

@@ -65,20 +65,67 @@ void CMenu::gotoErrorPW()
 
 void CMenu::gotoMainMenu()
 {
+	m_menuPointer = 0;
 	lv_2_osd();
 	m_menuStat = MENU_MAIN;
 	return;
 }
 
+void CMenu::gotoWorkMode()
+{
+	m_menuPointer = 0;
+	lv_3_mtdosd();
+	m_menuStat = MENU_WORKMODE;
+	return;
+}
+
+
+
+void CMenu::upMenu()
+{
+	disMenuBuf.osdBuffer[m_menuPointer].color = 2;
+	m_menuPointer = (m_menuPointer+disMenuBuf.cnt-1)%disMenuBuf.cnt;
+	disMenuBuf.osdBuffer[m_menuPointer].color = 3;
+	return;
+}
+
+
+void CMenu::downMenu()
+{
+	disMenuBuf.osdBuffer[m_menuPointer].color = 2;
+	m_menuPointer = (++m_menuPointer)%disMenuBuf.cnt;
+	disMenuBuf.osdBuffer[m_menuPointer].color = 3;
+	return;
+}
+
+
+void CMenu::menuhandle_main()
+{
+	switch(m_menuPointer)
+	{
+		case 0:
+			
+			break;
+		case 1:
+		
+			break;
+
+		default:
+
+			break;
+	}
+
+
+	return;
+}
 
 
 void CMenu::enter()
 {
 	if(m_menuStat == MENU_INPUTPW)
 	{
-		if(!strcmp(init_passwd, m_passwd)){
+		if(!strcmp(init_passwd, m_passwd))
 			gotoMainMenu();
-		}
 		else{
 			printf("watching!!!!!!! error pw \n");
 			gotoErrorPW();
@@ -86,6 +133,10 @@ void CMenu::enter()
 	}	
 	else if(m_menuStat == MENU_ERRORPW)
 		gotoInputPW();
+	else if(m_menuStat == MENU_MAIN)
+		menuhandle_main();
+
+		
 	
 	return;
 }

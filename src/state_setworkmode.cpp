@@ -20,8 +20,6 @@ CSetWorkMode::~CSetWorkMode()
 
 void CSetWorkMode::showOsd()
 {
-	//showMenuOsd(&disMenuBuf);
-	return;
 }
 
 

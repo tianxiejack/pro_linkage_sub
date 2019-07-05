@@ -34,10 +34,6 @@ void CLinkManual::inputNumber(char key)
 void CLinkManual::showOsd()
 {
 	m_pMenu->showMenuOsd();
-	#if 0
-	if(m_menuShow)
-		showMenuOsd(disMenuBuf);
-	#endif
 	return;
 }
 

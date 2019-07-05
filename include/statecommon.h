@@ -16,7 +16,7 @@ typedef void (*CHANGESTAT)(char nextMode);
 #define CHAR signed char
 
 typedef enum{
-	LEVELONE,
+	LINKMANUAL,
 	LEVELTWO,
 	SETWORKMODE,
 	LEVELMAX,
