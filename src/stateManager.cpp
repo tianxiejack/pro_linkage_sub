@@ -29,7 +29,7 @@ StateManger::~StateManger()
 void StateManger::init(OSDFUNC func,CMvDectInterface *pMov)
 {
 	m_pMv = pMov;
-	m_state->StateInit(func);
+	m_state->StateInit(func,this);
 	updateOsd();
 }
 

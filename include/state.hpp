@@ -21,7 +21,7 @@ class State
 {
 public:
 	State();
-	void StateInit(OSDFUNC func);
+	void StateInit(OSDFUNC func,StateManger* con);
 	void create();
 	virtual ~State();
 
@@ -38,8 +38,8 @@ public:
 public:
 	virtual void buttonWorkMode(){};
 	virtual void buttonMenu(){};
-	
-	virtual int ChangeState(StateManger* con, char nextState);
+	virtual void showMenuOsd(osdInfo_t& disMenuBuf);
+	virtual int ChangeState(char nextState);
 	
 	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);
 
@@ -50,6 +50,7 @@ public:
 	static DxTimer* m_timer;
 	static State *m_level1 , *m_level2;
 	static OSDFUNC drawFunc;
+	static StateManger* m_pStatManager;
 };
 
 
@@ -63,21 +64,15 @@ public:
 	void inputNumber(char key);
 	void enter();
 
-
 public:
 	void initOsd();
-	void showMenuOsd();
 	void buttonMenu();
-
-
 
 	void clearPw();
 	void inputPWOsd();
 	void inputErrorPWOsd();
 
-
 private:
-	static LevelOne* pThis;
 	osdInfo_t disMenuBuf;
 	bool inputtingStat;
 
@@ -85,7 +80,6 @@ private:
 	char m_dispasswd[128];
 	char *init_passwd;
 	bool m_menuShow;
-	
 };
 
 
@@ -99,8 +93,15 @@ public:
 	void inputNumber(char key);
 	void enter();
 
+public:
+	void initOsd();
+	void buttonMenu();
+
+	
 private:
-	static LevelTwo* pThis;
+	osdInfo_t disMenuBuf;
+
+	
 
 
 };

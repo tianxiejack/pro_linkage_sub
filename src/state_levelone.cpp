@@ -53,10 +53,12 @@ void LevelOne::enter()
 			if(!strcmp(init_passwd, m_passwd)){
 				inputtingStat = true;
 				clearPw();
+				ChangeState(LEVELTWO);
+				
 				printf("watching :::!!!!!!! enter next state \n");
 			}
 			else{
-				printf("watching :::!!!!!!! error pw \n");
+				//printf("watching :::!!!!!!! error pw \n");
 				inputtingStat = false;
 				inputErrorPWOsd();
 				clearPw();
@@ -107,10 +109,7 @@ void LevelOne::inputErrorPWOsd()
 	}
 	disMenuBuf.osdBuffer_t[1].color = 3;
 	disMenuBuf.osdBuffer_t[2].color = 3;
-
 	return;
-
-
 }
 
 void LevelOne::inputPWOsd()
@@ -134,32 +133,7 @@ void LevelOne::inputPWOsd()
 void LevelOne::showOsd()
 {
 	if(m_menuShow)
-		showMenuOsd();
+		showMenuOsd(disMenuBuf);
 	return;
 }
-
-
-void LevelOne::showMenuOsd()
-{
-	unsigned char r, g, b, a, color;
-	short x, y;
-
-	char font = 1;
-	char fontsize = 4;
-
-	for(int i = 0; i < disMenuBuf.cnt; i++)
-	{
-		if(disMenuBuf.osdBuffer_t[i].bshow)
-		{
-			x = disMenuBuf.osdBuffer_t[i].posx;
-			y = disMenuBuf.osdBuffer_t[i].posy;
-			a = disMenuBuf.osdBuffer_t[i].alpha;
-			color = disMenuBuf.osdBuffer_t[i].color;
-			getRGBA(color,r,g,b,a);
-			drawFunc(x, y,disMenuBuf.osdBuffer_t[i].disMenu, font ,fontsize, r, g, b, a, VIDEO_DIS_WIDTH, VIDEO_DIS_HEIGHT);
-		}
-	}
-	return;
-}
-
 
