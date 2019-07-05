@@ -12,27 +12,14 @@ CLinkManual::~CLinkManual()
 
 void CLinkManual::buttonMenu()
 {
-	m_pMenu->menuButton();
-
-
-	#if 0
-	m_menuShow = !m_menuShow;
-	if(m_menuShow == true)
-	{
-		clearPw();
-		inputtingStat = true;
-		inputPWOsd();
-	}
-	else
-		inputtingStat = false;
-	#endif
-	
+	m_pMenu->menuButton();	
 	return;
 }
 
 
 void CLinkManual::enter()
 {
+	m_pMenu->enter();
 	#if 0
 	if(m_menuShow)
 	{

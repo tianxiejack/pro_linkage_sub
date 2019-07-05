@@ -41,7 +41,11 @@ void CMenu::menuButton()
 		m_menuStat = MENU_BLANK;
 		disMenuBuf.cnt = 0;
 	}
-	
+	else if(m_menuStat == MENU_ERRORPW)
+	{
+		m_menuStat = MENU_BLANK;
+		disMenuBuf.cnt = 0;
+	}
 
 
 	return;
@@ -50,7 +54,24 @@ void CMenu::menuButton()
 
 void CMenu::enter()
 {
-	
+	if(m_menuStat == MENU_INPUTPW)
+	{
+		if(!strcmp(init_passwd, m_passwd)){
+			clearPw();
+			//ChangeState(LEVELTWO);
+			printf("watching :::!!!!!!! enter next state \n");
+		}
+		else{
+			printf("watching :::!!!!!!! error pw \n");
+			lv_1_errorPWosd();
+			m_menuStat = MENU_ERRORPW;
+		}
+	}	
+	else if(m_menuStat == MENU_ERRORPW)
+	{
+		lv_1_inputPWosd();
+		m_menuStat = MENU_INPUTPW;
+	}
 	
 	return;
 }
