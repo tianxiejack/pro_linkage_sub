@@ -30,7 +30,13 @@ void LevelTwo::inputNumber(char key)
 
 void LevelTwo::enter()
 {
-	
+	switch(m_menuPointer)
+	{
+		case 0:
+			ChangeState(char nextState);
+			break;
+
+	}
 }
 
 

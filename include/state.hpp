@@ -25,14 +25,10 @@ public:
 	void create();
 	virtual ~State();
 
-
-
 public:
 	virtual void showOsd() = 0;
 	virtual void inputNumber(char key) = 0;
 	virtual void enter() = 0;
-
-
 
 public:
 	virtual void buttonWorkMode(){};
@@ -51,7 +47,7 @@ public:
 public:
 	static char m_curState;
 	static DxTimer* m_timer;
-	static State *m_level1 , *m_level2;
+	static State *m_level1 , *m_level2, *m_level_setworkmode;
 	static OSDFUNC drawFunc;
 	static StateManger* m_pStatManager;
 };
@@ -101,8 +97,6 @@ public:
 	void initOsd();
 	void buttonMenu();
 	void operationChangeState();
-	
-
 	void upMenu();
 	void downMenu();
 
@@ -113,5 +107,30 @@ private:
 
 
 };
+
+
+class CSetWorkMode:public State
+{
+public:
+	CSetWorkMode();
+	virtual ~CSetWorkMode();
+	
+	void showOsd();
+
+
+public:
+	void initOsd();
+	void buttonMenu();
+	void operationChangeState();
+	void upMenu();
+	void downMenu();
+	void enter();
+	
+private:
+	osdInfo_t disMenuBuf;
+	char m_menuPointer;
+
+};
+
 
 #endif /* STATE_HPP_ */

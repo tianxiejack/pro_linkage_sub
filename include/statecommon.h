@@ -16,9 +16,11 @@ typedef void (*OSDFUNC)(int x,int y,wchar_t* text,char font,char fontsize,unsign
 typedef enum{
 	LEVELONE,
 	LEVELTWO,
-	LEVELTHREE,
-	LEVELFOUR,
-	LEVELFIVE,
+	SETWORKMODE,
+	SETCALIB,
+	SETMTD,
+	SETMTD_REGION,
+	SETMTD_UNREGION,
 	LEVELMAX,
 }state_enum;
 

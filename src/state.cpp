@@ -56,6 +56,26 @@ int State::ChangeState(char nextState)
 		case LEVELTWO:
 			m_pStatManager->ChangeState(m_level2);
 			break;
+			
+		case SETWORKMODE:
+			m_pStatManager->ChangeState(m_level2);
+			break;
+
+		case SETCALIB:
+
+			break;
+			
+		case SETMTD:
+
+			break;
+			
+		case SETMTD_REGION:
+
+			break;
+			
+		case SETMTD_UNREGION:
+
+			break;
 
 		default:
 			break;
