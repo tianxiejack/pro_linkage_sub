@@ -96,3 +96,9 @@ void StateManger::downMenu()
 	return;
 }
 
+void StateManger::showOsd()
+{
+	m_state->showOsd();
+	return;
+}
+

@@ -7,12 +7,9 @@
 
 class CMenu
 {
+public:
 	CMenu(OSDFUNC drawFunc);
 	~CMenu();
-
-
-
-public:
 
 	void lv_1_inputPWosd();
 	void lv_1_errorPWosd();
@@ -32,17 +29,17 @@ public:
 
 	void clearPw();
 
-
+public:
+	OSDFUNC drawFunc;
 
 private:
 	char *init_passwd;
 	osdInfo_t disMenuBuf;
 	char m_passwd[128];
 
-	OSDFUNC drawFunc;
+
 	char m_menuPointer;
 	
-
 };
 
 

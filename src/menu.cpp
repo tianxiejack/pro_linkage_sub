@@ -13,10 +13,10 @@
 #include <stdio.h>
 #include <wchar.h>
 
-
-CMenu::CMenu(OSDFUNC pfun):drawFunc(pfun),m_menuPointer(-1)
+CMenu::CMenu(OSDFUNC pfun):m_menuPointer(-1)
 {
-	init_passwd ="0000";
+	init_passwd = "0000";
+	drawFunc = pfun;
 }
 
 CMenu::~CMenu()
@@ -32,6 +32,7 @@ void CMenu::menuButton()
 		clearPw();
 		lv_1_inputPWosd();
 	}
+	
 
 
 	return;

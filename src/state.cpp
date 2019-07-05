@@ -6,8 +6,8 @@ DxTimer* State::m_timer = NULL;
 State* State::m_level1 = NULL;
 State* State::m_level2 = NULL;
 char State::m_curState = LEVELONE;
-//CMenu* State::m_pMenu = NULL;
 CHANGESTAT State::m_changeStatFunc = NULL;
+CMenu* State::m_pMenu = NULL;
 
 
 State::State()
@@ -28,8 +28,8 @@ void State::StateInit(OSDFUNC pDraw , CHANGESTAT pChangeStat)
 	if(m_timer == NULL)
 		m_timer = new DxTimer();
 	
-//	if(m_pMenu == NULL)
-	//	m_pMenu = new CMenu(pDraw);
+	if(m_pMenu == NULL)
+		m_pMenu = new CMenu(pDraw);
 
 	m_changeStatFunc = pChangeStat;
 		

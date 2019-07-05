@@ -24,7 +24,7 @@ public:
 	void enterKeyEvent();
 	void upMenu();
 	void downMenu();
-
+	void showOsd();
 	
 	static void callbackChangeStat(char nextmode);
 

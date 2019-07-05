@@ -12,7 +12,8 @@ LevelOne::~LevelOne()
 
 void LevelOne::buttonMenu()
 {
-	//m_pMenu->menuButton();
+	m_pMenu->menuButton();
+
 
 	#if 0
 	m_menuShow = !m_menuShow;
@@ -25,6 +26,7 @@ void LevelOne::buttonMenu()
 	else
 		inputtingStat = false;
 	#endif
+	
 	return;
 }
 
