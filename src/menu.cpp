@@ -31,6 +31,9 @@ CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm):m_menuPoin
 
 	m_mtdnum = 8;
 	m_mtdtrktime = 5;
+	m_mtdmaxsize = 60000;
+	m_mtdminsize = 300;
+	m_mtdsensi = 12;
 }
 
 CMenu::~CMenu()
@@ -121,6 +124,28 @@ void CMenu::upMenu()
 			set_mtd_trktime_osd();
 			break;
 
+		case MENU_MTD_MAXSIZE:
+			m_mtdmaxsize = (m_mtdmaxsize + 1) % (MAX_MTDMAXSIZE+1);
+			if(m_mtdmaxsize < m_mtdminsize)
+				m_mtdmaxsize = m_mtdminsize;
+			set_mtd_maxsize_osd();
+
+			break;
+			
+		case MENU_MTD_MINSIZE:
+			m_mtdminsize = (m_mtdminsize + 1) % (MAX_MTDMAXSIZE+1);
+			if(m_mtdminsize > MAX_MTDMAXSIZE)
+				m_mtdminsize = MAX_MTDMAXSIZE;
+			set_mtd_minsize_osd();
+			break;
+			
+		case MENU_MTD_SENSI:
+			m_mtdsensi = (m_mtdsensi + 1) % (MAX_MTDSENSI+1);
+			if(m_mtdsensi < MIN_MTDSENSI)
+				m_mtdsensi = MIN_MTDSENSI;
+			set_mtd_sensi_osd();
+			break;
+
 		default:
 			disMenuBuf.osdBuffer[m_menuPointer].color = 2;
 			m_menuPointer = (m_menuPointer+disMenuBuf.cnt-1)%disMenuBuf.cnt;
@@ -154,9 +179,29 @@ void CMenu::downMenu()
 			break;
 
 		
+		case MENU_MTD_MAXSIZE:
+			if(m_mtdmaxsize == m_mtdminsize)
+				m_mtdmaxsize = MAX_MTDMAXSIZE;
+			else
+				m_mtdmaxsize = (m_mtdmaxsize + MAX_MTDMAXSIZE - 1) % MAX_MTDMAXSIZE;
+			set_mtd_maxsize_osd();
+			break;
 
-
-
+		case MENU_MTD_MINSIZE:
+			if(MIN_MTDMINSIZE > m_mtdminsize)
+				m_mtdminsize = MIN_MTDMINSIZE;
+			else
+				m_mtdminsize = (m_mtdminsize + MAX_MTDMAXSIZE - 1) % MAX_MTDMAXSIZE;
+			set_mtd_minsize_osd();
+			break;
+			
+		case MENU_MTD_SENSI:
+			if(MIN_MTDSENSI == m_mtdsensi)
+				m_mtdsensi = MAX_MTDSENSI;
+			else
+				m_mtdsensi = (m_mtdsensi + MAX_MTDSENSI - 1) % MAX_MTDSENSI;
+			set_mtd_sensi_osd();
+			break;
 
 
 		default:
@@ -306,6 +351,35 @@ void CMenu::set_mtd_trktime_osd()
 	return ;
 }
 
+
+void CMenu::set_mtd_maxsize_osd()
+{
+	if((m_mtdmaxsize < MIN_MTDMINSIZE) || (m_mtdmaxsize > MAX_MTDMAXSIZE))
+		swprintf(disMenuBuf.osdBuffer[4].disMenu, 33, L"最大目标面积 %d(超出范围)", m_mtdmaxsize);
+	else
+		swprintf(disMenuBuf.osdBuffer[4].disMenu, 33, L"最大目标面积 %d", m_mtdmaxsize);
+	return;
+}
+
+
+void CMenu::set_mtd_minsize_osd()
+{
+	if((m_mtdminsize < MIN_MTDMINSIZE) || (m_mtdminsize > MAX_MTDMAXSIZE))
+		swprintf(disMenuBuf.osdBuffer[5].disMenu, 33, L"最小目标面积 %d(超出范围)", m_mtdminsize);
+	else
+		swprintf(disMenuBuf.osdBuffer[5].disMenu, 33, L"最小目标面积 %d", m_mtdminsize);
+	return;
+}
+
+
+void CMenu::set_mtd_sensi_osd()
+{
+	if((m_mtdsensi < MIN_MTDSENSI) || (m_mtdsensi > MAX_MTDSENSI))
+		swprintf(disMenuBuf.osdBuffer[5].disMenu, 33, L"灵敏度		%d(超出范围%d~%d)", m_mtdsensi,MIN_MTDSENSI,MAX_MTDSENSI);
+	else
+		swprintf(disMenuBuf.osdBuffer[5].disMenu, 33, L"灵敏度		%d", m_mtdsensi);
+	return;
+}
 
 
 void CMenu::TimerCreate()
