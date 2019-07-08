@@ -52,9 +52,13 @@ public:
 
 	void set_mtd_num(char key);
 	void set_mtd_num_osd();
+	void set_mtd_trktime(char key);
+	void set_mtd_trktime_osd();
 
 
 	void menuMtdparam_setnum();
+	void menuMtdparam_settrktime();
+	
 
 
 	static void TcallbackFunc(void *p);
@@ -76,7 +80,7 @@ private:
 	bool shin_mtdnum,shin_trktime,shin_maxsize,shin_minsize,shin_sensi;
 	int mtdnum_timeId, trktime_timeId, maxsize_timeId, minsize_timeId, sensi_timeId;
 
-	int m_mtdnum;
+	int m_mtdnum , m_mtdtrktime;
 	
 	char m_mtdnum_arr[128];
 	char m_trktime_arr[128];

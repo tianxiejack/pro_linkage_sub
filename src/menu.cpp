@@ -30,6 +30,7 @@ CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm):m_menuPoin
 
 
 	m_mtdnum = 8;
+	m_mtdtrktime = 5;
 }
 
 CMenu::~CMenu()
@@ -91,7 +92,12 @@ void CMenu::gotoMtdparam(bool initPointer)
 	if(initPointer)
 		m_menuPointer = 0;
 	lv_3_mtdparamOsd();
+
 	set_mtd_num_osd();
+	set_mtd_trktime_osd();
+
+
+	
 	m_menuStat = MENU_MTD;
 	return;
 }
@@ -106,6 +112,13 @@ void CMenu::upMenu()
 			if(m_mtdnum < MIN_MTDTARGET_NUM)
 				m_mtdnum = MIN_MTDTARGET_NUM;
 			set_mtd_num_osd();
+			break;
+
+		case MENU_MTD_TRKTIME:
+			m_mtdtrktime = (m_mtdtrktime + 1) % (MAX_MTDTRKTIME+1);
+			if(m_mtdtrktime < MIN_MTDTRKTIME)
+				m_mtdtrktime = MIN_MTDTRKTIME;
+			set_mtd_trktime_osd();
 			break;
 
 		default:
@@ -126,11 +139,25 @@ void CMenu::downMenu()
 	{
 		case MENU_MTD_SETNUM:
 			if(MIN_MTDTARGET_NUM == m_mtdnum )
-				m_mtdnum  = MAX_MTDTARGET_NUM;
+				m_mtdnum = MAX_MTDTARGET_NUM;
 			else
-				m_mtdnum  = (m_mtdnum  + MAX_MTDTARGET_NUM - 1) % MAX_MTDTARGET_NUM;
+				m_mtdnum = (m_mtdnum  + MAX_MTDTARGET_NUM - 1) % MAX_MTDTARGET_NUM;
 			set_mtd_num_osd();
 			break;
+
+		case MENU_MTD_TRKTIME:	
+			if(MIN_MTDTRKTIME == m_mtdtrktime)
+				m_mtdtrktime = MAX_MTDTRKTIME;
+			else
+				m_mtdtrktime = (m_mtdtrktime + MAX_MTDTRKTIME - 1) % MAX_MTDTRKTIME;
+			set_mtd_trktime_osd();
+			break;
+
+		
+
+
+
+
 
 		default:
 			disMenuBuf.osdBuffer[m_menuPointer].color = 2;
@@ -206,6 +233,29 @@ void CMenu::menuMtdparam_setnum()
 }
 
 
+void CMenu::menuMtdparam_settrktime()
+{
+	shin_trktime = !shin_trktime;
+
+	if(shin_trktime)
+		m_timer.startTimer(trktime_timeId,500);
+	else
+	{
+		m_timer.stopTimer(trktime_timeId);
+		set_mtd_trktime_osd();
+		if((m_mtdtrktime >= MIN_MTDTRKTIME) && (m_mtdtrktime <= MAX_MTDTRKTIME))
+		{
+			//processdurationMenu_osd(m_mtdtrktime);
+			//m_config[CFGID_MTD_maxtrk] = m_mtdtrktime;
+			//storeMtdConfigFlag = true;
+			//wait to save param
+		}
+		memset(m_trktime_arr, 0, sizeof(m_trktime_arr));
+	}
+}
+
+
+
 void CMenu::set_mtd_num(char key)
 {
 	int offset = strlen(m_mtdnum_arr) * sizeof(char);
@@ -229,6 +279,33 @@ void CMenu::set_mtd_num_osd()
 		swprintf(disMenuBuf.osdBuffer[2].disMenu, 33, L"目标个数	    %d个", m_mtdnum);
 	return ;
 }
+
+
+void CMenu::set_mtd_trktime(char key)
+{
+	int offset = strlen(m_trktime_arr) * sizeof(char);
+	if(offset < sizeof(m_trktime_arr) - 1)
+		sprintf(m_trktime_arr + offset,"%c", key);
+	else	
+		printf("trktime reached max length:128");
+
+	int num = atoi(m_trktime_arr);
+	m_mtdtrktime = atoi(m_trktime_arr);
+	printf("%s,%d,osd_trktime=%d\n",__FILE__,__LINE__,m_mtdtrktime);
+	set_mtd_trktime_osd();
+	return ;
+}
+
+
+void CMenu::set_mtd_trktime_osd()
+{
+	if((m_mtdtrktime < MIN_MTDTRKTIME) || (m_mtdtrktime > MAX_MTDTRKTIME))
+		swprintf(disMenuBuf.osdBuffer[3].disMenu, 33, L"跟踪持续时间 %d秒(超出范围%d~%d)", m_mtdtrktime,MIN_MTDTRKTIME,MAX_MTDTRKTIME);
+	else
+		swprintf(disMenuBuf.osdBuffer[3].disMenu, 33, L"跟踪持续时间 %d秒", m_mtdtrktime);
+	return ;
+}
+
 
 
 void CMenu::TimerCreate()
@@ -258,7 +335,7 @@ void CMenu::TcallbackFunc(void *p)
 void CMenu::TcallbackHandle(void *p)
 {
 	static bool mtdnum_shinOut = false;
-	static bool trktime_dianmie = false;
+	static bool mtdtrktime_shinOut = false;
 	static bool maxsize_dianmie = false;
 	static bool minsize_dianmie = false;
 	static bool sensi_dianmie = false;
@@ -277,19 +354,19 @@ void CMenu::TcallbackHandle(void *p)
 		}
 		mtdnum_shinOut = !mtdnum_shinOut;
 	}
-	/*
-	else if(a == sThis->trktime_light_id)
+	else if(a == trktime_timeId)
 	{
-		if(trktime_dianmie)
-			sThis->set_mtd_trktime_osd();
+		if(mtdtrktime_shinOut)
+			set_mtd_trktime_osd();
 		else{
-			if(sThis->m_menuCtrl.osd_trktime >= 10)
-				swprintf(sThis->disMenu[submenu_mtd][2], 33, L"跟踪持续时间   秒");
+			if(m_mtdtrktime >= 10)
+				swprintf(disMenuBuf.osdBuffer[3].disMenu, 33, L"跟踪持续时间   秒");
 			else
-				swprintf(sThis->disMenu[submenu_mtd][2], 33, L"跟踪持续时间  秒");
+				swprintf(disMenuBuf.osdBuffer[3].disMenu, 33, L"跟踪持续时间  秒");
 		}
-		trktime_dianmie = !trktime_dianmie;
+		mtdtrktime_shinOut = !mtdtrktime_shinOut;
 	}
+	/*
 	else if(a == sThis->maxsize_light_id)
 	{
 		if(maxsize_dianmie)
@@ -335,6 +412,7 @@ void CMenu::menuhandle_mtdparam()
 		case 3:
 			// trk time
 			m_menuStat = MENU_MTD_TRKTIME;
+			menuMtdparam_settrktime();
 			break;
 		case 4:
 			// max area
@@ -388,6 +466,23 @@ void CMenu::enter()
 		case MENU_MTD_SETNUM:
 			menuMtdparam_setnum();
 			gotoMtdparam(false);
+			break;
+
+		case MENU_MTD_TRKTIME:
+			menuMtdparam_settrktime();
+			gotoMtdparam(false);
+			break;
+
+		case MENU_MTD_MAXSIZE:
+
+			break;
+
+		case MENU_MTD_MINSIZE:
+
+			break;
+
+		case MENU_MTD_SENSI:
+
 			break;
 	}
 
