@@ -19,7 +19,7 @@ State::~State()
 }
 
 
-void State::StateInit(OSDFUNC pDraw , CHANGESTAT pChangeStat)
+void State::StateInit(OSDFUNC pDraw , CHANGESTAT pChangeStat , CHDEFWORKMD pChangeWkmode)
 {
 	if(m_level1 == NULL)
 		m_level1 = new CLinkManual();
@@ -29,7 +29,7 @@ void State::StateInit(OSDFUNC pDraw , CHANGESTAT pChangeStat)
 		m_timer = new DxTimer();
 	
 	if(m_pMenu == NULL)
-		m_pMenu = new CMenu(pDraw,pChangeStat);
+		m_pMenu = new CMenu(pDraw,pChangeStat,pChangeWkmode);
 
 	m_changeStatFunc = pChangeStat;
 		

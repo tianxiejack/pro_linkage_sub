@@ -13,14 +13,12 @@
 #include <wchar.h>
 
 
-CHANGESTAT CMenu::m_changeStatFunc = NULL;
-
-
-CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pchStatfun):m_menuPointer(-1),m_menuStat(MENU_BLANK)
+CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm):m_menuPointer(-1),m_menuStat(MENU_BLANK)
 {
 	init_passwd = "0000";
 	drawFunc = pfun;
-	m_changeStatFunc = pchStatfun;
+	changeStatFunc = pchStatfun;
+	changeDefwmFunc = pchDefwm;
 	disMenuBuf.cnt = 0;
 	memset(m_passwd,0,sizeof(m_passwd));
 	memset(m_dispasswd,0,sizeof(m_dispasswd));
@@ -124,20 +122,20 @@ void CMenu::menuhandle_workmode()
 	switch(m_menuPointer)
 	{
 		case 0:
-				
+			changeDefwmFunc(LINKMANUAL);
 			break;
 		case 1:
-		
+			changeDefwmFunc(LINKAUTO);
 			break;
-
-
-
-
+		case 2:
+			changeDefwmFunc(LINKBALL);
+			break;
+		case 3:
+			gotoMainMenu();
+			break;
 		default:
 			break;
 	}
-
-
 	return;
 }
 

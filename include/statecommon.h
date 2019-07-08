@@ -12,11 +12,15 @@
 
 typedef void (*OSDFUNC)(int x,int y,wchar_t* text,char font,char fontsize,unsigned char r,unsigned char g,unsigned char b,unsigned char a,int win_width,int win_height);
 typedef void (*CHANGESTAT)(char nextMode);
+typedef void (*CHDEFWORKMD)(char workmode);
 
 #define CHAR signed char
 
 typedef enum{
 	LINKMANUAL,
+	LINKAUTO,
+	LINKBALL,
+	LINKCALIB,
 	LEVELTWO,
 	SETWORKMODE,
 	LEVELMAX,

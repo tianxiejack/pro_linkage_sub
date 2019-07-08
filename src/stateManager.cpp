@@ -20,6 +20,7 @@ StateManger::StateManger()
 {
 	m_state = new CLinkManual();
 	m_curState = LINKMANUAL;
+	pThis = this;
 }
 
 StateManger::~StateManger()
@@ -31,7 +32,7 @@ StateManger::~StateManger()
 void StateManger::init(OSDFUNC func,CMvDectInterface *pMov)
 {
 	m_pMv = pMov;
-	m_state->StateInit(func,callbackChangeStat);
+	m_state->StateInit(func,callbackChangeStat , callbackChangeDefaultWorkMode);
 }
 
 
@@ -72,7 +73,9 @@ void StateManger::callbackChangeStat(char nextmode)
 
 void StateManger::callbackChangeDefaultWorkMode(char workmode)
 {
-
+	pThis->m_defworkmode = workmode;
+	//wait to add save param in param;
+	printf("m_defworkmode = %d \n" , 	pThis->m_defworkmode);
 	return;
 }
 

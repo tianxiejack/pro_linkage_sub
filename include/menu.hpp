@@ -8,7 +8,7 @@
 class CMenu
 {
 public:
-	CMenu(OSDFUNC pfun,CHANGESTAT pchStatfun);
+	CMenu(OSDFUNC pfun,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm);
 	~CMenu();
 
 	void lv_1_inputPWosd();
@@ -46,13 +46,14 @@ public:
 
 public:
 	OSDFUNC drawFunc;
+	CHDEFWORKMD changeDefwmFunc;
+	CHANGESTAT changeStatFunc;
 
 private:
 	char *init_passwd;
 	osdInfo_t disMenuBuf;
 	char m_passwd[128];
 	char m_dispasswd[128];
-	static CHANGESTAT m_changeStatFunc;
 
 
 	CHAR m_menuPointer;

@@ -48,10 +48,12 @@ private:
 	void OperationChangState();
 
 private:
+	char m_defworkmode;
 	int m_curState;
 	State* m_state;
 	CMvDectInterface * m_pMv;
 	static StateManger* pThis;
+
 };
 
 
