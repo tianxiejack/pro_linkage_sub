@@ -5,6 +5,8 @@
 #include "configtable.h"
 #include "statecommon.h"
 
+#include "DxTimer.hpp"
+
 class CMenu
 {
 public:
@@ -14,8 +16,10 @@ public:
 	void lv_1_inputPWosd();
 	void lv_1_errorPWosd();
 	void lv_2_osd();
-	void lv_3_mtdosd();
+	void lv_3_workmodeOsd();
+	void lv_3_mtdparamOsd();
 
+	
 
 	void menuButton();
 	void normalKey(char key);
@@ -35,6 +39,7 @@ public:
 
 	void menuhandle_main();
 	void menuhandle_workmode();
+	void menuhandle_mtdparam();
 
 
 	void gotoInputPW();
@@ -42,7 +47,19 @@ public:
 	void gotoMainMenu();
 	void gotoBlankMenu();
 	void gotoWorkMode();
-	
+	void gotoMtdparam(bool initPointer = true);
+
+
+	void set_mtd_num(char key);
+	void set_mtd_num_osd();
+
+
+	void menuMtdparam_setnum();
+
+
+	static void TcallbackFunc(void *p);
+	void TimerCreate();
+	void TcallbackHandle(void *p);
 
 public:
 	OSDFUNC drawFunc;
@@ -54,7 +71,18 @@ private:
 	osdInfo_t disMenuBuf;
 	char m_passwd[128];
 	char m_dispasswd[128];
+	DxTimer m_timer;
 
+	bool shin_mtdnum,shin_trktime,shin_maxsize,shin_minsize,shin_sensi;
+	int mtdnum_timeId, trktime_timeId, maxsize_timeId, minsize_timeId, sensi_timeId;
+
+	int m_mtdnum;
+	
+	char m_mtdnum_arr[128];
+	char m_trktime_arr[128];
+	char m_maxsize_arr[128];
+	char m_minsize_arr[128];
+	char m_sensi_arr[128];
 
 	CHAR m_menuPointer;
 	CHAR m_menuStat;
