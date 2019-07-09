@@ -29,6 +29,7 @@
 								<option id="nvcc.compiler.pic.1905144482" name="Position Independent Code (-fPIC)" superClass="nvcc.compiler.pic"/>
 								<option id="nvcc.compiler.include.paths.1316048354" name="Include paths (-I)" superClass="nvcc.compiler.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/lib/aarch64-linux-gnu/include"/>
+									<listOptionValue builtIn="false" value="../src/DxTimer"/>
 									<listOptionValue builtIn="false" value="/usr/include/freetype2"/>
 									<listOptionValue builtIn="false" value="/usr/include/opencv"/>
 									<listOptionValue builtIn="false" value="/usr/include/opencv2"/>
@@ -104,7 +105,7 @@
 					<ptx major="5" minor="3"/>
 					<sass major="5" minor="3"/>
 				</executable>
-				<editor-arch major="5" minor="3"/>
+				<editor-arch major="2" minor="0"/>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
@@ -136,6 +137,7 @@
 								<option id="nvcc.compiler.pic.1215709558" name="Position Independent Code (-fPIC)" superClass="nvcc.compiler.pic"/>
 								<option id="nvcc.compiler.include.paths.1310531962" name="Include paths (-I)" superClass="nvcc.compiler.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/lib/aarch64-linux-gnu/include"/>
+									<listOptionValue builtIn="false" value="../src/DxTimer"/>
 									<listOptionValue builtIn="false" value="/usr/include/freetype2"/>
 									<listOptionValue builtIn="false" value="/usr/include/opencv"/>
 									<listOptionValue builtIn="false" value="/usr/include/opencv2"/>
