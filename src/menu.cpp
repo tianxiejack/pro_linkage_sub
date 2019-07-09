@@ -15,7 +15,8 @@
 static CMenu* pThis = NULL;
 
 CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm):m_menuPointer(-1),m_menuStat(MENU_BLANK),
-	shin_mtdnum(false),shin_trktime(false)
+	shin_mtdnum(false),shin_trktime(false),shin_maxsize(false),
+	shin_minsize(false),shin_sensi(false)
 {
 	init_passwd = "0000";
 	drawFunc = pfun;
@@ -95,12 +96,11 @@ void CMenu::gotoMtdparam(bool initPointer)
 	if(initPointer)
 		m_menuPointer = 0;
 	lv_3_mtdparamOsd();
-
 	set_mtd_num_osd();
 	set_mtd_trktime_osd();
-
-
-	
+	set_mtd_maxsize_osd();
+	set_mtd_minsize_osd();
+	set_mtd_sensi_osd();
 	m_menuStat = MENU_MTD;
 	return;
 }
@@ -300,6 +300,71 @@ void CMenu::menuMtdparam_settrktime()
 }
 
 
+void CMenu::menuMtdparam_setmaxsize()
+{
+	shin_maxsize = !shin_maxsize;
+	if(shin_maxsize)
+		m_timer.startTimer(maxsize_timeId,500);
+	else
+	{
+		m_timer.stopTimer(maxsize_timeId);
+		set_mtd_maxsize_osd();
+		if((m_mtdmaxsize >= m_mtdminsize ) && (m_mtdmaxsize <= MAX_MTDMAXSIZE))
+		{
+			//maxsize = m_mtdmaxsize;
+			//m_config[CFGID_MTD_maxpixel] = m_menuCtrl.osd_maxsize;
+			//storeMtdConfigFlag = true;
+			//wait to save param
+		}
+		memset(m_maxsize_arr, 0, sizeof(m_maxsize_arr));
+	}
+	return;	
+}
+
+
+void CMenu::menuMtdparam_setminsize()
+{
+	shin_minsize = !shin_minsize;
+	if(shin_minsize)
+		m_timer.startTimer(minsize_timeId,500);
+	else
+	{
+		m_timer.stopTimer(minsize_timeId);
+		set_mtd_minsize_osd();
+		if((m_mtdminsize >= MIN_MTDMINSIZE) && (m_mtdminsize <= m_mtdmaxsize))
+		{
+			//m_mtdminsize = m_mtdminsize;
+			//m_config[CFGID_MTD_minpixel] = m_mtdminsize;
+			//storeMtdConfigFlag = true;
+			//wait to save param
+		}
+		memset(m_minsize_arr, 0, sizeof(m_minsize_arr));
+	}
+	return;
+}
+
+
+void CMenu::menuMtdparam_setsensi()
+{
+	printf("shin_sensi = %d \n" , shin_sensi);
+	shin_sensi = !shin_sensi;
+	if(shin_sensi)
+		m_timer.startTimer(sensi_timeId,500);
+	else
+	{
+		m_timer.stopTimer(sensi_timeId);
+		set_mtd_sensi_osd();
+		if((m_mtdsensi >= MIN_MTDSENSI) && (m_mtdsensi <= MAX_MTDSENSI))
+		{
+			//sensi = m_menuCtrl.osd_sensi;
+			//m_config[CFGID_INPUT_SENISIVITY(CFGID_INPUT1_BKID)] = m_menuCtrl.osd_sensi;
+			//storeMtdConfigFlag = true;
+		}
+		memset(m_sensi_arr, 0, sizeof(m_sensi_arr));	
+	}
+	return;
+}
+
 
 void CMenu::set_mtd_num(char key)
 {
@@ -375,9 +440,9 @@ void CMenu::set_mtd_minsize_osd()
 void CMenu::set_mtd_sensi_osd()
 {
 	if((m_mtdsensi < MIN_MTDSENSI) || (m_mtdsensi > MAX_MTDSENSI))
-		swprintf(disMenuBuf.osdBuffer[5].disMenu, 33, L"灵敏度		%d(超出范围%d~%d)", m_mtdsensi,MIN_MTDSENSI,MAX_MTDSENSI);
+		swprintf(disMenuBuf.osdBuffer[6].disMenu, 33, L"灵敏度		%d(超出范围%d~%d)", m_mtdsensi,MIN_MTDSENSI,MAX_MTDSENSI);
 	else
-		swprintf(disMenuBuf.osdBuffer[5].disMenu, 33, L"灵敏度		%d", m_mtdsensi);
+		swprintf(disMenuBuf.osdBuffer[6].disMenu, 33, L"灵敏度		%d", m_mtdsensi);
 	return;
 }
 
@@ -410,9 +475,9 @@ void CMenu::TcallbackHandle(void *p)
 {
 	static bool mtdnum_shinOut = false;
 	static bool mtdtrktime_shinOut = false;
-	static bool maxsize_dianmie = false;
-	static bool minsize_dianmie = false;
-	static bool sensi_dianmie = false;
+	static bool maxsize_shinOut = false;
+	static bool minsize_shinOut = false;
+	static bool sensi_shinOut = false;
 	
 	int a = *(int *)p;
 
@@ -440,32 +505,30 @@ void CMenu::TcallbackHandle(void *p)
 		}
 		mtdtrktime_shinOut = !mtdtrktime_shinOut;
 	}
-	/*
-	else if(a == sThis->maxsize_light_id)
+	else if(a == maxsize_timeId)
 	{
-		if(maxsize_dianmie)
-			sThis->set_mtd_maxsize_osd();
+		if(maxsize_shinOut)
+			set_mtd_maxsize_osd();
 		else
-			swprintf(sThis->disMenu[submenu_mtd][3], 33, L"最大目标面积      ");
-		maxsize_dianmie = !maxsize_dianmie;
+			swprintf(disMenuBuf.osdBuffer[4].disMenu, 33, L"最大目标面积      ");
+		maxsize_shinOut = !maxsize_shinOut;
 	}
-	else if(a == sThis->minsize_light_id)
+	else if(a == minsize_timeId)
 	{
-		if(minsize_dianmie)
-			sThis->set_mtd_minsize_osd();
+		if(minsize_shinOut)
+			set_mtd_minsize_osd();
 		else
-			swprintf(sThis->disMenu[submenu_mtd][4], 33, L"最小目标面积  ");
-		minsize_dianmie = !minsize_dianmie;
+			swprintf(disMenuBuf.osdBuffer[5].disMenu, 33, L"最小目标面积  ");
+		minsize_shinOut = !minsize_shinOut;
 	}
-	else if(a == sThis->sensi_light_id)
+	else if(a == sensi_timeId)
 	{
-		if(sensi_dianmie)
-			sThis->set_mtd_sensi_osd();
+		if(sensi_shinOut)
+			set_mtd_sensi_osd();
 		else
-			swprintf(sThis->disMenu[submenu_mtd][5], 33, L"灵敏度");
-		sensi_dianmie = !sensi_dianmie;
+			swprintf(disMenuBuf.osdBuffer[6].disMenu, 33, L"灵敏度");
+		sensi_shinOut = !sensi_shinOut;
 	}
-	*/
 	return;
 }
 
@@ -484,18 +547,20 @@ void CMenu::menuhandle_mtdparam()
 			menuMtdparam_setnum();
 			break;
 		case 3:
-			// trk time
 			m_menuStat = MENU_MTD_TRKTIME;
 			menuMtdparam_settrktime();
 			break;
 		case 4:
-			// max area
+			m_menuStat = MENU_MTD_MAXSIZE;
+			menuMtdparam_setmaxsize();
 			break;
 		case 5:
-			//min area
+			m_menuStat = MENU_MTD_MINSIZE;
+			menuMtdparam_setminsize();
 			break;
 		case 6:
-			//sensi
+			m_menuStat = MENU_MTD_SENSI;
+			menuMtdparam_setsensi();
 			break;
 		case 7:
 			gotoMainMenu();
@@ -548,15 +613,21 @@ void CMenu::enter()
 			break;
 
 		case MENU_MTD_MAXSIZE:
-
+			menuMtdparam_setmaxsize();
+			gotoMtdparam(false);
 			break;
 
 		case MENU_MTD_MINSIZE:
-
+			menuMtdparam_setminsize();
+			gotoMtdparam(false);
 			break;
 
 		case MENU_MTD_SENSI:
+			menuMtdparam_setsensi();
+			gotoMtdparam(false);
+			break;
 
+		default:
 			break;
 	}
 

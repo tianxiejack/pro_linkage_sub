@@ -51,10 +51,11 @@ public:
 
 
 	void set_mtd_num(char key);
-	void set_mtd_num_osd();
 	void set_mtd_trktime(char key);
-	void set_mtd_trktime_osd();
 
+
+	void set_mtd_num_osd();
+	void set_mtd_trktime_osd();
 	void set_mtd_maxsize_osd();
 	void set_mtd_minsize_osd();
 	void set_mtd_sensi_osd();
@@ -62,7 +63,9 @@ public:
 
 	void menuMtdparam_setnum();
 	void menuMtdparam_settrktime();
-	
+	void menuMtdparam_setmaxsize();
+	void menuMtdparam_setminsize();	
+	void menuMtdparam_setsensi();
 
 
 	static void TcallbackFunc(void *p);
