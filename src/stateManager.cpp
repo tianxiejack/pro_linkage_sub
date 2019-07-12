@@ -29,10 +29,11 @@ StateManger::~StateManger()
 }
 
 
-void StateManger::init(OSDFUNC func,CMvDectInterface *pMov)
+void StateManger::init(OSDFUNC func,CHANGESTAT chDisMode,CMvDectInterface *pMov)
 {
 	m_pMv = pMov;
-	m_state->StateInit(func,callbackChangeStat , callbackChangeDefaultWorkMode);
+	m_state->StateInit(func,chDisMode,callbackChangeStat,callbackChangeDefaultWorkMode);
+	return;
 }
 
 
@@ -80,16 +81,58 @@ void StateManger::callbackChangeDefaultWorkMode(char workmode)
 }
 
 
+void StateManger::mouseMove(int xMouse, int yMouse)
+{
+	return;
+}
+
+char StateManger::getMenuState()
+{
+	return m_state->m_pMenu->getMenuState();
+}
+
+
+void StateManger::mouseEvent(int button, int state, int x, int y)
+{
+	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{
+		if(getMenuState() == MENU_MTD_REGION)
+			getPoly().push_back(cv::Point(x,y));
+	}
+		
+	
+
+	return;
+}
+
 
 void StateManger::normalKeyEvent(char key)
 {
+	
 	m_state->inputNumber(key);
 	return;
 }
 
+std::vector<cv::Point>& StateManger::getPoly()
+{
+	return m_state->m_pMenu->m_poly;
+}
+
+
 void StateManger::enterKeyEvent()
 {
-	m_state->enter();
+	switch(getMenuState())
+	{
+		case MENU_MTD_REGION:
+			getPoly().push_back(getPoly()[0]);
+			//wait to save poly to yml
+			break;
+
+		default:
+			m_state->enter();
+			break;
+
+	}	
 	return;
 }
 

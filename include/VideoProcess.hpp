@@ -18,6 +18,8 @@
 #include "DetecterFactory.hpp"
 #include "Detector.hpp"
 
+#include "stateManager.hpp"
+
 typedef struct
 {
 	float x;
@@ -116,8 +118,7 @@ public:
 	virtual void OnMouseRightDwn(int x, int y){};
 	virtual void OnMouseRightUp(int x, int y){};
 	virtual void OnKeyDwn(unsigned char key){};
-	virtual void OnSpecialKeyDwn(int key,int  x,int  y){};
-	
+	virtual void OnSpecialKeyDwn(int key,int  x,int  y){};	
 
 	int m_SensorStat;
 	int m_acqRectW;
@@ -317,6 +318,8 @@ public:
 	void mousehandle_gunpicpball(int button, int state, int x, int y);
 	void mouse_eventv_polygon(int button, int state, int x, int y);
 
+public:
+	StateManger* m_stateManger;
 
 };
 

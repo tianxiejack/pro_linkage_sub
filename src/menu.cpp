@@ -12,21 +12,24 @@
 #include <stdio.h>
 #include <wchar.h>
 
+
 static CMenu* pThis = NULL;
 
-CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm):m_menuPointer(-1),m_menuStat(MENU_BLANK),
+CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pDisplaymode,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm):m_menuPointer(-1),m_menuStat(MENU_BLANK),
 	shin_mtdnum(false),shin_trktime(false),shin_maxsize(false),
-	shin_minsize(false),shin_sensi(false)
+	shin_minsize(false),shin_sensi(false),m_ctlBallMode(JOYWM_virtualMouse)
 {
 	init_passwd = "0000";
 	drawFunc = pfun;
 	changeStatFunc = pchStatfun;
 	changeDefwmFunc = pchDefwm;
+	changeDisModeFunc = pDisplaymode;
 	disMenuBuf.cnt = 0;
 	memset(m_passwd,0,sizeof(m_passwd));
 	memset(m_dispasswd,0,sizeof(m_dispasswd));
 	TimerCreate();
 	pThis = this;
+	m_poly.clear();
 
 
 
@@ -39,7 +42,6 @@ CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm):m_menuPoin
 
 CMenu::~CMenu()
 {
-	
 }
 
 void CMenu::menuButton()
@@ -90,6 +92,16 @@ void CMenu::gotoWorkMode()
 	return;
 }
 
+void CMenu::gotoMtdRegion()
+{
+	m_menuPointer = 0;
+	lv_4_mtdregionOsd();
+	m_menuStat = MENU_MTD_REGION;
+	changeDisModeFunc(GUN_FULL);
+	return;
+}
+
+
 
 void CMenu::gotoMtdparam(bool initPointer)
 {
@@ -105,6 +117,11 @@ void CMenu::gotoMtdparam(bool initPointer)
 	return;
 }
 
+
+char CMenu::getMenuState()
+{
+	return m_menuStat;
+}
 
 void CMenu::upMenu()
 {
@@ -129,7 +146,6 @@ void CMenu::upMenu()
 			if(m_mtdmaxsize < m_mtdminsize)
 				m_mtdmaxsize = m_mtdminsize;
 			set_mtd_maxsize_osd();
-
 			break;
 			
 		case MENU_MTD_MINSIZE:
@@ -255,7 +271,6 @@ void CMenu::menuhandle_workmode()
 	}
 	return;
 }
-
 
 void CMenu::menuMtdparam_setnum()
 {
@@ -539,6 +554,7 @@ void CMenu::menuhandle_mtdparam()
 	switch(m_menuPointer)
 	{
 		case 0:
+			gotoMtdRegion();
 			break;
 		case 1:
 			break;
@@ -597,10 +613,21 @@ void CMenu::enter()
 		case MENU_WORKMODE:
 			menuhandle_workmode();
 			break;
+			
+		case MENU_CALIB:
+		
+			break;
 
 		case MENU_MTD:
 			menuhandle_mtdparam();
 			break;	
+
+		case MENU_MTD_REGION:
+			break;
+
+		case MENU_MTD_UNREGION:
+
+			break;
 
 		case MENU_MTD_SETNUM:
 			menuMtdparam_setnum();
@@ -630,7 +657,6 @@ void CMenu::enter()
 		default:
 			break;
 	}
-
 	return;
 }
 
@@ -750,6 +776,35 @@ void CMenu::lv_3_mtdparamOsd()
 		swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"%s", menubuf[j]);
 	}
 	disMenuBuf.osdBuffer[m_menuPointer].color = 3;
+
+	return;
+}
+
+
+void CMenu::lv_4_mtdregionOsd()
+{
+	//L"鼠标左键:选择点 鼠标右键:删除点 回车:确认 F1:控球模式 0:删除所有点  1:保存"
+	int j;
+	disMenuBuf.cnt = 2;
+	
+	j=0;
+	disMenuBuf.osdBuffer[j].bshow = true;
+	disMenuBuf.osdBuffer[j].alpha = 2;
+	disMenuBuf.osdBuffer[j].color = 1;
+	disMenuBuf.osdBuffer[j].posx = 800;
+	disMenuBuf.osdBuffer[j].posy = 50;
+	setlocale(LC_ALL, "zh_CN.UTF-8");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:选择点   鼠标右键:删除点  回车:确认");
+
+	j=1;
+	disMenuBuf.osdBuffer[j].bshow = true;
+	disMenuBuf.osdBuffer[j].alpha = 2;
+	disMenuBuf.osdBuffer[j].color = 1;
+	disMenuBuf.osdBuffer[j].posx = 800;
+	disMenuBuf.osdBuffer[j].posy = 100;
+	setlocale(LC_ALL, "zh_CN.UTF-8");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"F1:控球模式  0:删除所有点  1:保存");
+
 
 	return;
 }

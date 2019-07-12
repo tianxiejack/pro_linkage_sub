@@ -75,7 +75,7 @@ void getMtdxy(int &x,int &y,int &w,int &h)
 }
 #endif
 
-CProcess::CProcess()
+CProcess::CProcess():m_bDrawPolyRoi(false)
 {	
 	extInCtrl = (CMD_EXT*)OSA_memAlloc(sizeof(CMD_EXT));
 	memset(extInCtrl,0,sizeof(CMD_EXT));
@@ -507,7 +507,7 @@ void CProcess::OnDestroy(){};
 void CProcess::OnInit()
 {
 	m_stateManger = new StateManger();
-	m_stateManger->init(m_display.chinese_osd,m_pMovDetector);
+	m_stateManger->init(m_display.chinese_osd, m_display.changeDisplayMode ,m_pMovDetector);
 	
 	return ;
 }
@@ -3375,52 +3375,46 @@ vector<string> CProcess::csplit(const string& str, const string& delim)
 }
 
 
-void CProcess::DrawMtdPolygonRoi()
+void CProcess::drawPolyRoi(bool bdraw)
 {
-	int drawpolyRectId = 0;
-	Osd_cvPoint start;
-	Osd_cvPoint end;
-	int polycolor= 3;
-	static int drawflag = 0;
-	int drawId = 1;
-	if(drawflag)
-	{
-		if(polyrectnbak[drawpolyRectId] > 1)
-		{
-			int i = 0;
-			for(i = 0; i < polyrectnbak[drawpolyRectId]-1; i++)
-			{
-				start.x = polyRectbak[drawpolyRectId][i].x;
-				start.y = polyRectbak[drawpolyRectId][i].y;
-				end.x = polyRectbak[drawpolyRectId][i+1].x;
-				end.y = polyRectbak[drawpolyRectId][i+1].y;
-				DrawcvLine(m_display.m_imgOsd[drawId],&start,&end,0,1);
-			}
-		}	
-		drawflag = 0;
-	}
-/*
-	if(m_display.linkage.setrigion_flagv20)
-	{
-		memcpy(polyRectbak, m_display.linkage.polRect, sizeof(polRect));
-		memcpy(polyrectnbak, m_display.linkage.pol_rectn, sizeof(pol_rectn));
+	Osd_cvPoint start,end;
+	int color = 0;
+	int cnt = m_polyBak.size();
+	if(cnt < 2)
+		return;
 
-		if(polyrectnbak[drawpolyRectId] > 1)
-		{
-			int i = 0;
-			for(i = 0; i < polyrectnbak[drawpolyRectId]-1; i++)
-			{
-				start.x = polyRectbak[drawpolyRectId][i].x;
-				start.y = polyRectbak[drawpolyRectId][i].y;
-				end.x = polyRectbak[drawpolyRectId][i+1].x;
-				end.y = polyRectbak[drawpolyRectId][i+1].y;
-				DrawcvLine(m_display.m_imgOsd[drawId],&start,&end,polycolor,1);
-			}
-		}
-		drawflag = 1;
+	if(bdraw)
+	{
+		m_bDrawPolyRoi = true;
+		color = 3;
 	}
-	*/
+	else
+		m_bDrawPolyRoi = false;
+
+	for(int i=0;i<cnt-1;i++)
+	{
+		start.x = m_polyBak[i].x;
+		start.y = m_polyBak[i].y;
+		end.x = m_polyBak[i+1].x;
+		end.y = m_polyBak[i+1].y;
+		DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);
+	}
 	return;
 }
+
+void CProcess::DrawMtdPolygonRoi()
+{
+	if(m_bDrawPolyRoi)
+		drawPolyRoi(false);
+	
+	if(m_stateManger->getMenuState() == MENU_MTD_REGION)
+	{
+		m_polyBak = m_stateManger->getPoly();
+		drawPolyRoi(true);
+	}
+
+	return;
+}
+
 
 

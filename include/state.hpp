@@ -18,7 +18,7 @@ class State
 {
 public:
 	State();
-	void StateInit(OSDFUNC pDraw , CHANGESTAT pChangeStat , CHDEFWORKMD pChangeWkmode);
+	void StateInit(OSDFUNC pDraw ,CHANGESTAT pDisplaymode, CHANGESTAT pChangeStat , CHDEFWORKMD pChangeWkmode);
 	void create();
 	virtual ~State();
 

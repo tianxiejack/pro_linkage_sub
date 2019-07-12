@@ -6,7 +6,7 @@
 #include "osd_cv.h"
 
 #include "osa_sem.h"
-#include "stateManager.hpp"
+
 
 using namespace cv;
 
@@ -63,7 +63,6 @@ public:
 	void OnKeyDwn(unsigned char key);
 	void OnSpecialKeyDwn(int key,int x, int y);
 	void drawPatternRect();
-
 	
 	CMD_EXT* extInCtrl;
 	static CProcess *sThis;
@@ -198,11 +197,11 @@ public:
 
 	void DrawMtdPolygonRoi();
 
+	
+	void drawPolyRoi(bool bdraw);
+	bool m_bDrawPolyRoi;
 
-
-public:
-	StateManger* m_stateManger;
-
+	std::vector<cv::Point> m_polyBak;
 };
 
 

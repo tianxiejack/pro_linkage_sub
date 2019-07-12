@@ -67,7 +67,7 @@ CDisplayer::CDisplayer()
 :m_renderCount(0),m_bRun(false),m_bFullScreen(false),m_bOsd(false),
  m_glProgram(0), m_bUpdateVertex(false),m_tmRender(0ul),m_waitSync(false),
  m_telapse(5.0), m_nSwapTimeOut(0),
- m_WinWidth(VIDEO_DIS_WIDTH),m_WinHeight(VIDEO_DIS_HEIGHT)
+ m_WinWidth(VIDEO_DIS_WIDTH),m_WinHeight(VIDEO_DIS_HEIGHT),m_displayMode(0)
 {
 	int i;
 	gThis = this;
@@ -2154,13 +2154,18 @@ void CDisplayer::chinese_osd(int x,int y,wchar_t* text,char font,char fontsize,u
 	glUseProgram(0);
 }
 
+void CDisplayer::changeDisplayMode(char nextmode)
+{
+	gThis->m_displayMode = nextmode;
+	return;
+}
 
 void CDisplayer::linkageSwitchMode(void)
 {
 	int winId, chId;
 	unsigned int mask = 0;
 
-	switch(0)//(linkage.displayMode) 
+	switch(m_displayMode)//(linkage.displayMode) 
 	{
 		case MAIN_VIEW:	
 			RenderVideoOnOrthoView(VIDEO_1, m_WinWidth/4, m_WinHeight/2, m_WinWidth/2, m_WinHeight/2);

@@ -6,11 +6,16 @@
 #include "statecommon.h"
 
 #include "DxTimer.hpp"
+#include <vector>
+
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 class CMenu
 {
 public:
-	CMenu(OSDFUNC pfun,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm);
+	CMenu(OSDFUNC pfun,CHANGESTAT pDisplaymode,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm);
 	~CMenu();
 
 	void lv_1_inputPWosd();
@@ -18,6 +23,7 @@ public:
 	void lv_2_osd();
 	void lv_3_workmodeOsd();
 	void lv_3_mtdparamOsd();
+	void lv_4_mtdregionOsd();
 
 	
 
@@ -29,7 +35,7 @@ public:
 
 	void showMenuOsd();
 
-
+	char getMenuState();
 
 	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);
 
@@ -48,6 +54,7 @@ public:
 	void gotoBlankMenu();
 	void gotoWorkMode();
 	void gotoMtdparam(bool initPointer = true);
+	void gotoMtdRegion();
 
 
 	void set_mtd_num(char key);
@@ -76,6 +83,7 @@ public:
 	OSDFUNC drawFunc;
 	CHDEFWORKMD changeDefwmFunc;
 	CHANGESTAT changeStatFunc;
+	CHANGESTAT changeDisModeFunc;
 
 private:
 	char *init_passwd;
@@ -97,6 +105,12 @@ private:
 
 	CHAR m_menuPointer;
 	CHAR m_menuStat;
+	CHAR m_ctlBallMode;
+
+	
+public:
+	std::vector<cv::Point> m_poly;
+	
 };
 
 

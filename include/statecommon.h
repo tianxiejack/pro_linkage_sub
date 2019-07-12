@@ -14,6 +14,7 @@ typedef void (*OSDFUNC)(int x,int y,wchar_t* text,char font,char fontsize,unsign
 typedef void (*CHANGESTAT)(char nextMode);
 typedef void (*CHDEFWORKMD)(char workmode);
 
+
 #define CHAR signed char
 
 typedef enum{
@@ -25,6 +26,13 @@ typedef enum{
 	SETWORKMODE,
 	LEVELMAX,
 }state_enum;
+
+
+typedef enum{
+	JOYWM_virtualMouse,
+	JOYWM_ctlball,
+	JOYWM_MAX,
+}JOYWORKMODE_t;
 
 
 typedef enum{

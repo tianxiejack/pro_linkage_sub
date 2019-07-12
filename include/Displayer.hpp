@@ -208,6 +208,8 @@ public:
 
 	OSA_BufCreate tskSendBufCreatepal;
 	OSA_BufHndl tskSendBufpal;
+
+	static void changeDisplayMode(char nextmode);
 	
 protected:
 	DS_InitPrm m_initPrm;
@@ -296,7 +298,7 @@ private:
 	cudaStream_t m_cuStream[DS_CUSTREAM_CNT];
 
 	cudaEvent_t	m_startEvent, m_stopEvent;
-
+	char m_displayMode;
 
 public:
 	float frameRate ;
