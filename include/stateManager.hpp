@@ -53,6 +53,8 @@ public:
 
 	
 	std::vector<cv::Point>& getPoly();
+	std::vector<cv::Point>& getPolyTmp();
+	std::vector< std::vector<cv::Point> >& getunRoiPoly();
 
 private:
 	friend class State;

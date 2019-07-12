@@ -98,6 +98,10 @@ void StateManger::mouseEvent(int button, int state, int x, int y)
 	{
 		if(getMenuState() == MENU_MTD_REGION)
 			getPoly().push_back(cv::Point(x,y));
+		else if(getMenuState() == MENU_MTD_UNREGION)
+			getPolyTmp().push_back(cv::Point(x,y));
+
+		
 	}
 		
 	
@@ -118,21 +122,20 @@ std::vector<cv::Point>& StateManger::getPoly()
 	return m_state->m_pMenu->m_poly;
 }
 
+std::vector<cv::Point>& StateManger::getPolyTmp()
+{
+	return m_state->m_pMenu->m_polyTmp;
+}
+
+std::vector< std::vector<cv::Point> >& StateManger::getunRoiPoly()
+{
+	return m_state->m_pMenu->m_unroiPoly;
+}
+
 
 void StateManger::enterKeyEvent()
 {
-	switch(getMenuState())
-	{
-		case MENU_MTD_REGION:
-			getPoly().push_back(getPoly()[0]);
-			//wait to save poly to yml
-			break;
-
-		default:
-			m_state->enter();
-			break;
-
-	}	
+	m_state->enter();
 	return;
 }
 

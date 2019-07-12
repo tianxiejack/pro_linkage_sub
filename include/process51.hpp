@@ -196,12 +196,16 @@ public:
 	vector<string> csplit(const string& str, const string& delim);
 
 	void DrawMtdPolygonRoi();
+	void DrawMtdPolygonUnRoi();
+	void drawPolyUnRoi(bool bdraw);
 
 	
 	void drawPolyRoi(bool bdraw);
-	bool m_bDrawPolyRoi;
+	bool m_bDrawPolyRoi,m_bDrawPolyUnRoi;
 
 	std::vector<cv::Point> m_polyBak;
+	std::vector< std::vector<cv::Point> > m_polyUnRoiBak;
+
 };
 
 

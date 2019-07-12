@@ -30,8 +30,8 @@ CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pDisplaymode,CHANGESTAT pchStatfun,CHDEFWOR
 	TimerCreate();
 	pThis = this;
 	m_poly.clear();
-
-
+	m_polyTmp.clear();
+	m_unroiPoly.clear();
 
 	m_mtdnum = 8;
 	m_mtdtrktime = 5;
@@ -623,10 +623,14 @@ void CMenu::enter()
 			break;	
 
 		case MENU_MTD_REGION:
+			m_poly.push_back(m_poly[0]);
+			//wait to save yml
 			break;
 
 		case MENU_MTD_UNREGION:
-
+			m_polyTmp.push_back(m_polyTmp[0]);
+			m_unroiPoly.push_back(m_polyTmp);
+			//wait to save yml
 			break;
 
 		case MENU_MTD_SETNUM:

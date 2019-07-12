@@ -109,7 +109,8 @@ private:
 
 	
 public:
-	std::vector<cv::Point> m_poly;
+	std::vector<cv::Point> m_poly , m_polyTmp;
+	std::vector< std::vector<cv::Point> > m_unroiPoly;
 	
 };
 

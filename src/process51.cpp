@@ -75,7 +75,7 @@ void getMtdxy(int &x,int &y,int &w,int &h)
 }
 #endif
 
-CProcess::CProcess():m_bDrawPolyRoi(false)
+CProcess::CProcess():m_bDrawPolyRoi(false),m_bDrawPolyUnRoi(false)
 {	
 	extInCtrl = (CMD_EXT*)OSA_memAlloc(sizeof(CMD_EXT));
 	memset(extInCtrl,0,sizeof(CMD_EXT));
@@ -1544,6 +1544,7 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 	}
 
 	DrawMtdPolygonRoi();
+	DrawMtdPolygonUnRoi();
 
 	prisensorstatus=extInCtrl->SensorStat;
 	
@@ -3415,6 +3416,54 @@ void CProcess::DrawMtdPolygonRoi()
 
 	return;
 }
+
+void CProcess::DrawMtdPolygonUnRoi()
+{
+	if(m_bDrawPolyUnRoi)
+		drawPolyUnRoi(false);
+	
+	if(m_stateManger->getMenuState() == MENU_MTD_UNREGION)
+	{
+		m_polyUnRoiBak = m_stateManger->getunRoiPoly();
+		drawPolyUnRoi(true);
+	}
+
+	return;
+}
+
+void CProcess::drawPolyUnRoi(bool bdraw)
+{
+	Osd_cvPoint start,end;
+	int color = 0;
+
+	if(!m_polyUnRoiBak.size())
+		return ;
+	if(!m_polyUnRoiBak[0].size())
+		return;
+	
+
+	if(bdraw)
+	{
+		m_bDrawPolyUnRoi = true;
+		color = 3;
+	}
+	else
+		m_bDrawPolyUnRoi = false;
+
+
+	for(int i=0 ; i< m_polyUnRoiBak.size();i++)
+		for(int j=0 ; j< m_polyUnRoiBak[i].size();j++)
+		{
+			start.x = m_polyBak[i].x;
+			start.y = m_polyBak[i].y;
+			end.x = m_polyBak[i+1].x;
+			end.y = m_polyBak[i+1].y;
+			DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);		
+		}
+
+	return;
+}
+
 
 
 
