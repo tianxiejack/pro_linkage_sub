@@ -237,6 +237,10 @@ void CMenu::downMenu()
 			set_mtd_sensi_osd();
 			break;
 
+		case MENU_BLANK:
+		case MENU_INPUTPW:
+		case MENU_ERRORPW:
+			break;
 
 		default:
 			disMenuBuf.osdBuffer[m_menuPointer].color = 2;
