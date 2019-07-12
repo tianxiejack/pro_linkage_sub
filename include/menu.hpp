@@ -24,6 +24,7 @@ public:
 	void lv_3_workmodeOsd();
 	void lv_3_mtdparamOsd();
 	void lv_4_mtdregionOsd();
+	void lv_4_mtdUnregionOsd();
 
 	
 
@@ -55,7 +56,7 @@ public:
 	void gotoWorkMode();
 	void gotoMtdparam(bool initPointer = true);
 	void gotoMtdRegion();
-
+	void gotoMtdUnRegion();
 
 	void set_mtd_num(char key);
 	void set_mtd_trktime(char key);

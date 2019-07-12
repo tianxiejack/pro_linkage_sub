@@ -203,7 +203,7 @@ public:
 	void drawPolyRoi(bool bdraw);
 	bool m_bDrawPolyRoi,m_bDrawPolyUnRoi;
 
-	std::vector<cv::Point> m_polyBak;
+	std::vector<cv::Point> m_polyBak , m_polyTmpBak;
 	std::vector< std::vector<cv::Point> > m_polyUnRoiBak;
 
 };

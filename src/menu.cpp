@@ -50,7 +50,10 @@ void CMenu::menuButton()
 		gotoInputPW();
 	else if(m_menuStat == MENU_INPUTPW || m_menuStat == MENU_ERRORPW)
 		gotoBlankMenu();
+	else if(m_menuStat == MENU_MTD_REGION || m_menuStat == MENU_MTD_UNREGION)
+		gotoMtdparam();
 
+	
 	return;
 }
 
@@ -102,9 +105,19 @@ void CMenu::gotoMtdRegion()
 }
 
 
+void CMenu::gotoMtdUnRegion()
+{
+	m_menuPointer = 0;
+	lv_4_mtdregionOsd();
+	m_menuStat = MENU_MTD_UNREGION;
+	changeDisModeFunc(GUN_FULL);
+	return;
+}
+
 
 void CMenu::gotoMtdparam(bool initPointer)
 {
+	changeDisModeFunc(MAIN_VIEW);
 	if(initPointer)
 		m_menuPointer = 0;
 	lv_3_mtdparamOsd();
@@ -162,6 +175,11 @@ void CMenu::upMenu()
 			set_mtd_sensi_osd();
 			break;
 
+		case MENU_BLANK:
+		case MENU_INPUTPW:
+		case MENU_ERRORPW:
+			break;
+			
 		default:
 			disMenuBuf.osdBuffer[m_menuPointer].color = 2;
 			m_menuPointer = (m_menuPointer+disMenuBuf.cnt-1)%disMenuBuf.cnt;
@@ -557,6 +575,7 @@ void CMenu::menuhandle_mtdparam()
 			gotoMtdRegion();
 			break;
 		case 1:
+			gotoMtdUnRegion();
 			break;
 		case 2:
 			m_menuStat = MENU_MTD_SETNUM;
@@ -623,13 +642,14 @@ void CMenu::enter()
 			break;	
 
 		case MENU_MTD_REGION:
-			m_poly.push_back(m_poly[0]);
+			//m_poly.push_back(m_poly[0]);
 			//wait to save yml
 			break;
 
 		case MENU_MTD_UNREGION:
-			m_polyTmp.push_back(m_polyTmp[0]);
+			//m_polyTmp.push_back(m_polyTmp[0]);
 			m_unroiPoly.push_back(m_polyTmp);
+			m_polyTmp.clear();
 			//wait to save yml
 			break;
 
@@ -812,6 +832,35 @@ void CMenu::lv_4_mtdregionOsd()
 
 	return;
 }
+
+void CMenu::lv_4_mtdUnregionOsd()
+{
+	//L"鼠标左键:选择点 鼠标右键:删除点 回车:确认 F1:控球模式 0:删除所有点  1:保存"
+	int j;
+	disMenuBuf.cnt = 2;
+	
+	j=0;
+	disMenuBuf.osdBuffer[j].bshow = true;
+	disMenuBuf.osdBuffer[j].alpha = 2;
+	disMenuBuf.osdBuffer[j].color = 1;
+	disMenuBuf.osdBuffer[j].posx = 800;
+	disMenuBuf.osdBuffer[j].posy = 50;
+	setlocale(LC_ALL, "zh_CN.UTF-8");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:选择点   鼠标右键:删除点  回车:确认");
+
+	j=1;
+	disMenuBuf.osdBuffer[j].bshow = true;
+	disMenuBuf.osdBuffer[j].alpha = 2;
+	disMenuBuf.osdBuffer[j].color = 1;
+	disMenuBuf.osdBuffer[j].posx = 800;
+	disMenuBuf.osdBuffer[j].posy = 100;
+	setlocale(LC_ALL, "zh_CN.UTF-8");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"F1:控球模式  0:删除所有点  1:保存");
+
+
+	return;
+}
+
 
 
 

@@ -3381,6 +3381,7 @@ void CProcess::drawPolyRoi(bool bdraw)
 	Osd_cvPoint start,end;
 	int color = 0;
 	int cnt = m_polyBak.size();
+	int index;
 	if(cnt < 2)
 		return;
 
@@ -3392,12 +3393,13 @@ void CProcess::drawPolyRoi(bool bdraw)
 	else
 		m_bDrawPolyRoi = false;
 
-	for(int i=0;i<cnt-1;i++)
+	for(int i=0;i<cnt;i++)
 	{
+		index = (i+1)%cnt;
 		start.x = m_polyBak[i].x;
 		start.y = m_polyBak[i].y;
-		end.x = m_polyBak[i+1].x;
-		end.y = m_polyBak[i+1].y;
+		end.x = m_polyBak[index].x;
+		end.y = m_polyBak[index].y;
 		DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);
 	}
 	return;
@@ -3424,6 +3426,7 @@ void CProcess::DrawMtdPolygonUnRoi()
 	
 	if(m_stateManger->getMenuState() == MENU_MTD_UNREGION)
 	{
+		m_polyTmpBak = m_stateManger->getPolyTmp();
 		m_polyUnRoiBak = m_stateManger->getunRoiPoly();
 		drawPolyUnRoi(true);
 	}
@@ -3435,12 +3438,9 @@ void CProcess::drawPolyUnRoi(bool bdraw)
 {
 	Osd_cvPoint start,end;
 	int color = 0;
-
-	if(!m_polyUnRoiBak.size())
-		return ;
-	if(!m_polyUnRoiBak[0].size())
+	int index , cnt;
+	if(!m_polyTmpBak.size() && !m_polyUnRoiBak.size())
 		return;
-	
 
 	if(bdraw)
 	{
@@ -3450,17 +3450,33 @@ void CProcess::drawPolyUnRoi(bool bdraw)
 	else
 		m_bDrawPolyUnRoi = false;
 
+	cnt = m_polyTmpBak.size();
 
-	for(int i=0 ; i< m_polyUnRoiBak.size();i++)
-		for(int j=0 ; j< m_polyUnRoiBak[i].size();j++)
+	if(cnt >= 2)
+		for(int i=0;i<cnt;i++)
 		{
-			start.x = m_polyBak[i].x;
-			start.y = m_polyBak[i].y;
-			end.x = m_polyBak[i+1].x;
-			end.y = m_polyBak[i+1].y;
-			DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);		
+			index = (i+1)%cnt;
+			start.x = m_polyTmpBak[i].x;
+			start.y = m_polyTmpBak[i].y;
+			end.x = m_polyTmpBak[index].x;
+			end.y = m_polyTmpBak[index].y;
+			DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);
 		}
 
+
+	for(int i=0 ; i< m_polyUnRoiBak.size();i++)
+	{
+		cnt = m_polyUnRoiBak[i].size();
+		for(int j=0 ; j< cnt ;j++)
+		{
+			index = (j+1)%cnt;
+			start.x = m_polyUnRoiBak[i][j].x;
+			start.y = m_polyUnRoiBak[i][j].y;
+			end.x = m_polyUnRoiBak[i][index].x;
+			end.y = m_polyUnRoiBak[i][index].y;
+			DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);		
+		}
+	}
 	return;
 }
 
