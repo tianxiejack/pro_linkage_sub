@@ -52,6 +52,8 @@ void CMenu::menuButton()
 		gotoBlankMenu();
 	else if(m_menuStat == MENU_MTD_REGION || m_menuStat == MENU_MTD_UNREGION)
 		gotoMtdparam();
+	else if(m_menuStat == MENU_MAIN)
+		gotoBlankMenu();
 
 	
 	return;
