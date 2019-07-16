@@ -12,6 +12,10 @@
 #include "configtable.h"
 #include "statecommon.h"
 #include "menu.hpp"
+#include "autoManualFindRelation.hpp"
+#include "ipc_custom_head.h"
+
+using namespace cr_automanualfindrelation;
 
 class CMenu;
 class State
@@ -47,6 +51,52 @@ public:
 	static CHANGESTAT m_changeStatFunc;
 	static CMenu* m_pMenu;
 
+
+public:
+	static CAutoManualFindRelation* m_autofr;
+
+	std::vector< FEATUREPOINT_T > app_recommendPoints;
+	std::vector< FEATUREPOINT_T > app_recommendPoints_bak;
+
+	cv::Point2i twinkle_point, twinkle_point_bak;
+	jos_mouse_Mode gridinter_mode;
+	cv::Point2i point_triangle , point_triangle_bak;
+	bool draw_print_stat, drawpoints_stat ;
+	int twinkle_point_id;
+	int m_trig_pip_mode;
+	bool twinkle_flag;
+
+
+
+public:
+	bool get_print_stat(){return draw_print_stat;};
+	void set_print_stat(bool value){draw_print_stat = value;};
+
+	void grid_manuallinkage_moveball(int x, int y, int changezoom);
+	void mapout2inresol(cv::Point *tmppoint);
+	void app_set_triangle_point(int x, int y);
+	void process_trigmode_right_point(int x, int y);
+	void app_deletePoint(int x, int y);
+	bool get_drawpoints_stat(){return drawpoints_stat;};
+	void set_drawpoints_stat(bool value){drawpoints_stat = value;};
+	void set_twinkle_flag(bool flag){twinkle_flag = flag;};
+	bool get_twinkle_flag(){return twinkle_flag;};
+	void DrawTwinklePoint(cv::Mat frame);
+	void Drawfeaturepoints(cv::Mat frame);
+	void set_jos_mouse_mode(jos_mouse_Mode mode);
+	bool in_recommand_vector(int x, int y, cv::Point2i &outPixel);
+
+	void drawPoints(cv::Mat frame);
+	void get_featurepoint();
+	bool point_in_pip(int x, int y);
+	void process_trigmode_left_point(int x, int y);
+	jos_mouse_Mode get_gridinter_mode();
+	void set_gridinter_mode(jos_mouse_Mode value);
+
+	void evade_pip(int x, int y);
+	void app_self_deletePoint(cv::Point2i Pixel);
+	void start_twinkle(int x, int y);
+	
 };
 
 
@@ -66,6 +116,25 @@ public:
 private:
 
 };
+
+
+class CLinkCalib:public State
+{
+public:
+	CLinkCalib();
+	virtual ~CLinkCalib();
+	
+	void showOsd();
+	void inputNumber(char key);
+	void enter();
+
+public:
+	void buttonMenu();
+
+private:
+
+};
+
 
 
 

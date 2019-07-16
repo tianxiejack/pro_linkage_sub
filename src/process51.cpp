@@ -1580,7 +1580,7 @@ void CProcess::drawPatternRect()
 
 void CProcess::Drawfeaturepoints()
 {
-	m_stateManger->Drawfeaturepoints(m_display.m_imgOsd[1]);
+	m_stateManger->drawPoints(m_display.m_imgOsd[1]);
 	return;
 }
 
