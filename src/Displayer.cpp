@@ -2174,6 +2174,10 @@ void CDisplayer::linkageSwitchMode(void)
 		case GUN_FULL:				
 			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]);
 			break;
+		case GUN_PIP_BALL:	
+			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]);			
+			RenderVideoOnOrthoView(VIDEO_1, 0,m_WinHeight*3/4,m_WinWidth/4,m_WinHeight/4);
+			break;	
 		default:
 			break;	
 	}	

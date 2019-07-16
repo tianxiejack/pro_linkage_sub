@@ -97,6 +97,16 @@ void CMenu::gotoWorkMode()
 	return;
 }
 
+void CMenu::gotoCalibMode()
+{
+	m_menuPointer = 0;
+	lv_4_calibOsd();
+	m_menuStat = MENU_CALIB;
+	changeDisModeFunc(GUN_PIP_BALL);
+	return;
+}
+
+
 void CMenu::gotoMtdRegion()
 {
 	m_menuPointer = 0;
@@ -110,7 +120,7 @@ void CMenu::gotoMtdRegion()
 void CMenu::gotoMtdUnRegion()
 {
 	m_menuPointer = 0;
-	lv_4_mtdregionOsd();
+	lv_4_mtdUnregionOsd();
 	m_menuStat = MENU_MTD_UNREGION;
 	changeDisModeFunc(GUN_FULL);
 	return;
@@ -261,6 +271,11 @@ void CMenu::menuhandle_main()
 		case 0:
 			gotoWorkMode();
 			break;
+			
+		case 1:
+			gotoCalibMode();
+			break;
+			
 		case 2:
 			gotoMtdparam();
 			break;
@@ -868,6 +883,13 @@ void CMenu::lv_4_mtdUnregionOsd()
 }
 
 
+void CMenu::lv_4_calibOsd()
+{
+	int j;
+	disMenuBuf.cnt = 0;
+
+	return;
+}
 
 
 void CMenu::showMenuOsd()

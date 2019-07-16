@@ -25,7 +25,7 @@ public:
 	void lv_3_mtdparamOsd();
 	void lv_4_mtdregionOsd();
 	void lv_4_mtdUnregionOsd();
-
+	void lv_4_calibOsd();
 	
 
 	void menuButton();
@@ -57,6 +57,8 @@ public:
 	void gotoMtdparam(bool initPointer = true);
 	void gotoMtdRegion();
 	void gotoMtdUnRegion();
+	void gotoCalibMode();
+
 
 	void set_mtd_num(char key);
 	void set_mtd_trktime(char key);
