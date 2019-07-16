@@ -198,6 +198,7 @@ public:
 	void DrawMtdPolygonRoi();
 	void DrawMtdPolygonUnRoi();
 	void drawPolyUnRoi(bool bdraw);
+	void Drawfeaturepoints();
 
 	
 	void drawPolyRoi(bool bdraw);

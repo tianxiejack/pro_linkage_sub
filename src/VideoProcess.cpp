@@ -812,32 +812,7 @@ void CVideoProcess::mouse_event(int button, int state, int x, int y)
 {
 	pThis->m_stateManger->mouseEvent(button,state,x,y);
 	
-	#if 0
-	if(pThis->m_display.linkage.displayMode == MAIN_VIEW)
-		curId = 1;	
-	else
-		curId = pThis->m_curChId;
-
-	switch(pThis->m_display.linkage.displayMode)
-	{
-		case MAIN_VIEW:
-			//mousehandle_mainView();
-			break;
-			
-		case GUN_FULL:
-			pThis->mousehandle_gunfull(button, state, x, y);
-			break;
-			
-		case GUN_PIP_BALL:
-			//mousehandle_gunpicpball();
-			break;
-
-		default:
-			break;
-	}
-
-	#endif
-
+	return;
 }
 
 

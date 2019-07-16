@@ -198,14 +198,12 @@ void CMenu::upMenu()
 			disMenuBuf.osdBuffer[m_menuPointer].color = 3;
 			break;
 	}
-
 	return;
 }
 
 
 void CMenu::downMenu()
 {
-
 	switch(m_menuStat)
 	{
 		case MENU_MTD_SETNUM:
@@ -655,7 +653,7 @@ void CMenu::enter()
 			break;
 			
 		case MENU_CALIB:
-		
+			
 			break;
 
 		case MENU_MTD:
@@ -877,8 +875,6 @@ void CMenu::lv_4_mtdUnregionOsd()
 	disMenuBuf.osdBuffer[j].posy = 100;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
 	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"F1:控球模式  0:删除所有点  1:保存");
-
-
 	return;
 }
 

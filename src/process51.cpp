@@ -1543,8 +1543,12 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 		}
 	}
 
+
 	DrawMtdPolygonRoi();
 	DrawMtdPolygonUnRoi();
+	Drawfeaturepoints();
+
+	
 
 	prisensorstatus=extInCtrl->SensorStat;
 	
@@ -1572,6 +1576,14 @@ void CProcess::drawPatternRect()
 	}
 	return ;
 }
+
+
+void CProcess::Drawfeaturepoints()
+{
+	m_stateManger->Drawfeaturepoints(m_display.m_imgOsd[1]);
+	return;
+}
+
 
 
 static inline void my_rotate(GLfloat result[16], float theta)
