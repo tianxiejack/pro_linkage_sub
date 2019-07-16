@@ -10,6 +10,7 @@ CHANGESTAT State::m_changeStatFunc = NULL;
 CMenu* State::m_pMenu = NULL;
 CAutoManualFindRelation* State::m_autofr = NULL;
 int State::twinkle_point_id = 0;
+bool State::twinkle_flag = false;
 
 static State* pThis = NULL;
 
