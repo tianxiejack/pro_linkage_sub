@@ -9,14 +9,16 @@ char State::m_curState = LINKMANUAL;
 CHANGESTAT State::m_changeStatFunc = NULL;
 CMenu* State::m_pMenu = NULL;
 CAutoManualFindRelation* State::m_autofr = NULL;
+int State::twinkle_point_id = 0;
 
-
+static State* pThis = NULL;
 
 State::State():draw_print_stat(false),drawpoints_stat(false)
 {	
 	gridinter_mode = mouse_mode;
 	m_autofr = new CAutoManualFindRelation(outputWHF[0],outputWHF[1], 6, 6);
 	twinkle_flag = false;
+	pThis = this;
 }
 
 State::~State()
@@ -31,13 +33,30 @@ void State::StateInit(OSDFUNC pDraw ,CHANGESTAT pDisplaymode, CHANGESTAT pChange
 	if(m_level2 == NULL)
 		m_level2 = new LevelTwo();
 	if(m_timer == NULL)
+	{
 		m_timer = new DxTimer();
-	
+		twinkle_point_id = m_timer->createTimer();
+		m_timer->registerTimer(twinkle_point_id, TcallbackFunc, &twinkle_point_id);
+	}
 	if(m_pMenu == NULL)
 		m_pMenu = new CMenu(pDraw,pDisplaymode,pChangeStat,pChangeWkmode);
 
 	m_changeStatFunc = pChangeStat;	
 	return ;
+}
+
+
+void State::TcallbackFunc(void *p)
+{
+	static bool flag = false;
+	int a = *(int *)p;
+	if(a == pThis->twinkle_point_id)
+	{
+		pThis->set_twinkle_flag(flag);
+		printf("set flag = %d , get state = %d \n" , flag , pThis->get_twinkle_flag());
+		flag = !flag;
+	}
+
 }
 
 
@@ -138,6 +157,7 @@ void State::drawPoints(cv::Mat frame)
 	Drawfeaturepoints(frame);
 	DrawTwinklePoint(frame);
 
+	
 	return;
 }
 
@@ -163,7 +183,16 @@ void State::Drawfeaturepoints(cv::Mat frame)
 void State::DrawTwinklePoint(cv::Mat frame)
 {
 	twinkle_point_bak = twinkle_point;
-	cv::circle(frame , twinkle_point_bak , 3 ,cvScalar(0,0,255,255), 2, 8, 0 );
+
+	if(get_twinkle_flag())
+	{
+		printf("11111111111\n");
+		cv::circle(frame,twinkle_point_bak,3,cvScalar(0,0,255,255),2,8,0);
+	}
+	else{
+		printf("2222222222222\n");
+		cv::circle(frame,twinkle_point_bak , 3 ,cvScalar(0,0,0,0), 2, 8, 0 );
+	}
 	return;
 }
 
@@ -393,7 +422,7 @@ void State::start_twinkle(int x, int y)
 	}
 	
 	m_timer->startTimer(twinkle_point_id, 500);
-	set_twinkle_flag(true);
+	//set_twinkle_flag(true);
 
 	if(m_autofr->getcalibnum() < 4)
 		set_jos_mouse_mode(jos_mode);

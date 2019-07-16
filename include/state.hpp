@@ -42,7 +42,7 @@ public:
 	
 	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);
 
-
+	static void TcallbackFunc(void *p);
 	
 public:
 	static char m_curState;
@@ -50,7 +50,6 @@ public:
 	static State *m_level1 , *m_level2, *m_level_setworkmode;
 	static CHANGESTAT m_changeStatFunc;
 	static CMenu* m_pMenu;
-
 
 public:
 	static CAutoManualFindRelation* m_autofr;
@@ -62,9 +61,9 @@ public:
 	jos_mouse_Mode gridinter_mode;
 	cv::Point2i point_triangle , point_triangle_bak;
 	bool draw_print_stat, drawpoints_stat ;
-	int twinkle_point_id;
+	static int twinkle_point_id;
 	int m_trig_pip_mode;
-	bool twinkle_flag;
+	static bool twinkle_flag;
 
 
 
@@ -96,7 +95,8 @@ public:
 	void evade_pip(int x, int y);
 	void app_self_deletePoint(cv::Point2i Pixel);
 	void start_twinkle(int x, int y);
-	
+
+
 };
 
 
