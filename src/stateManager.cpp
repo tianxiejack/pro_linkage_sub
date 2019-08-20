@@ -19,7 +19,9 @@ StateManger* StateManger::pThis = NULL;
 
 StateManger::StateManger()
 {
-	m_state = new CLinkManual();
+	m_linkmanual = new CLinkManual();
+	m_linkcalib = new CLinkCalib();
+	m_state = m_linkmanual;
 	m_curState = LINKMANUAL;
 	pThis = this;
 }
@@ -68,8 +70,20 @@ void StateManger::specialEvent(char key)
 
 void StateManger::callbackChangeStat(char nextmode)
 {
-	
+	switch(nextmode)
+	{
+		case LINKMANUAL:
+			pThis->ChangeState(pThis->m_linkmanual);
+			break;
 
+		case LINKCALIB:
+			pThis->ChangeState(pThis->m_linkcalib);
+			break;
+
+		default:
+			break;
+	}
+	
 	return;
 }
 
@@ -98,9 +112,12 @@ void StateManger::mouseEvent(int button, int state, int x, int y)
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
 		if(getMenuState() == MENU_MTD_REGION)
+		{
 			getPoly().push_back(cv::Point(x,y));
+			printf("%s : getPoly num = %d \n" , __func__, getPoly().size());
+		}
 		else if(getMenuState() == MENU_MTD_UNREGION)
-			getPolyTmp().push_back(cv::Point(x,y));	
+			;//getPolyTmp().push_back(cv::Point(x,y));	
 		else if(getMenuState() == MENU_CALIB)
 			m_state->process_trigmode_left_point(x, y);
 	}
@@ -108,7 +125,7 @@ void StateManger::mouseEvent(int button, int state, int x, int y)
 	if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
 	{
 		if(getMenuState() == MENU_CALIB)
-			m_state->process_trigmode_right_point(x, y);
+			;//m_state->process_trigmode_right_point(x, y);
 		
 	}
 	

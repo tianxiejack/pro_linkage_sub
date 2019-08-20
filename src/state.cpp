@@ -3,8 +3,6 @@
 
 
 DxTimer* State::m_timer = NULL;
-State* State::m_level1 = NULL;
-State* State::m_level2 = NULL;
 char State::m_curState = LINKMANUAL;
 CHANGESTAT State::m_changeStatFunc = NULL;
 CMenu* State::m_pMenu = NULL;
@@ -17,7 +15,6 @@ static State* pThis = NULL;
 State::State():draw_print_stat(false),drawpoints_stat(false)
 {	
 	gridinter_mode = mouse_mode;
-	m_autofr = new CAutoManualFindRelation(outputWHF[0],outputWHF[1], 6, 6);
 	twinkle_flag = false;
 	pThis = this;
 }
@@ -29,10 +26,6 @@ State::~State()
 
 void State::StateInit(OSDFUNC pDraw ,CHANGESTAT pDisplaymode, CHANGESTAT pChangeStat , CHDEFWORKMD pChangeWkmode)
 {
-	if(m_level1 == NULL)
-		m_level1 = new CLinkManual();
-	if(m_level2 == NULL)
-		m_level2 = new LevelTwo();
 	if(m_timer == NULL)
 	{
 		m_timer = new DxTimer();
@@ -41,11 +34,23 @@ void State::StateInit(OSDFUNC pDraw ,CHANGESTAT pDisplaymode, CHANGESTAT pChange
 	}
 	if(m_pMenu == NULL)
 		m_pMenu = new CMenu(pDraw,pDisplaymode,pChangeStat,pChangeWkmode);
+	if(m_autofr == NULL)
+	{
+		m_autofr = new CAutoManualFindRelation(outputWHF[0],outputWHF[1], 6, 6);
+		m_autofr->readParams(app_recommendPoints);
+		m_autofr->create(pnotify_callback);
+	}
 
-	m_changeStatFunc = pChangeStat;	
+	m_changeStatFunc = pChangeStat;
 	return ;
 }
 
+void State::pnotify_callback(std::vector<FEATUREPOINT_T>& recommendPoints)
+{
+	printf("%s,%d, pnotify_callback start!\n",__FILE__,__LINE__);
+	pThis->app_recommendPoints = recommendPoints;
+	return;
+}
 
 void State::TcallbackFunc(void *p)
 {
@@ -53,11 +58,11 @@ void State::TcallbackFunc(void *p)
 	int a = *(int *)p;
 	if(a == pThis->twinkle_point_id)
 	{
-		pThis->set_twinkle_flag(flag);
-		printf("set flag = %d , get state = %d \n" , flag , pThis->get_twinkle_flag());
 		flag = !flag;
+		pThis->set_twinkle_flag(flag);
+		//printf("%s : set flag = %d , get state = %d \n" ,__func__, flag , pThis->get_twinkle_flag());
 	}
-
+	return;
 }
 
 
@@ -157,7 +162,6 @@ void State::drawPoints(cv::Mat frame)
 {
 	Drawfeaturepoints(frame);
 	DrawTwinklePoint(frame);
-
 	
 	return;
 }
@@ -183,16 +187,19 @@ void State::Drawfeaturepoints(cv::Mat frame)
 
 void State::DrawTwinklePoint(cv::Mat frame)
 {
-	twinkle_point_bak = twinkle_point;
+	static bool bdraw =false;
 
+	if(bdraw)
+	{
+		cv::circle(frame,twinkle_point_bak , 3 ,cvScalar(0,0,0,0), 2, 8, 0 );
+		bdraw = false;
+	}
+		
 	if(get_twinkle_flag())
 	{
-		printf("11111111111\n");
+		twinkle_point_bak = twinkle_point;
 		cv::circle(frame,twinkle_point_bak,3,cvScalar(0,0,255,255),2,8,0);
-	}
-	else{
-		printf("2222222222222\n");
-		cv::circle(frame,twinkle_point_bak , 3 ,cvScalar(0,0,0,0), 2, 8, 0 );
+		bdraw = true;
 	}
 	return;
 }
@@ -416,14 +423,11 @@ void State::start_twinkle(int x, int y)
 	}
 	else
 	{
-		cv::Point2i outPixel_tmp;
-		outPixel_tmp.x = x;
-		outPixel_tmp.y = y;
-		twinkle_point = outPixel_tmp;
+		twinkle_point.x = x;
+		twinkle_point.y = y;
 	}
 	
 	m_timer->startTimer(twinkle_point_id, 500);
-	//set_twinkle_flag(true);
 
 	if(m_autofr->getcalibnum() < 4)
 		set_jos_mouse_mode(jos_mode);

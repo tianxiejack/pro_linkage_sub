@@ -739,6 +739,7 @@ void* recv_msgpth(SENDST *pInData)
 			pIn->intPrm[0],pIn->intPrm[1],
 			pIn->intPrm[2],pIn->intPrm[3]);
 	}
+	printf("pInData->cmd_ID = %d \n" , pInData->cmd_ID);
 	switch(pInData->cmd_ID)
 	{
 		case read_shm_config:

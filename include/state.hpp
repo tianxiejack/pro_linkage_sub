@@ -47,9 +47,9 @@ public:
 public:
 	static char m_curState;
 	static DxTimer* m_timer;
-	static State *m_level1 , *m_level2, *m_level_setworkmode;
 	static CHANGESTAT m_changeStatFunc;
 	static CMenu* m_pMenu;
+	static void pnotify_callback(std::vector<FEATUREPOINT_T>& recommendPoints);
 
 public:
 	static CAutoManualFindRelation* m_autofr;

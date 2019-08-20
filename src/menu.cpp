@@ -102,6 +102,7 @@ void CMenu::gotoCalibMode()
 	m_menuPointer = 0;
 	lv_4_calibOsd();
 	m_menuStat = MENU_CALIB;
+	changeStatFunc(LINKCALIB);
 	changeDisModeFunc(GUN_PIP_BALL);
 	return;
 }
@@ -308,6 +309,7 @@ void CMenu::menuhandle_workmode()
 	}
 	return;
 }
+
 
 void CMenu::menuMtdparam_setnum()
 {
@@ -653,7 +655,6 @@ void CMenu::enter()
 			break;
 			
 		case MENU_CALIB:
-			
 			break;
 
 		case MENU_MTD:

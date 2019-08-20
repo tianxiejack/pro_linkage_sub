@@ -39,20 +39,24 @@ typedef enum
 	focus,
 	exit_IrisAndFocus,
 	exit_img,
-
+	
 	read_shm_config,
 	read_shm_block,
 	read_shm_single,
 	read_shm_usrosd,
+	
+	querypos,
+	
 }CMD_ID;
 
 typedef enum 
 {
-    IPC_TOIMG_MSG,  		// SERVER TO CLIENT
+    IPC_TOIMG_MSG = 0,  // SERVER TO CLIENT
     IPC_FRIMG_MSG,		// CLIENT TO SERCER
     IPC_IMG_SHA,
     IPC_USER_SHA,
     IPC_SEM,
+    IPC_GSTREAM_PTZ = 10, //attach to the gstreamer app of DAO
     IPC_MAX
 }IPC_MTYPE;
 

@@ -28,7 +28,13 @@ void CLinkCalib::inputNumber(char key)
 
 void CLinkCalib::enter()
 {
-	m_pMenu->enter();
+	//m_pMenu->enter();
+	//add point and add checked pos information
+	SENDST trkmsg={0};
+	trkmsg.cmd_ID = querypos;
+	ipc_sendmsg(IPC_FRIMG_MSG,&trkmsg);
+	printf("send query pos \n");
+	return;
 }
 
 void CLinkCalib::buttonMenu()

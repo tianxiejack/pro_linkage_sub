@@ -78,11 +78,10 @@ private:
 private:
 	char m_defworkmode;
 	int m_curState;
-	State* m_state;
+	State *m_state;
+	State *m_linkmanual,*m_linkcalib;
 	CMvDectInterface * m_pMv;
 	static StateManger* pThis;
-
-
 
 };
 
