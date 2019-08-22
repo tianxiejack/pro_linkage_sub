@@ -35,7 +35,7 @@ StateManger::~StateManger()
 void StateManger::init(OSDFUNC func,CHANGESTAT chDisMode,CMvDectInterface *pMov)
 {
 	m_pMv = pMov;
-	m_state->StateInit(func,chDisMode,callbackChangeStat,callbackChangeDefaultWorkMode);
+	m_state->StateInit(func,chDisMode,callbackChangeStat,callbackChangeDefaultWorkMode,pMov);
 	return;
 }
 

@@ -9,10 +9,19 @@ CPP_SRCS += \
 ../src/MultiChVideo.cpp \
 ../src/VideoProcess.cpp \
 ../src/WorkThread.cpp \
+../src/autoManualFindRelation.cpp \
 ../src/cuda_mem.cpp \
+../src/link.cpp \
 ../src/main.cpp \
+../src/menu.cpp \
 ../src/process51.cpp \
 ../src/sceneProcess.cpp \
+../src/state.cpp \
+../src/stateManager.cpp \
+../src/state_leveltwo.cpp \
+../src/state_linkCalib.cpp \
+../src/state_linkManual.cpp \
+../src/state_setworkmode.cpp \
 ../src/v4l2camera.cpp 
 
 CU_SRCS += \
@@ -29,12 +38,21 @@ OBJS += \
 ./src/MultiChVideo.o \
 ./src/VideoProcess.o \
 ./src/WorkThread.o \
+./src/autoManualFindRelation.o \
 ./src/cuda.o \
 ./src/cuda_convert.o \
 ./src/cuda_mem.o \
+./src/link.o \
 ./src/main.o \
+./src/menu.o \
 ./src/process51.o \
 ./src/sceneProcess.o \
+./src/state.o \
+./src/stateManager.o \
+./src/state_leveltwo.o \
+./src/state_linkCalib.o \
+./src/state_linkManual.o \
+./src/state_setworkmode.o \
 ./src/v4l2camera.o 
 
 CPP_DEPS += \
@@ -43,10 +61,19 @@ CPP_DEPS += \
 ./src/MultiChVideo.d \
 ./src/VideoProcess.d \
 ./src/WorkThread.d \
+./src/autoManualFindRelation.d \
 ./src/cuda_mem.d \
+./src/link.d \
 ./src/main.d \
+./src/menu.d \
 ./src/process51.d \
 ./src/sceneProcess.d \
+./src/state.d \
+./src/stateManager.d \
+./src/state_leveltwo.d \
+./src/state_linkCalib.d \
+./src/state_linkManual.d \
+./src/state_setworkmode.d \
 ./src/v4l2camera.d 
 
 
@@ -54,16 +81,16 @@ CPP_DEPS += \
 src/%.o: ../src/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: NVCC Compiler'
-	/usr/local/cuda-8.0/bin/nvcc -D__IPC__=1 -D__TRACK__=1 -D__MOVE_DETECT__=1 -I/usr/lib/aarch64-linux-gnu/include -I/usr/include/freetype2 -I/usr/include/opencv -I/usr/include/opencv2 -I/usr/include/GL -I../include -I../include/osa -I../src/GST -O3 -Xcompiler -fopenmp -ccbin aarch64-linux-gnu-g++ -gencode arch=compute_20,code=sm_20 -m64 -odir "src" -M -o "$(@:%.o=%.d)" "$<"
-	/usr/local/cuda-8.0/bin/nvcc -D__IPC__=1 -D__TRACK__=1 -D__MOVE_DETECT__=1 -I/usr/lib/aarch64-linux-gnu/include -I/usr/include/freetype2 -I/usr/include/opencv -I/usr/include/opencv2 -I/usr/include/GL -I../include -I../include/osa -I../src/GST -O3 -Xcompiler -fopenmp --compile -m64 -ccbin aarch64-linux-gnu-g++  -x c++ -o  "$@" "$<"
+	/usr/local/cuda-8.0/bin/nvcc -D__IPC__=1 -D__TRACK__=1 -D__MOVE_DETECT__=1 -I/usr/lib/aarch64-linux-gnu/include -I../src/DxTimer -I/usr/include/freetype2 -I/usr/include/opencv -I/usr/include/opencv2 -I/usr/include/GL -I../include -I../include/osa -I../src/GST -O3 -Xcompiler -fopenmp -ccbin aarch64-linux-gnu-g++ -gencode arch=compute_20,code=sm_20 -m64 -odir "src" -M -o "$(@:%.o=%.d)" "$<"
+	/usr/local/cuda-8.0/bin/nvcc -D__IPC__=1 -D__TRACK__=1 -D__MOVE_DETECT__=1 -I/usr/lib/aarch64-linux-gnu/include -I../src/DxTimer -I/usr/include/freetype2 -I/usr/include/opencv -I/usr/include/opencv2 -I/usr/include/GL -I../include -I../include/osa -I../src/GST -O3 -Xcompiler -fopenmp --compile -m64 -ccbin aarch64-linux-gnu-g++  -x c++ -o  "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
 src/%.o: ../src/%.cu
 	@echo 'Building file: $<'
 	@echo 'Invoking: NVCC Compiler'
-	/usr/local/cuda-8.0/bin/nvcc -D__IPC__=1 -D__TRACK__=1 -D__MOVE_DETECT__=1 -I/usr/lib/aarch64-linux-gnu/include -I/usr/include/freetype2 -I/usr/include/opencv -I/usr/include/opencv2 -I/usr/include/GL -I../include -I../include/osa -I../src/GST -O3 -Xcompiler -fopenmp -ccbin aarch64-linux-gnu-g++ -gencode arch=compute_20,code=sm_20 -m64 -odir "src" -M -o "$(@:%.o=%.d)" "$<"
-	/usr/local/cuda-8.0/bin/nvcc -D__IPC__=1 -D__TRACK__=1 -D__MOVE_DETECT__=1 -I/usr/lib/aarch64-linux-gnu/include -I/usr/include/freetype2 -I/usr/include/opencv -I/usr/include/opencv2 -I/usr/include/GL -I../include -I../include/osa -I../src/GST -O3 -Xcompiler -fopenmp --compile --relocatable-device-code=false -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,code=sm_20 -m64 -ccbin aarch64-linux-gnu-g++  -x cu -o  "$@" "$<"
+	/usr/local/cuda-8.0/bin/nvcc -D__IPC__=1 -D__TRACK__=1 -D__MOVE_DETECT__=1 -I/usr/lib/aarch64-linux-gnu/include -I../src/DxTimer -I/usr/include/freetype2 -I/usr/include/opencv -I/usr/include/opencv2 -I/usr/include/GL -I../include -I../include/osa -I../src/GST -O3 -Xcompiler -fopenmp -ccbin aarch64-linux-gnu-g++ -gencode arch=compute_20,code=sm_20 -m64 -odir "src" -M -o "$(@:%.o=%.d)" "$<"
+	/usr/local/cuda-8.0/bin/nvcc -D__IPC__=1 -D__TRACK__=1 -D__MOVE_DETECT__=1 -I/usr/lib/aarch64-linux-gnu/include -I../src/DxTimer -I/usr/include/freetype2 -I/usr/include/opencv -I/usr/include/opencv2 -I/usr/include/GL -I../include -I../include/osa -I../src/GST -O3 -Xcompiler -fopenmp --compile --relocatable-device-code=false -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,code=sm_20 -m64 -ccbin aarch64-linux-gnu-g++  -x cu -o  "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
