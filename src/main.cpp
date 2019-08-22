@@ -69,9 +69,8 @@ int main(int argc, char **argv)
 	proc.init();
 	proc.run();
 
-	Capture* rtp = RTSPCapture_Create();
-	
-	rtp->init("rtsp://admin:admin$2018@192.168.0.64:554/h264/ch0/main/av_stream",1920,1080,processFrame);
+	//Capture* rtp = RTSPCapture_Create();
+	//rtp->init("rtsp://admin:admin$2018@192.168.0.64:554/h264/ch0/main/av_stream",1920,1080,processFrame);
 
 	if(testMode)
 		glutKeyboardFunc(keyboard_event);
