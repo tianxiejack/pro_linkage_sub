@@ -1,18 +1,32 @@
 
+
+
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv/cv.hpp>
 #include <glut.h>
 #include <sys/time.h>
+
+#include "Capture.hpp"
+
 
 #include "process51.hpp"
 #include "Ipc.hpp"
 #include "msgDriv.h"
 #include "hahaha.hpp"
 
+
+
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+
+
 using namespace std;
 using namespace cv;
 
 extern int startEnable, ipcDbgOn;
+
 
 int main(int argc, char **argv)
 {
@@ -54,6 +68,11 @@ int main(int argc, char **argv)
 	proc.creat();
 	proc.init();
 	proc.run();
+
+	Capture* rtp = RTSPCapture_Create();
+	
+	rtp->init("rtsp://admin:admin$2018@192.168.0.64:554/h264/ch0/main/av_stream",1920,1080,processFrame);
+
 	if(testMode)
 		glutKeyboardFunc(keyboard_event);
 	glutMainLoop();
@@ -63,8 +82,6 @@ int main(int argc, char **argv)
 #endif
     	return 0;
 }
-
-
 
 //__IPC__
 //__MOVE_DETECT__

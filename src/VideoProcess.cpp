@@ -1588,3 +1588,13 @@ void CVideoProcess::trackcall(vector<BoundingBox>& trackbox)
 	OSA_mutexUnlock(&pThis->m_trackboxLock);
 }
 
+
+void processFrame(const cv::Mat frame)
+{
+	//printf("w,h = %d ,%d \n", frame.cols,frame.rows);
+	cv::imshow("test", frame);
+	cv::waitKey(1);
+	
+	return;
+}
+
