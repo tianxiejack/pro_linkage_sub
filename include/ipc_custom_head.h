@@ -106,6 +106,14 @@ typedef enum{
 
 typedef struct
 {
+	float p;
+	float t;
+	float z;
+}IPC_ONVIF_POS;
+
+
+typedef struct
+{
 	unsigned int intPrm[PARAMLEN/4];
 }IPC_PRM_INT;
 
