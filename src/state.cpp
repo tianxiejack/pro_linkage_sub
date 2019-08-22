@@ -80,12 +80,6 @@ int State::ChangeState(char nextState)
 		case LINKMANUAL:
 			m_changeStatFunc(LINKMANUAL);
 			break;
-			
-		case LEVELTWO:
-			break;
-			
-		case SETWORKMODE:
-			break;
 
 		default:
 			break;

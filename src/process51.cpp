@@ -1628,6 +1628,10 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 			m_stateManger->downMenu();
 			//m_display.linkage.app_ctrl_downMenu();
 			break; 
+
+		case 3:
+			sendIpc4PTZpos();
+			break;
 			
 		default:
 			break;

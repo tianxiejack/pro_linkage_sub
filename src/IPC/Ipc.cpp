@@ -718,6 +718,7 @@ int  send_msgpth(SENDST * pData)
 void* recv_msgpth(SENDST *pInData)
 {
 	IPC_PRM_INT *pIn=NULL;
+	IPC_ONVIF_POS *pPos = NULL;
 	int configId, blkId, feildId;
 
 	if(pInData==NULL)
@@ -1063,6 +1064,11 @@ void* recv_msgpth(SENDST *pInData)
 			ipc_loop = 0;			
 			break;
 
+		case querypos:
+			pPos = (IPC_ONVIF_POS*)pInData->param;
+			printf("get PTZ = %f,%f,%f \n",pPos->p,pPos->t,pPos->z);
+			break;
+
 		default:
 			break;
 	}
@@ -1382,6 +1388,14 @@ void cfg_dbg_setCmd(int cmd, int prm)
 int* getSysconfig()
 {
 	return sysConfig;
+}
+
+void sendIpc4PTZpos()
+{
+	SENDST tmp;
+	memset(&tmp, 0, sizeof(tmp));
+	tmp.cmd_ID = querypos;
+	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
 }
 
 
