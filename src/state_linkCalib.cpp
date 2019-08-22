@@ -39,5 +39,9 @@ void CLinkCalib::enter()
 
 void CLinkCalib::buttonMenu()
 {
-	m_pMenu->menuButton();
+	m_pMenu->menuButton();	
+
+	m_pMenu->gotoMainMenu();
+	m_pMenu->changeStatFunc(LINKMANUAL);
+	m_pMenu->changeDisModeFunc(MAIN_VIEW);	
 }

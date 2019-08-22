@@ -22,8 +22,9 @@ typedef enum{
 	LINKAUTO,
 	LINKBALL,
 	LINKCALIB,
-	LEVELTWO,
-	SETWORKMODE,
+
+	
+	
 	LEVELMAX,
 }state_enum;
 
