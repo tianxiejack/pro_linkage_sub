@@ -7,6 +7,9 @@ using namespace cr_automanualfindrelation;
 
 const int FDXS = 1000000;
 
+const int CAPWIDTH = 1920;
+const int CAPHEIGHT = 1080;
+
 CAutoManualFindRelation::CAutoManualFindRelation(int disWidth, int disHeight,int row, int col) :m_disWidth(disWidth), m_disHeight(disHeight), m_row(row), m_col(col) 
 {
 	m_featurePoints.clear();
@@ -368,12 +371,12 @@ void CAutoManualFindRelation::updateSubdiv()
 	initDivsubObj();
 	for (std::vector<FEATUREPOINT_T>::iterator plist = fpassemble.begin();plist != fpassemble.end(); ++plist)
 	{
-		if(plist->pixel.x == 1920)
+		if(plist->pixel.x == CAPWIDTH)
 			plist->pixel.x--;
 		else if(plist->pixel.x == 0)
 			plist->pixel.x++;
 			
-		if(plist->pixel.y == 1080)
+		if(plist->pixel.y == CAPHEIGHT)
 			plist->pixel.y--;
 		else if(plist->pixel.y == 0 )
 			plist->pixel.y++;
@@ -393,8 +396,6 @@ int CAutoManualFindRelation::findPosInKnowPoints(const Point2i inPoint,Point2i &
 		if (plist->pixel == inPoint)
 		{
 			result = plist->pos;
-			if(plist->pos.y < 0)
-				result.y = 32768 - plist->pos.y;
 			ret = 0;
 			break;
 		}
@@ -637,18 +638,12 @@ void CAutoManualFindRelation::InterpolationPos(Point2i inPoint, Point2i& result)
 
 	calcNormalWay(inPoint,result,getDis);
 
-	result.x %= 36000;
-	if(result.x < 0)
-		result.x += 36000;
-	if (result.y < 0)
-		result.y = 32768 - result.y;
-
 	return;
 }
 
 void CAutoManualFindRelation::getPos(Point2i inPoint, Point2i& result)
 {
-	preprocessPos(m_calcPos);
+	//preprocessPos(m_calcPos);
 	InterpolationPos(inPoint, result);
 	return;
 }
@@ -910,8 +905,7 @@ void CAutoManualFindRelation::getHomography2estimateConer()
 	for(int i=0; i < m_canUsedPoints.size() ; i++ )
 	{
 		pixel.push_back(m_canUsedPoints[i].pixel);
-		if(	m_canUsedPoints[i].pos.y > 32768)
-			m_canUsedPoints[i].pos.y = 32768 - m_canUsedPoints[i].pos.y ;
+
 		pos.push_back(m_canUsedPoints[i].pos);
 	}
 
@@ -922,24 +916,24 @@ void CAutoManualFindRelation::getHomography2estimateConer()
 	tmp.y = 0;
 	cornor.push_back(tmp);
 
-	tmp.x = 1920 ;
+	tmp.x = CAPWIDTH ;
 	tmp.y = 0;
 	cornor.push_back(tmp);
 
-	tmp.x = 1920;
-	tmp.y = 1080;
+	tmp.x = CAPWIDTH;
+	tmp.y = CAPHEIGHT;
 	cornor.push_back(tmp);
 
 	tmp.x = 0;
-	tmp.y = 1080;
+	tmp.y = CAPHEIGHT;
 	cornor.push_back(tmp);
 
-	tmp.x = 1920/2;
+	tmp.x = CAPWIDTH/2;
 	tmp.y = 0;
 	cornor.push_back(tmp);
 
-	tmp.x = 1920/2;
-	tmp.y = 1080;
+	tmp.x = CAPWIDTH/2;
+	tmp.y = CAPHEIGHT;
 	cornor.push_back(tmp);
 	
 	perspectiveTransform(cornor, estPos, H);
@@ -999,7 +993,7 @@ void CAutoManualFindRelation::findThreeNearestPointInCanUsedPoints2estimate(std:
 	printf(" pixel (%d , %d ) ,   pos  (%d , %d) \n" , tmpFeature.pixel.x , tmpFeature.pixel.y , tmpFeature.pos.x , tmpFeature.pos.y );
 	// point ( 1920 , 0)
 	featurPoints = featureBk ;
-	inPoint.x = 1920 ;
+	inPoint.x = CAPWIDTH ;
 	inPoint.y = 0;
 	for(int i=0 ; i < featurPoints.size() ; i++ )
 		featurPoints[i].distance = getDistance(inPoint , featurPoints[i].pixel);
@@ -1010,7 +1004,7 @@ void CAutoManualFindRelation::findThreeNearestPointInCanUsedPoints2estimate(std:
 	d1 = featurPoints[2].pixel.x - featurPoints[0].pixel.x ;
 	d2 = inPoint.x - featurPoints[2].pixel.x  ;
 	tmpRatio = (d1 + d2)/d1 ;
-	tmpFeature.pixel.x = 1920;
+	tmpFeature.pixel.x = CAPWIDTH;
 	tmpFeature.pos.x = featurPoints[0].pos.x + (double)(featurPoints[2].pos.x - featurPoints[0].pos.x)*tmpRatio;
 
 	sort(featurPoints.begin(), featurPoints.end(), compPixely);
@@ -1026,8 +1020,8 @@ void CAutoManualFindRelation::findThreeNearestPointInCanUsedPoints2estimate(std:
 	printf(" pixel (%d , %d ) ,   pos  (%d , %d) \n" , tmpFeature.pixel.x , tmpFeature.pixel.y , tmpFeature.pos.x , tmpFeature.pos.y );
 	//point (1920 , 1080)
 	featurPoints = featureBk ;
-	inPoint.x = 1920 ;
-	inPoint.y = 1080;
+	inPoint.x = CAPWIDTH ;
+	inPoint.y = CAPHEIGHT;
 	for(int i=0 ; i < featurPoints.size() ; i++ )
 		featurPoints[i].distance = getDistance(inPoint , featurPoints[i].pixel);
 	sort(featurPoints.begin(), featurPoints.end(), compDistance);
@@ -1037,14 +1031,14 @@ void CAutoManualFindRelation::findThreeNearestPointInCanUsedPoints2estimate(std:
 	d1 = featurPoints[2].pixel.x - featurPoints[0].pixel.x ;
 	d2 = inPoint.x - featurPoints[2].pixel.x  ;
 	tmpRatio = (d1 + d2)/d1 ;
-	tmpFeature.pixel.x = 1920;
+	tmpFeature.pixel.x = CAPWIDTH;
 	tmpFeature.pos.x = featurPoints[0].pos.x + (double)(featurPoints[2].pos.x - featurPoints[0].pos.x)*tmpRatio;
 
 	sort(featurPoints.begin(), featurPoints.end(), compPixely);
 	d1 = featurPoints[2].pixel.y - featurPoints[0].pixel.y ;
 	d2 = inPoint.y - featurPoints[2].pixel.y;
 	tmpRatio = (d1 + d2)/d1 ;
-	tmpFeature.pixel.y = 1080;
+	tmpFeature.pixel.y = CAPHEIGHT;
 	tmpFeature.pos.y = featurPoints[2].pos.y + (double)(featurPoints[2].pos.y - featurPoints[0].pos.y)*tmpRatio;
 
 	tmpFeature.markFlag = true;
@@ -1054,7 +1048,7 @@ void CAutoManualFindRelation::findThreeNearestPointInCanUsedPoints2estimate(std:
 	//point (0 , 1080 )
 	featurPoints = featureBk ;
 	inPoint.x = 0 ;
-	inPoint.y = 1080;
+	inPoint.y = CAPHEIGHT;
 	for(int i=0 ; i < featurPoints.size() ; i++ )
 		featurPoints[i].distance = getDistance(inPoint , featurPoints[i].pixel);
 	sort(featurPoints.begin(), featurPoints.end(), compDistance);
@@ -1071,7 +1065,7 @@ void CAutoManualFindRelation::findThreeNearestPointInCanUsedPoints2estimate(std:
 	d1 = featurPoints[2].pixel.y - featurPoints[0].pixel.y ;
 	d2 = inPoint.y - featurPoints[2].pixel.y;
 	tmpRatio = (d1 + d2)/d1 ;
-	tmpFeature.pixel.y = 1080;
+	tmpFeature.pixel.y = CAPHEIGHT;
 	tmpFeature.pos.y = featurPoints[2].pos.y + (double)(featurPoints[2].pos.y - featurPoints[0].pos.y)*tmpRatio;
 
 	tmpFeature.markFlag = true;
