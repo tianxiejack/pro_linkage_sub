@@ -122,14 +122,15 @@ void StateManger::mouseEvent(int button, int state, int x, int y)
 			printf("%s : getPolyTmp num = %d \n" , __func__, getPolyTmp().size());
 		}
 		else if(getMenuState() == MENU_CALIB)
+		{
 			m_state->process_trigmode_left_point(x, y);
+		}
 	}
 
 	if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
 	{
 		if(getMenuState() == MENU_CALIB)
-			;//m_state->process_trigmode_right_point(x, y);
-		
+			m_state->process_trigmode_right_point(x, y);	
 	}
 	
 
@@ -142,8 +143,19 @@ void StateManger::mouseEvent(int button, int state, int x, int y)
 
 void StateManger::normalKeyEvent(char key)
 {
-	
-	m_state->inputNumber(key);
+	if(MENU_CALIB == m_state->m_pMenu->getMenuState())
+	{
+		if('0' == key)
+		{
+			m_state->m_autofr->deleteallPoints();
+		}
+		else if('1' == key)
+			m_state->m_autofr->writeParams();
+	}
+	else
+	{
+		m_state->inputNumber(key);
+	}
 	return;
 }
 

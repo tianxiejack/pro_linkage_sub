@@ -743,7 +743,7 @@ void* recv_msgpth(SENDST *pInData)
 			pIn->intPrm[0],pIn->intPrm[1],
 			pIn->intPrm[2],pIn->intPrm[3]);
 	}
-	printf("pInData->cmd_ID = %d \n" , pInData->cmd_ID);
+	//printf("pInData->cmd_ID = %d \n" , pInData->cmd_ID);
 	switch(pInData->cmd_ID)
 	{
 		case read_shm_config:
@@ -1069,21 +1069,25 @@ void* recv_msgpth(SENDST *pInData)
 
 		case querypos:
 			pPos = (IPC_ONVIF_POS*)pInData->param;
-			printf("get PTZ = %f,%f,%f \n",pPos->p,pPos->t,pPos->z);
+			printf("%s:LINE:%d   get PTZ = %f,%f,%f \n",__func__,__LINE__,pPos->p,pPos->t,pPos->z);
 			if(plat->m_stateManger->get_PTZ_flag())
 			{
-
+				plat->m_stateManger->m_state->app_selectPoint(plat->m_stateManger->m_state->twinkle_point.x,plat->m_stateManger->m_state->twinkle_point.y);
+				plat->m_stateManger->m_state->app_insertPos(pPos->p,pPos->t);
+				plat->m_stateManger->m_state->stoptwinkle();
 			}
 			break;
 
 		default:
 			break;
 	}
+	return NULL;
 }
 
 static void * ipc_dataRecv(Void * prm)
 {
 	SENDST test;
+	int result;
 	while(ipc_loop)
 	{
 		ipc_recvmsg(IPC_TOIMG_MSG, &test);
@@ -1399,9 +1403,21 @@ int* getSysconfig()
 
 void sendIpc4PTZpos()
 {
+	IPCSendMsg(querypos,0,0);
+}
+
+void sendIpc2setPos(float p, float t, float z)
+{
 	SENDST tmp;
 	memset(&tmp, 0, sizeof(tmp));
-	tmp.cmd_ID = querypos;
+	tmp.cmd_ID = setPos;
+	IPC_ONVIF_POS tmppos;
+	
+	tmppos.p = p;
+	tmppos.t = t;
+	tmppos.z = z;
+	printf("set pos ptz = (%f,%f,%f)\n",p,t,z);
+	memcpy(tmp.param,&tmppos,sizeof(tmppos));
 	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
 }
 

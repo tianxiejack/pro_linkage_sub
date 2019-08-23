@@ -47,7 +47,6 @@ void State::StateInit(OSDFUNC pDraw ,CHANGESTAT pDisplaymode, CHANGESTAT pChange
 
 void State::pnotify_callback(std::vector<FEATUREPOINT_T>& recommendPoints)
 {
-	printf("%s,%d, pnotify_callback start!\n",__FILE__,__LINE__);
 	pThis->app_recommendPoints = recommendPoints;
 	return;
 }
@@ -169,7 +168,8 @@ void State::Drawfeaturepoints(cv::Mat frame)
 		m_autofr->drawPoints(frame, app_recommendPoints_bak, 0);
 		drawpoint_falg = 0;
 	}
-	if(get_drawpoints_stat())
+	//if(get_drawpoints_stat())
+	if(MENU_CALIB == m_pMenu->getMenuState())
 	{
 		app_recommendPoints_bak = app_recommendPoints;
 		m_autofr->drawPoints(frame, app_recommendPoints_bak, 1);
@@ -218,14 +218,15 @@ void State::get_featurepoint()
 
 void State::grid_manuallinkage_moveball(int x, int y, int changezoom)
 {
-#if 0
+
 	SENDST trkmsg={0};
-	LinkagePos postmp;
-	Point2i inPoint, outPoint;
+	float zoom;
+	Point2i inPoint;
+	Point2f outPoint;
 	
 	int delta_X ;
 	int offset_x = 0;
-
+#if 0
 	if(changezoom)
 	{
 		switch(m_display.g_CurDisplayMode) 
@@ -247,29 +248,26 @@ void State::grid_manuallinkage_moveball(int x, int y, int changezoom)
 		
 		if(delta_X < MIN_VALID_RECT_WIDTH_IN_PIXEL)
 		{
-			postmp.zoom = 0;
+			zoom = 2.0;
 		}
 		else
 		{
-			postmp.zoom = checkZoomPosTable(delta_X);		
+			zoom = checkZoomPosTable(delta_X);		
 		}
 	}
 	else
-		postmp.zoom = 0;
+#endif
+		zoom = 2.0;
 
 	inPoint.x = x;
 	inPoint.y = y;
-	//pThis->m_autofr.Point2getPos(inPoint, outPoint);
-	if( -1 != pThis->m_autofr.Point2getPos(inPoint, outPoint))
+	if( -1 != pThis->m_autofr->Point2getPos(inPoint, outPoint))
 	{		
-		printf("%s, %d,grid inter mode: inPoint(%d,%d),outPos(%d,%d)\n", __FILE__,__LINE__,inPoint.x,inPoint.y,outPoint.x,outPoint.y);
-		trkmsg.cmd_ID = acqPosAndZoom;
-		postmp.panPos = outPoint.x;
-		postmp.tilPos = outPoint.y;
-		memcpy(&trkmsg.param,&postmp, sizeof(postmp));
-		ipc_sendmsg(&trkmsg, IPC_FRIMG_MSG);
+		printf("%s, %d,grid inter mode: inPoint(%d,%d),outPos(%f,%f)\n", __FILE__,__LINE__,inPoint.x,inPoint.y,outPoint.x,outPoint.y);
+
+		sendIpc2setPos(outPoint.x, outPoint.y, zoom);
 	}
-#endif
+
 	return;
 }
 
@@ -399,7 +397,9 @@ void State::app_self_deletePoint(cv::Point2i Pixel)
 {
 	for(int  i = 0; i < app_recommendPoints.size(); i++)
 		if(app_recommendPoints[i].pixel == Pixel)
+		{
 			app_recommendPoints.erase(app_recommendPoints.begin() + i);
+		}
 	return;
 }
 
@@ -425,7 +425,7 @@ void State::start_twinkle(int x, int y)
 	set_PTZ_flag(true);
 
 	if(m_autofr->getcalibnum() < 4)
-		set_jos_mouse_mode(jos_mode);
+		;
 	else
 	{
 		cv::Point tmp;
@@ -436,6 +436,14 @@ void State::start_twinkle(int x, int y)
 		app_set_triangle_point(tmp.x, tmp.y);
 	}
 	return;
+}
+
+void State::stoptwinkle()
+{
+	m_timer->stopTimer(twinkle_point_id);
+	set_twinkle_flag(false);;
+	get_featurepoint();
+	set_PTZ_flag(false);
 }
 
 void State::app_set_triangle_point(int x, int y)
@@ -464,3 +472,32 @@ void State::app_deletePoint(int x, int y)
 	return;
 }
 
+void State::app_selectPoint(int x, int y)
+{
+	cv::Point2i outPixel;
+	if(!in_recommand_vector(x, y, outPixel))
+	{
+		app_manualInsertRecommendPoints(x, y);
+	}
+
+	printf("%s, %d, app select point(%d, %d)\n", __FILE__,__LINE__,outPixel.x,outPixel.y);
+	m_autofr->selectPoint(outPixel);
+}
+
+void State::app_manualInsertRecommendPoints(int x, int y)
+{
+	printf("%s, %d,%s start\n",__FILE__,__LINE__,__FUNCTION__);
+	cv::Point2i inPoint;
+	inPoint.x = x;
+	inPoint.y = y;
+	m_autofr->manualInsertRecommendPoints(inPoint);
+}
+
+void State::app_insertPos(float x, float y)
+{
+	printf("%s, %d, app insertpos(%f, %f)\n", __FILE__,__LINE__,x, y);
+	cv::Point2f inPos;
+	inPos.x = x;
+	inPos.y = y;
+	m_autofr->insertPos(inPos);
+}

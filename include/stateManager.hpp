@@ -70,7 +70,8 @@ public:
 	std::vector<cv::Point>& getPoly();
 	std::vector<cv::Point>& getPolyTmp();
 	std::vector< std::vector<cv::Point> >& getunRoiPoly();
-
+public:
+	State *m_state;
 private:
 	friend class State;
 	void ChangeState(State* state);
@@ -79,7 +80,6 @@ private:
 private:
 	char m_defworkmode;
 	int m_curState;
-	State *m_state;
 	State *m_linkmanual,*m_linkcalib;
 	CMvDectInterface * m_pMv;
 	static StateManger* pThis;

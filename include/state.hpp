@@ -76,6 +76,9 @@ public:
 	void app_set_triangle_point(int x, int y);
 	void process_trigmode_right_point(int x, int y);
 	void app_deletePoint(int x, int y);
+	void app_selectPoint(int x, int y);
+	void app_manualInsertRecommendPoints(int x, int y);
+	void app_insertPos(float x, float y);
 	bool get_drawpoints_stat(){return drawpoints_stat;};
 	void set_drawpoints_stat(bool value){drawpoints_stat = value;};
 	void set_twinkle_flag(bool flag){twinkle_flag = flag;};
@@ -96,6 +99,7 @@ public:
 	void evade_pip(int x, int y);
 	void app_self_deletePoint(cv::Point2i Pixel);
 	void start_twinkle(int x, int y);
+	void stoptwinkle();
 
 
 };

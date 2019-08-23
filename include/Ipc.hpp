@@ -23,8 +23,7 @@ void cfg_dbg_setCmd(int cmd, int prm);
 int* getSysconfig();
 
 void sendIpc4PTZpos();
-
-
+void sendIpc2setPos(float p, float t, float z);
 
 #endif /* IPC_HPP_ */
 

@@ -1613,6 +1613,7 @@ void CProcess::OnMouseRightUp(int x, int y){};
 void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 {
 	static int f;
+	static float p = -1.0,t = -1.0,z = 0;
 	switch(key) 
 	{
 		case 2:
@@ -1632,6 +1633,13 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 
 		case 3:
 			sendIpc4PTZpos();
+			break;
+
+		case 4:
+			p += 0.01;
+			t += 0.01;
+			z += 0.005;
+			sendIpc2setPos(p, t, z);
 			break;
 			
 		default:

@@ -11,7 +11,6 @@
 #include "locale.h"
 #include <stdio.h>
 #include <wchar.h>
-#include "Ipc.hpp"
 
 
 static CMenu* pThis = NULL;
@@ -917,6 +916,7 @@ void CMenu::normalKey(char key)
 		if('0' == key)
 			m_polyTmp.clear();
 	}
+
 	return;
 }
 
@@ -1133,7 +1133,7 @@ void CMenu::lv_4_calibOsd()
 	disMenuBuf.osdBuffer[j].posx = 700;
 	disMenuBuf.osdBuffer[j].posy = 100;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
-	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"回车:确认 F1:控球模式 0:清空点  1:保存");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"回车:确认 0:清空点  1:保存");
 
 	return;
 }

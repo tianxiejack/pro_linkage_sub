@@ -20,6 +20,7 @@
 
 #include "stateManager.hpp"
 
+
 typedef struct
 {
 	float x;
@@ -323,6 +324,7 @@ public:
 
 };
 
+void processFrame(const cv::Mat frame);
 
 
 #endif /* VIDEOPROCESS_HPP_ */

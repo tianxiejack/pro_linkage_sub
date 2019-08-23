@@ -2,6 +2,7 @@
 #ifndef MENU_HPP_
 #define MENU_HPP_
 
+#include "Ipc.hpp"
 #include "configtable.h"
 #include "statecommon.h"
 
