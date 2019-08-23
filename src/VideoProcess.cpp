@@ -1299,8 +1299,7 @@ int CVideoProcess::process_frame(int chId, int virchId, Mat frame)
 		//else if(chId == video_pal)
 		//	format = CV_YUV2BGR_UYVY;
 
-		if(chId == 1 || chId == 0)
-			format = CV_YUV2BGR_UYVY;
+		format = CV_YUV2BGR_UYVY;
 	}
 	else {
 //		cvtColor(frame,frame,CV_GRAY2BGR);
