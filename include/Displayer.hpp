@@ -243,6 +243,8 @@ protected:
 	struct timespec last_render_time;   /**< Rendering time for the last buffer. */
 	int m_nSwapTimeOut;
 	int64 tStamp[10];
+	int64  tend;
+	unsigned long rCount;
 
 protected:
 	static void _display(void);
