@@ -115,6 +115,7 @@ void CMenu::gotoCalibMode()
 void CMenu::gotoMtdRegion()
 {
 	m_menuPointer = 0;
+	m_poly.clear();
 	lv_4_mtdregionOsd(false);
 	m_menuStat = MENU_MTD_REGION;
 	changeDisModeFunc(GUN_FULL);
@@ -125,7 +126,8 @@ void CMenu::gotoMtdRegion()
 void CMenu::gotoMtdUnRegion()
 {
 	m_menuPointer = 0;
-	lv_4_mtdUnregionOsd();
+	m_polyTmp.clear();
+	lv_4_mtdUnregionOsd(false);
 	m_menuStat = MENU_MTD_UNREGION;
 	changeDisModeFunc(GUN_FULL);
 	return;
@@ -541,11 +543,58 @@ void CMenu::save_polygon_roi()
 	}
 
 	if(polyWarnRoi.size() != 0)
-		SaveMtdSelectArea("SaveMtdArea.yml", polyWarnRoi);
+		SaveMtdSelectArea("SaveMtdRoi.yml", polyWarnRoi);
 
 	for(int i = 0; i < areanum; i++)
 	{
 		m_pMv->setWarningRoi(polyWarnRoi[i], i);
+	}
+
+	return ;
+}
+
+void CMenu::save_polygon_unroi()
+{
+	int curId = 0;
+	float floatx,floaty;
+	int setx, sety = 0;
+	int areanum = 1;
+
+	lv_4_mtdUnregionOsd(true);
+
+	if(m_polyTmp.size() < 3)
+		return;
+
+	polyWarnUnRoi.resize(areanum);
+	edge_contours_UnRoi.resize(areanum);
+
+	for(int i = 0; i < areanum; i++)
+	{
+		polyWarnUnRoi[i].resize(m_polyTmp.size());
+		edge_contours_UnRoi[i].resize(m_polyTmp.size());
+		for(int j = 0; j < m_polyTmp.size(); j++)
+		{
+			floatx = m_polyTmp[j].x;
+			floaty = m_polyTmp[j].y;
+			map1080p2normal_point(&floatx, &floaty);
+			mapnormal2curchannel_point(&floatx, &floaty, vdisWH[curId][0], vdisWH[curId][1]);
+
+			setx = floatx;
+			sety = floaty;
+			polyWarnUnRoi[i][j] = cv::Point(setx, sety);
+
+			mapfullscreen2gun_pointv20(&setx, &sety);
+			edge_contours_UnRoi[i][j].x = setx;
+			edge_contours_UnRoi[i][j].y = sety;
+		}
+	}
+
+	if(polyWarnUnRoi.size() != 0)
+		SaveMtdSelectArea("SaveMtdUnRoi.yml", polyWarnUnRoi);
+
+	for(int i = 0; i < areanum; i++)
+	{
+		//m_pMv->setWarningRoi(polyWarnUnRoi[i], i);
 	}
 
 	return ;
@@ -803,9 +852,9 @@ void CMenu::enter()
 
 		case MENU_MTD_UNREGION:
 			//m_polyTmp.push_back(m_polyTmp[0]);
-			m_unroiPoly.push_back(m_polyTmp);
-			m_polyTmp.clear();
-			//wait to save yml
+			//m_unroiPoly.push_back(m_polyTmp);
+			//m_polyTmp.clear();
+			save_polygon_unroi();
 			break;
 
 		case MENU_MTD_SETNUM:
@@ -860,6 +909,11 @@ void CMenu::normalKey(char key)
 	{
 		if('1' == key)
 			m_poly.clear();
+	}
+	else if(m_menuStat == MENU_MTD_UNREGION)
+	{
+		if('1' == key)
+			m_polyTmp.clear();
 	}
 	return;
 }
@@ -982,16 +1036,16 @@ void CMenu::lv_4_mtdregionOsd(bool show_result)
 	disMenuBuf.osdBuffer[j].posx = 800;
 	disMenuBuf.osdBuffer[j].posy = 50;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
-	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:增加点    1:删除所有点");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"检测区域设置");
 
 	j=1;
 	disMenuBuf.osdBuffer[j].bshow = true;
 	disMenuBuf.osdBuffer[j].alpha = 2;
 	disMenuBuf.osdBuffer[j].color = 1;
-	disMenuBuf.osdBuffer[j].posx = 800;
+	disMenuBuf.osdBuffer[j].posx = 600;
 	disMenuBuf.osdBuffer[j].posy = 100;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
-	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"回车:保存设置     F2:退出");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:增加点  1:清空点  回车:保存设置  F2:退出");
 
 	if(show_result)
 	{
@@ -1011,11 +1065,14 @@ void CMenu::lv_4_mtdregionOsd(bool show_result)
 	return;
 }
 
-void CMenu::lv_4_mtdUnregionOsd()
+void CMenu::lv_4_mtdUnregionOsd(bool show_result)
 {
 	//L"鼠标左键:选择点 鼠标右键:删除点 回车:确认 F1:控球模式 0:删除所有点  1:保存"
 	int j;
-	disMenuBuf.cnt = 2;
+		if(show_result)
+		disMenuBuf.cnt = 3;
+	else
+		disMenuBuf.cnt = 2;
 	
 	j=0;
 	disMenuBuf.osdBuffer[j].bshow = true;
@@ -1024,16 +1081,31 @@ void CMenu::lv_4_mtdUnregionOsd()
 	disMenuBuf.osdBuffer[j].posx = 800;
 	disMenuBuf.osdBuffer[j].posy = 50;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
-	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:增加点    1:删除所有点");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"不检测区域设置");
 
 	j=1;
 	disMenuBuf.osdBuffer[j].bshow = true;
 	disMenuBuf.osdBuffer[j].alpha = 2;
 	disMenuBuf.osdBuffer[j].color = 1;
-	disMenuBuf.osdBuffer[j].posx = 800;
+	disMenuBuf.osdBuffer[j].posx = 600;
 	disMenuBuf.osdBuffer[j].posy = 100;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
-	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"回车:保存设置     F2:退出");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:增加点  1:清空点  回车:保存设置  F2:退出");
+
+	if(show_result)
+	{
+		j = 2;
+		disMenuBuf.osdBuffer[j].bshow = true;
+		disMenuBuf.osdBuffer[j].alpha = 2;
+		disMenuBuf.osdBuffer[j].color = 1;
+		disMenuBuf.osdBuffer[j].posx = 1400;
+		disMenuBuf.osdBuffer[j].posy = 50;
+		setlocale(LC_ALL, "zh_CN.UTF-8");
+		if(m_polyTmp.size() >= 3)
+			swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"点数:%d,保存成功", m_polyTmp.size());
+		else
+			swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"点数小于3,保存失败");
+	}
 	return;
 }
 

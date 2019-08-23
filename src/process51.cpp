@@ -3443,7 +3443,7 @@ void CProcess::DrawMtdPolygonUnRoi()
 	if(m_stateManger->getMenuState() == MENU_MTD_UNREGION)
 	{
 		m_polyTmpBak = m_stateManger->getPolyTmp();
-		m_polyUnRoiBak = m_stateManger->getunRoiPoly();
+		//m_polyUnRoiBak = m_stateManger->getunRoiPoly();
 		drawPolyUnRoi(true);
 	}
 
@@ -3455,8 +3455,8 @@ void CProcess::drawPolyUnRoi(bool bdraw)
 	Osd_cvPoint start,end;
 	int color = 0;
 	int index , cnt;
-	if(!m_polyTmpBak.size() && !m_polyUnRoiBak.size())
-		return;
+	//if(!m_polyTmpBak.size() && !m_polyUnRoiBak.size())
+		//return;
 
 	if(bdraw)
 	{
@@ -3468,7 +3468,7 @@ void CProcess::drawPolyUnRoi(bool bdraw)
 
 	cnt = m_polyTmpBak.size();
 
-	if(cnt >= 2)
+	//if(cnt >= 2)
 		for(int i=0;i<cnt;i++)
 		{
 			index = (i+1)%cnt;
@@ -3479,7 +3479,7 @@ void CProcess::drawPolyUnRoi(bool bdraw)
 			DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);
 		}
 
-
+/*
 	for(int i=0 ; i< m_polyUnRoiBak.size();i++)
 	{
 		cnt = m_polyUnRoiBak[i].size();
@@ -3493,6 +3493,7 @@ void CProcess::drawPolyUnRoi(bool bdraw)
 			DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);		
 		}
 	}
+*/
 	return;
 }
 

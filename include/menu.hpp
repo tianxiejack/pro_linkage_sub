@@ -27,7 +27,7 @@ public:
 	void lv_3_workmodeOsd();
 	void lv_3_mtdparamOsd();
 	void lv_4_mtdregionOsd(bool show_result);
-	void lv_4_mtdUnregionOsd();
+	void lv_4_mtdUnregionOsd(bool show_result);
 	void lv_4_calibOsd();
 	
 
@@ -74,6 +74,7 @@ public:
 	void set_mtd_sensi_osd();
 	
 	void save_polygon_roi();
+	void save_polygon_unroi();
 	int map1080p2normal_point(float *x, float *y);
 	int mapnormal2curchannel_point(float *x, float *y, int w, int h);
 	int mapfullscreen2gun_pointv20(int *x, int *y);
@@ -122,6 +123,8 @@ private:
 
 	std::vector< std::vector< cv::Point > > polyWarnRoi;
 	std::vector< std::vector< cv::Point > > edge_contours;
+	std::vector< std::vector< cv::Point > > polyWarnUnRoi;
+	std::vector< std::vector< cv::Point > > edge_contours_UnRoi;
 	int m_ScreenWidth,m_ScreenHeight;
 	CMvDectInterface * m_pMv;
 	cv::FileStorage m_fsWriteMtd;
