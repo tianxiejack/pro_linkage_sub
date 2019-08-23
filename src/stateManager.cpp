@@ -117,7 +117,10 @@ void StateManger::mouseEvent(int button, int state, int x, int y)
 			printf("%s : getPoly num = %d \n" , __func__, getPoly().size());
 		}
 		else if(getMenuState() == MENU_MTD_UNREGION)
-			;//getPolyTmp().push_back(cv::Point(x,y));	
+		{
+			getPolyTmp().push_back(cv::Point(x,y));	
+			printf("%s : getPolyTmp num = %d \n" , __func__, getPolyTmp().size());
+		}
 		else if(getMenuState() == MENU_CALIB)
 			m_state->process_trigmode_left_point(x, y);
 	}
