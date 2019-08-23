@@ -20,6 +20,8 @@
 
 #include "stateManager.hpp"
 
+#include "Capture.hpp"
+
 
 typedef struct
 {
@@ -322,9 +324,13 @@ public:
 public:
 	StateManger* m_stateManger;
 
+
+public:
+	
+	static void processFrame(const cv::Mat frame,const int chId);
+
 };
 
-void processFrame(const cv::Mat frame);
 
 
 #endif /* VIDEOPROCESS_HPP_ */

@@ -6,8 +6,6 @@
 #include <glut.h>
 #include <sys/time.h>
 
-#include "Capture.hpp"
-
 
 #include "process51.hpp"
 #include "Ipc.hpp"
@@ -69,8 +67,11 @@ int main(int argc, char **argv)
 	proc.init();
 	proc.run();
 
-	//Capture* rtp = RTSPCapture_Create();
-	//rtp->init("rtsp://admin:admin$2018@192.168.0.64:554/h264/ch0/main/av_stream",1920,1080,processFrame);
+	Capture* rtp0 = RTSPCapture_Create();
+	rtp0->init("rtsp://admin:admin$2018@192.168.0.66:554/h264/ch0/main/av_stream",0,1920,1080,CVideoProcess::processFrame);
+
+	Capture* rtp1 = RTSPCapture_Create();
+	rtp1->init("rtsp://admin:admin$2018@192.168.0.64:554/h264/ch0/main/av_stream",1,1920,1080,CVideoProcess::processFrame);
 
 	if(testMode)
 		glutKeyboardFunc(keyboard_event);

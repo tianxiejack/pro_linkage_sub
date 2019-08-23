@@ -586,7 +586,7 @@ int CVideoProcess::creat()
 
 	MultiCh.m_user = this;
 	MultiCh.m_usrFunc = callback_process;
-	MultiCh.creat();
+	//MultiCh.creat();
 
 	MAIN_threadCreate();
 	OSA_mutexCreate(&m_mutex);
@@ -629,7 +629,7 @@ int CVideoProcess::destroy()
 	OSA_mutexDelete(&m_trackboxLock);
 	MAIN_threadDestroy();
 
-	MultiCh.destroy();
+	//MultiCh.destroy();
 	m_display.destroy();
 
 	OnDestroy();
@@ -1070,7 +1070,7 @@ int CVideoProcess::dynamic_config(int type, int iPrm, void* pPrm)
 
 int CVideoProcess::run()
 {
-	MultiCh.run();
+	//MultiCh.run();
 	m_display.run();
 	
 	#if __TRACK__
@@ -1103,7 +1103,7 @@ int CVideoProcess::stop()
 	m_track = NULL;
 	
 	m_display.stop();
-	MultiCh.stop();
+	//MultiCh.stop();
 
 	OnStop();
 
@@ -1293,10 +1293,13 @@ int CVideoProcess::process_frame(int chId, int virchId, Mat frame)
 
 	if(channel == 2){
 //		cvtColor(frame,frame,CV_YUV2BGR_YUYV);
-		if((chId == video_gaoqing0)||(chId == video_gaoqing)||(chId == video_gaoqing2)||(chId == video_gaoqing3))
-			format = CV_YUV2BGR_YUYV;
-		else if(chId == video_pal)
-			format = CV_YUV2BGR_UYVY;
+
+		//if((chId == video_gaoqing0)||(chId == video_gaoqing)||(chId == video_gaoqing2)||(chId == video_gaoqing3))
+		//	format = CV_YUV2BGR_YUYV;
+		//else if(chId == video_pal)
+		//	format = CV_YUV2BGR_UYVY;
+
+		format = CV_YUV2BGR_UYVY;
 	}
 	else {
 //		cvtColor(frame,frame,CV_GRAY2BGR);
@@ -1308,48 +1311,44 @@ int CVideoProcess::process_frame(int chId, int virchId, Mat frame)
 
 	if(chId == m_curSubChId)
 	{
-		if((chId==video_pal) && (virchId!= PAL_VIRCHID))
-			;
-		else
-		{
-			mainFrame[mainProcThrObj.pp] = frame;
-			mainProcThrObj.cxt[mainProcThrObj.pp].bTrack = m_bTrack;
-			mainProcThrObj.cxt[mainProcThrObj.pp].bMtd = m_bMtd;
-			mainProcThrObj.cxt[mainProcThrObj.pp].bMoveDetect = m_bMoveDetect;
-			mainProcThrObj.cxt[mainProcThrObj.pp].iTrackStat = m_iTrackStat;
-			mainProcThrObj.cxt[mainProcThrObj.pp].bSceneTrack= m_bSceneTrack;
-			mainProcThrObj.cxt[mainProcThrObj.pp].iSceneTrackStat = m_iSceneTrackStat;
-			mainProcThrObj.cxt[mainProcThrObj.pp].bPatternDetect = m_bPatterDetect;
-			mainProcThrObj.cxt[mainProcThrObj.pp].chId = chId;
-			if(mainProcThrObj.bFirst){
-				mainFrame[mainProcThrObj.pp^1] = frame;
-				mainProcThrObj.cxt[mainProcThrObj.pp^1].bTrack = m_bTrack;
-				mainProcThrObj.cxt[mainProcThrObj.pp^1].bMtd = m_bMtd;
-				mainProcThrObj.cxt[mainProcThrObj.pp^1].bMoveDetect = m_bMoveDetect;
-				mainProcThrObj.cxt[mainProcThrObj.pp^1].iTrackStat = m_iTrackStat;
-				mainProcThrObj.cxt[mainProcThrObj.pp^1].bSceneTrack= m_bSceneTrack;
-				mainProcThrObj.cxt[mainProcThrObj.pp^1].iSceneTrackStat = m_iSceneTrackStat;
-				mainProcThrObj.cxt[mainProcThrObj.pp^1].bPatternDetect = m_bPatterDetect;
-				mainProcThrObj.cxt[mainProcThrObj.pp^1].chId = chId;
-				mainProcThrObj.bFirst = false;
-			}
-			OSA_semSignal(&mainProcThrObj.procNotifySem);
+		mainFrame[mainProcThrObj.pp] = frame;
+		mainProcThrObj.cxt[mainProcThrObj.pp].bTrack = m_bTrack;
+		mainProcThrObj.cxt[mainProcThrObj.pp].bMtd = m_bMtd;
+		mainProcThrObj.cxt[mainProcThrObj.pp].bMoveDetect = m_bMoveDetect;
+		mainProcThrObj.cxt[mainProcThrObj.pp].iTrackStat = m_iTrackStat;
+		mainProcThrObj.cxt[mainProcThrObj.pp].bSceneTrack= m_bSceneTrack;
+		mainProcThrObj.cxt[mainProcThrObj.pp].iSceneTrackStat = m_iSceneTrackStat;
+		mainProcThrObj.cxt[mainProcThrObj.pp].bPatternDetect = m_bPatterDetect;
+		mainProcThrObj.cxt[mainProcThrObj.pp].chId = chId;
+		if(mainProcThrObj.bFirst){
+			mainFrame[mainProcThrObj.pp^1] = frame;
+			mainProcThrObj.cxt[mainProcThrObj.pp^1].bTrack = m_bTrack;
+			mainProcThrObj.cxt[mainProcThrObj.pp^1].bMtd = m_bMtd;
+			mainProcThrObj.cxt[mainProcThrObj.pp^1].bMoveDetect = m_bMoveDetect;
+			mainProcThrObj.cxt[mainProcThrObj.pp^1].iTrackStat = m_iTrackStat;
+			mainProcThrObj.cxt[mainProcThrObj.pp^1].bSceneTrack= m_bSceneTrack;
+			mainProcThrObj.cxt[mainProcThrObj.pp^1].iSceneTrackStat = m_iSceneTrackStat;
+			mainProcThrObj.cxt[mainProcThrObj.pp^1].bPatternDetect = m_bPatterDetect;
+			mainProcThrObj.cxt[mainProcThrObj.pp^1].chId = chId;
+			mainProcThrObj.bFirst = false;
 		}
+		OSA_semSignal(&mainProcThrObj.procNotifySem);
+		
 	}
 	//OSA_printf("chid =%d  m_curChId=%d m_curSubChId=%d\n", chId,m_curChId,m_curSubChId);
 
+#if 0
 #ifdef ENCTRANS_ON
 	if(gSYS_Enc.rtpEn && gSYS_Enc.vinEncId[chId] >= 0)
 	{
 		encTranFrame(chId, frame, gSYS_Enc.rtpEn, gSYS_Enc.vinEncId[chId]);
 	}
 #endif
+#endif
 
 	if(chId == m_curChId || chId == m_curSubChId)
 	{
-		if((chId == video_pal)&&(virchId != PAL_VIRCHID));
-		else
-			m_display.display(frame,  chId, format);		
+		m_display.display(frame,  chId, format);		
 	}
 
 	OSA_mutexUnlock(&m_mutex);
@@ -1589,11 +1588,16 @@ void CVideoProcess::trackcall(vector<BoundingBox>& trackbox)
 }
 
 
-void processFrame(const cv::Mat frame)
+void CVideoProcess::processFrame(const cv::Mat frame,const int chId)
 {
-	//printf("w,h = %d ,%d \n", frame.cols,frame.rows);
-	cv::imshow("test", frame);
-	cv::waitKey(1);
+	#if 0
+		printf("w,h = %d ,%d ,channel = %d \n", frame.cols,frame.rows , frame.channels());
+		cv::imshow("test", frame);
+		cv::waitKey(1);
+	#endif
+	pThis->process_frame(chId, 0, frame);
+
+	
 	
 	return;
 }
