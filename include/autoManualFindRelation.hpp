@@ -48,9 +48,11 @@ public:
 	void selectPoint(  cv::Point2i inPixel ); //选择点进行找pos
 	void deletePoint( cv::Point2i inPixel );//删除特征点
 	void deleteallPoints();
-
+	void insertPos(  cv::Point2f inPos );
 	bool readParams(std::vector<FEATUREPOINT_T>& getParam);//读取配置
 	bool writeParams(void);//写配置
+
+	int Point2getPos(const Point2i inPoint,Point2f &result ); //输入点获取POS
 
 	int Point2getPos(const Point2i inPoint,Point2i &result ); //输入点获取POS
 	void drawPoints( cv::Mat drawMat,	std::vector<FEATUREPOINT_T>& featurePoints , bool bDraw );

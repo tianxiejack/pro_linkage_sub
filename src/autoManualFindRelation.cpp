@@ -5,6 +5,8 @@ using namespace cr_automanualfindrelation;
 
 #define CONFIG_AUTOMANUALFIND_FILE		"ConfigAutoManualFindFile.yml"
 
+const int FDXS = 1000000;
+
 CAutoManualFindRelation::CAutoManualFindRelation(int disWidth, int disHeight,int row, int col) :m_disWidth(disWidth), m_disHeight(disHeight), m_row(row), m_col(col) 
 {
 	m_featurePoints.clear();
@@ -254,6 +256,17 @@ void CAutoManualFindRelation::insertPos(cv::Point2i inPos)
 	return;
 }
 
+void CAutoManualFindRelation::insertPos(cv::Point2f inPos) 
+{
+	cv::Point2i tmp;
+	tmp.x = (int)FDXS*inPos.x;
+	tmp.y = (int)FDXS*inPos.y;
+	insertPos(tmp) ;
+
+	return;
+}
+
+
 
 static bool compDistance(const FEATUREPOINT_T &a, const FEATUREPOINT_T &b)
 {
@@ -389,6 +402,16 @@ int CAutoManualFindRelation::findPosInKnowPoints(const Point2i inPoint,Point2i &
 	return ret;
 }
 
+int CAutoManualFindRelation::Point2getPos(const Point2i inPoint,Point2f &result) 
+{
+	int ret = 0;
+	cv::Point2i tmp;
+	ret = Point2getPos(inPoint,tmp) ;
+
+	result.x = (float)tmp.x/FDXS;
+	result.y = (float)tmp.y/FDXS;
+	return ret;
+}
 
 int CAutoManualFindRelation::Point2getPos(const Point2i inPoint,Point2i &result) 
 {

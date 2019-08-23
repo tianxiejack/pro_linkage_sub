@@ -62,9 +62,9 @@ public:
 	cv::Point2i point_triangle , point_triangle_bak;
 	bool draw_print_stat, drawpoints_stat ;
 	static int twinkle_point_id;
-	int m_trig_pip_mode;
+	int m_trig_pip_mode = 0;
 	static bool twinkle_flag;
-
+	int ptz_flag = 0;
 
 
 public:
@@ -80,6 +80,7 @@ public:
 	void set_drawpoints_stat(bool value){drawpoints_stat = value;};
 	void set_twinkle_flag(bool flag){twinkle_flag = flag;};
 	bool get_twinkle_flag(){return twinkle_flag;};
+	void set_PTZ_flag(bool flag){ptz_flag = flag;};
 	void DrawTwinklePoint(cv::Mat frame);
 	void Drawfeaturepoints(cv::Mat frame);
 	void set_jos_mouse_mode(jos_mouse_Mode mode);

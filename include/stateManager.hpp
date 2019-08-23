@@ -52,7 +52,7 @@ public:
 	void menuOsdInit();
 	void menuLoadIpcParam(int* config);
 
-
+	int gettrig_pip_mode(){return m_state->m_trig_pip_mode;};
 	void get_featurepoint();
 	bool point_in_pip(int x, int y);
 	void start_twinkle(int x, int y);
@@ -63,6 +63,7 @@ public:
 	jos_mouse_Mode get_gridinter_mode();
 	void set_gridinter_mode(jos_mouse_Mode value);
 	void drawPoints(cv::Mat frame);
+	bool get_PTZ_flag(){return m_state->ptz_flag;};
 
 
 	

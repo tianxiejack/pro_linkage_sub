@@ -422,6 +422,7 @@ void State::start_twinkle(int x, int y)
 	}
 	
 	m_timer->startTimer(twinkle_point_id, 500);
+	set_PTZ_flag(true);
 
 	if(m_autofr->getcalibnum() < 4)
 		set_jos_mouse_mode(jos_mode);

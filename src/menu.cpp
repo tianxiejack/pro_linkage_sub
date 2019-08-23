@@ -11,6 +11,7 @@
 #include "locale.h"
 #include <stdio.h>
 #include <wchar.h>
+#include "Ipc.hpp"
 
 
 static CMenu* pThis = NULL;
@@ -839,6 +840,7 @@ void CMenu::enter()
 			break;
 			
 		case MENU_CALIB:
+			sendIpc4PTZpos();
 			break;
 
 		case MENU_MTD:
@@ -907,12 +909,12 @@ void CMenu::normalKey(char key)
 	}
 	else if(m_menuStat == MENU_MTD_REGION)
 	{
-		if('1' == key)
+		if('0' == key)
 			m_poly.clear();
 	}
 	else if(m_menuStat == MENU_MTD_UNREGION)
 	{
-		if('1' == key)
+		if('0' == key)
 			m_polyTmp.clear();
 	}
 	return;
@@ -1045,7 +1047,7 @@ void CMenu::lv_4_mtdregionOsd(bool show_result)
 	disMenuBuf.osdBuffer[j].posx = 600;
 	disMenuBuf.osdBuffer[j].posy = 100;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
-	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:增加点  1:清空点  回车:保存设置  F2:退出");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:增加点  0:清空点  回车:保存设置  F2:退出");
 
 	if(show_result)
 	{
@@ -1090,7 +1092,7 @@ void CMenu::lv_4_mtdUnregionOsd(bool show_result)
 	disMenuBuf.osdBuffer[j].posx = 600;
 	disMenuBuf.osdBuffer[j].posy = 100;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
-	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:增加点  1:清空点  回车:保存设置  F2:退出");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:增加点  0:清空点  回车:保存设置  F2:退出");
 
 	if(show_result)
 	{
@@ -1113,7 +1115,25 @@ void CMenu::lv_4_mtdUnregionOsd(bool show_result)
 void CMenu::lv_4_calibOsd()
 {
 	int j;
-	disMenuBuf.cnt = 0;
+	disMenuBuf.cnt = 2;
+
+	j=0;
+	disMenuBuf.osdBuffer[j].bshow = true;
+	disMenuBuf.osdBuffer[j].alpha = 2;
+	disMenuBuf.osdBuffer[j].color = 1;
+	disMenuBuf.osdBuffer[j].posx = 700;
+	disMenuBuf.osdBuffer[j].posy = 50;
+	setlocale(LC_ALL, "zh_CN.UTF-8");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:选择点 鼠标右键:删除点");
+
+	j=1;
+	disMenuBuf.osdBuffer[j].bshow = true;
+	disMenuBuf.osdBuffer[j].alpha = 2;
+	disMenuBuf.osdBuffer[j].color = 1;
+	disMenuBuf.osdBuffer[j].posx = 700;
+	disMenuBuf.osdBuffer[j].posy = 100;
+	setlocale(LC_ALL, "zh_CN.UTF-8");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"回车:确认 F1:控球模式 0:清空点  1:保存");
 
 	return;
 }

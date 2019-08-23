@@ -9,6 +9,8 @@
 #include "msgDriv.h"	// use MSGDRIV_send
 #include "app_ctrl.h"		// use app_ctrl_setXXX
 #include "app_status.h"		// use MSG_PROC_ID
+#include <glew.h>
+#include "process51.hpp"
 
 using namespace cr_osa;
 
@@ -16,6 +18,7 @@ using namespace cr_osa;
 #define DATAIN_TSK_STACK_SIZE       (0)
 #define SDK_MEM_MALLOC(size)                                            OSA_memAlloc(size)
 
+extern CProcess* plat;
 extern ALG_CONFIG_Trk gCFG_Trk;
 extern ALG_CONFIG_Mtd gCFG_Mtd;
 extern OSD_CONFIG_USER gCFG_Osd;
@@ -1067,6 +1070,10 @@ void* recv_msgpth(SENDST *pInData)
 		case querypos:
 			pPos = (IPC_ONVIF_POS*)pInData->param;
 			printf("get PTZ = %f,%f,%f \n",pPos->p,pPos->t,pPos->z);
+			if(plat->m_stateManger->get_PTZ_flag())
+			{
+
+			}
 			break;
 
 		default:

@@ -2164,6 +2164,7 @@ void CDisplayer::linkageSwitchMode(void)
 {
 	int winId, chId;
 	unsigned int mask = 0;
+	int mode = 0;
 
 	switch(m_displayMode)//(linkage.displayMode) 
 	{
@@ -2174,9 +2175,26 @@ void CDisplayer::linkageSwitchMode(void)
 		case GUN_FULL:				
 			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]);
 			break;
-		case GUN_PIP_BALL:	
-			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]);			
-			RenderVideoOnOrthoView(VIDEO_1, 0,m_WinHeight*3/4,m_WinWidth/4,m_WinHeight/4);
+		case GUN_PIP_BALL:
+			mode = plat->m_stateManger->gettrig_pip_mode();
+			RenderVideoOnOrthoView(VIDEO_0, 0,0,outputWHF[0],outputWHF[1]);
+
+			if(0 == mode)
+			{
+				RenderVideoOnOrthoView(VIDEO_1, 0, outputWHF[1]/4*3, outputWHF[0]/4, outputWHF[1]/4);
+			}
+			else if(1 == mode)
+			{
+				RenderVideoOnOrthoView(VIDEO_1, outputWHF[0]/4*3, outputWHF[1]/4*3, outputWHF[0]/4, outputWHF[1]/4);
+			}
+			else if(2 == mode)
+			{
+				RenderVideoOnOrthoView(VIDEO_1, outputWHF[0]/4*3, 0, outputWHF[0]/4, outputWHF[1]/4);
+			}
+			if(3 == mode)
+			{
+				RenderVideoOnOrthoView(VIDEO_1, 0, 0, outputWHF[0]/4, outputWHF[1]/4);
+			}
 			break;	
 		default:
 			break;	
