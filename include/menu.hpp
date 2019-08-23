@@ -5,6 +5,7 @@
 #include "configtable.h"
 #include "statecommon.h"
 
+#include "mvdectInterface.hpp"
 #include "DxTimer.hpp"
 #include <vector>
 
@@ -12,10 +13,12 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+using namespace cv;
+
 class CMenu
 {
 public:
-	CMenu(OSDFUNC pfun,CHANGESTAT pDisplaymode,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm);
+	CMenu(OSDFUNC pfun,CHANGESTAT pDisplaymode,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm,CMvDectInterface *pMov);
 	~CMenu();
 
 	void lv_1_inputPWosd();
@@ -23,7 +26,7 @@ public:
 	void lv_2_osd();
 	void lv_3_workmodeOsd();
 	void lv_3_mtdparamOsd();
-	void lv_4_mtdregionOsd();
+	void lv_4_mtdregionOsd(bool show_result);
 	void lv_4_mtdUnregionOsd();
 	void lv_4_calibOsd();
 	
@@ -69,6 +72,13 @@ public:
 	void set_mtd_maxsize_osd();
 	void set_mtd_minsize_osd();
 	void set_mtd_sensi_osd();
+	
+	void save_polygon_roi();
+	int map1080p2normal_point(float *x, float *y);
+	int mapnormal2curchannel_point(float *x, float *y, int w, int h);
+	int mapfullscreen2gun_pointv20(int *x, int *y);
+	int maprect_point(int *x, int *y, mouserect rectsrc,mouserect rectdest);
+	void SaveMtdSelectArea(const char* filename, std::vector< std::vector< cv::Point > > edge_contours);
 
 
 	void menuMtdparam_setnum();
@@ -110,7 +120,12 @@ private:
 	CHAR m_menuStat;
 	CHAR m_ctlBallMode;
 
-	
+	std::vector< std::vector< cv::Point > > polyWarnRoi;
+	std::vector< std::vector< cv::Point > > edge_contours;
+	int m_ScreenWidth,m_ScreenHeight;
+	CMvDectInterface * m_pMv;
+	cv::FileStorage m_fsWriteMtd;
+
 public:
 	std::vector<cv::Point> m_poly , m_polyTmp;
 	std::vector< std::vector<cv::Point> > m_unroiPoly;

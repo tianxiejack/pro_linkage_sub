@@ -24,7 +24,7 @@ State::~State()
 }
 
 
-void State::StateInit(OSDFUNC pDraw ,CHANGESTAT pDisplaymode, CHANGESTAT pChangeStat , CHDEFWORKMD pChangeWkmode)
+void State::StateInit(OSDFUNC pDraw ,CHANGESTAT pDisplaymode, CHANGESTAT pChangeStat , CHDEFWORKMD pChangeWkmode, CMvDectInterface *pMov)
 {
 	if(m_timer == NULL)
 	{
@@ -33,7 +33,7 @@ void State::StateInit(OSDFUNC pDraw ,CHANGESTAT pDisplaymode, CHANGESTAT pChange
 		m_timer->registerTimer(twinkle_point_id, TcallbackFunc, &twinkle_point_id);
 	}
 	if(m_pMenu == NULL)
-		m_pMenu = new CMenu(pDraw,pDisplaymode,pChangeStat,pChangeWkmode);
+		m_pMenu = new CMenu(pDraw,pDisplaymode,pChangeStat,pChangeWkmode,pMov);
 	if(m_autofr == NULL)
 	{
 		m_autofr = new CAutoManualFindRelation(outputWHF[0],outputWHF[1], 6, 6);

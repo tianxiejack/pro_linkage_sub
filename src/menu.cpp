@@ -15,9 +15,10 @@
 
 static CMenu* pThis = NULL;
 
-CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pDisplaymode,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm):m_menuPointer(-1),m_menuStat(MENU_BLANK),
+CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pDisplaymode,CHANGESTAT pchStatfun,CHDEFWORKMD pchDefwm,CMvDectInterface *pMov):m_menuPointer(-1),m_menuStat(MENU_BLANK),
 	shin_mtdnum(false),shin_trktime(false),shin_maxsize(false),
-	shin_minsize(false),shin_sensi(false),m_ctlBallMode(JOYWM_virtualMouse)
+	shin_minsize(false),shin_sensi(false),m_ctlBallMode(JOYWM_virtualMouse),
+	m_pMv(pMov)
 {
 	init_passwd = "0000";
 	drawFunc = pfun;
@@ -38,6 +39,9 @@ CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pDisplaymode,CHANGESTAT pchStatfun,CHDEFWOR
 	m_mtdmaxsize = 60000;
 	m_mtdminsize = 300;
 	m_mtdsensi = 12;
+
+	m_ScreenWidth = 1920;
+	m_ScreenHeight = 1080;
 }
 
 CMenu::~CMenu()
@@ -111,7 +115,7 @@ void CMenu::gotoCalibMode()
 void CMenu::gotoMtdRegion()
 {
 	m_menuPointer = 0;
-	lv_4_mtdregionOsd();
+	lv_4_mtdregionOsd(false);
 	m_menuStat = MENU_MTD_REGION;
 	changeDisModeFunc(GUN_FULL);
 	return;
@@ -500,6 +504,137 @@ void CMenu::set_mtd_sensi_osd()
 	return;
 }
 
+void CMenu::save_polygon_roi()
+{
+	int curId = 0;
+	float floatx,floaty;
+	int setx, sety = 0;
+	int areanum = 1;
+
+	lv_4_mtdregionOsd(true);
+
+	if(m_poly.size() < 3)
+		return;
+
+	polyWarnRoi.resize(areanum);
+	edge_contours.resize(areanum);
+
+	for(int i = 0; i < areanum; i++)
+	{
+		polyWarnRoi[i].resize(m_poly.size());
+		edge_contours[i].resize(m_poly.size());
+		for(int j = 0; j < m_poly.size(); j++)
+		{
+			floatx = m_poly[j].x;
+			floaty = m_poly[j].y;
+			map1080p2normal_point(&floatx, &floaty);
+			mapnormal2curchannel_point(&floatx, &floaty, vdisWH[curId][0], vdisWH[curId][1]);
+
+			setx = floatx;
+			sety = floaty;
+			polyWarnRoi[i][j] = cv::Point(setx, sety);
+
+			mapfullscreen2gun_pointv20(&setx, &sety);
+			edge_contours[i][j].x = setx;
+			edge_contours[i][j].y = sety;
+		}
+	}
+
+	if(polyWarnRoi.size() != 0)
+		SaveMtdSelectArea("SaveMtdArea.yml", polyWarnRoi);
+
+	for(int i = 0; i < areanum; i++)
+	{
+		m_pMv->setWarningRoi(polyWarnRoi[i], i);
+	}
+
+	return ;
+}
+
+int CMenu::map1080p2normal_point(float *x, float *y)
+{
+	if(NULL != x)
+		*x /= m_ScreenWidth;
+	if(NULL != y)
+		*y /= m_ScreenHeight;
+
+	return 0;
+}
+
+int CMenu::mapnormal2curchannel_point(float *x, float *y, int w, int h)
+{
+	if(NULL != x)
+		*x *= w;
+	if(NULL != y)
+		*y *= h;
+	
+	return 0;
+}
+
+int CMenu::mapfullscreen2gun_pointv20(int *x, int *y)
+{
+	mouserect rect1080p;
+	mouserect rectgun;
+	
+	rect1080p.x = 0;
+	rect1080p.y = 0;
+	rect1080p.w = m_ScreenWidth;// 1920;
+	rect1080p.h = m_ScreenHeight;
+
+	rectgun.x = 0;
+	rectgun.y = m_ScreenHeight/2;
+	rectgun.w = m_ScreenWidth;// 1920;
+	rectgun.h = m_ScreenHeight/2;
+	
+	return maprect_point(x, y, rect1080p, rectgun);
+}
+
+int CMenu::maprect_point(int *x, int *y, mouserect rectsrc,mouserect rectdest)
+{
+	if(NULL != x)
+		*x = (*x-rectsrc.x)*rectdest.w/rectsrc.w+rectdest.x;
+	if(NULL != y)
+		*y = (*y-rectsrc.y)*rectdest.h/rectsrc.h+rectdest.y;
+	return 0;
+}
+
+void CMenu::SaveMtdSelectArea(const char* filename, std::vector< std::vector< cv::Point > > edge_contours)
+{
+	char paramName[40];
+	memset(paramName,0,sizeof(paramName));
+	m_fsWriteMtd.open(filename,FileStorage::WRITE);
+
+	if(m_fsWriteMtd.isOpened())
+	{		
+		memset(paramName,0,sizeof(paramName));
+		sprintf(paramName,"AreaCount");	
+		int total_size = edge_contours.size();
+		m_fsWriteMtd<< paramName  << total_size;
+
+		for(int m = 0; m<edge_contours.size(); m++ )
+		{			
+			memset(paramName,0,sizeof(paramName));
+			sprintf(paramName,"AreaIndex_%d",m);
+			int count  =  edge_contours[m].size();
+			m_fsWriteMtd<< paramName << count;
+		}
+				
+		for(int i = 0; i < edge_contours.size(); i++)
+		{
+			for(int j = 0; j < edge_contours[i].size(); j++)
+			{	
+				sprintf(paramName,"Point_%d_%d_x",i,j);				
+				m_fsWriteMtd<<paramName <<edge_contours[i][j].x;
+				
+				memset(paramName,0,sizeof(paramName));
+				sprintf(paramName,"Point_%d_%d_y",i,j);				
+				m_fsWriteMtd<<paramName <<edge_contours[i][j].y;		
+			}		
+		}		
+		m_fsWriteMtd.release();			
+	}
+	return;
+}
 
 void CMenu::TimerCreate()
 {
@@ -663,7 +798,7 @@ void CMenu::enter()
 
 		case MENU_MTD_REGION:
 			//m_poly.push_back(m_poly[0]);
-			//wait to save yml
+			save_polygon_roi();
 			break;
 
 		case MENU_MTD_UNREGION:
@@ -720,6 +855,11 @@ void CMenu::normalKey(char key)
 			printf("password reached max length:128");
 		
 		printf("%s --> LINE:%d ****** passwd=%s\n",__FILE__,__LINE__,m_passwd);
+	}
+	else if(m_menuStat == MENU_MTD_REGION)
+	{
+		if('1' == key)
+			m_poly.clear();
 	}
 	return;
 }
@@ -825,11 +965,15 @@ void CMenu::lv_3_mtdparamOsd()
 }
 
 
-void CMenu::lv_4_mtdregionOsd()
+void CMenu::lv_4_mtdregionOsd(bool show_result)
 {
 	//L"鼠标左键:选择点 鼠标右键:删除点 回车:确认 F1:控球模式 0:删除所有点  1:保存"
 	int j;
-	disMenuBuf.cnt = 2;
+
+	if(show_result)
+		disMenuBuf.cnt = 3;
+	else
+		disMenuBuf.cnt = 2;
 	
 	j=0;
 	disMenuBuf.osdBuffer[j].bshow = true;
@@ -838,7 +982,7 @@ void CMenu::lv_4_mtdregionOsd()
 	disMenuBuf.osdBuffer[j].posx = 800;
 	disMenuBuf.osdBuffer[j].posy = 50;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
-	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:选择点   鼠标右键:删除点  回车:确认");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:增加点    1:删除所有点");
 
 	j=1;
 	disMenuBuf.osdBuffer[j].bshow = true;
@@ -847,8 +991,22 @@ void CMenu::lv_4_mtdregionOsd()
 	disMenuBuf.osdBuffer[j].posx = 800;
 	disMenuBuf.osdBuffer[j].posy = 100;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
-	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"F1:控球模式  0:删除所有点  1:保存");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"回车:保存设置     F2:退出");
 
+	if(show_result)
+	{
+		j = 2;
+		disMenuBuf.osdBuffer[j].bshow = true;
+		disMenuBuf.osdBuffer[j].alpha = 2;
+		disMenuBuf.osdBuffer[j].color = 1;
+		disMenuBuf.osdBuffer[j].posx = 1400;
+		disMenuBuf.osdBuffer[j].posy = 50;
+		setlocale(LC_ALL, "zh_CN.UTF-8");
+		if(m_poly.size() >= 3)
+			swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"点数:%d,保存成功", m_poly.size());
+		else
+			swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"点数小于3,保存失败");
+	}
 
 	return;
 }
@@ -866,7 +1024,7 @@ void CMenu::lv_4_mtdUnregionOsd()
 	disMenuBuf.osdBuffer[j].posx = 800;
 	disMenuBuf.osdBuffer[j].posy = 50;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
-	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:选择点   鼠标右键:删除点  回车:确认");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"鼠标左键:增加点    1:删除所有点");
 
 	j=1;
 	disMenuBuf.osdBuffer[j].bshow = true;
@@ -875,7 +1033,7 @@ void CMenu::lv_4_mtdUnregionOsd()
 	disMenuBuf.osdBuffer[j].posx = 800;
 	disMenuBuf.osdBuffer[j].posy = 100;
 	setlocale(LC_ALL, "zh_CN.UTF-8");
-	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"F1:控球模式  0:删除所有点  1:保存");
+	swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"回车:保存设置     F2:退出");
 	return;
 }
 
