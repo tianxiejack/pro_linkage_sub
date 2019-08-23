@@ -46,8 +46,10 @@ typedef enum
 	read_shm_usrosd,
 	
 	querypos,
+	setPos,
 	
 }CMD_ID;
+
 
 typedef enum 
 {
@@ -56,7 +58,7 @@ typedef enum
     IPC_IMG_SHA,
     IPC_USER_SHA,
     IPC_SEM,
-    IPC_GSTREAM_PTZ = 10, //attach to the gstreamer app of DAO
+    IPC_GSTREAM_PTZ=10, //attach to the gstreamer app of DAO
     IPC_MAX
 }IPC_MTYPE;
 
@@ -160,6 +162,14 @@ static void Ipc_init()
 	tmpIpc[IPC_SEM].IPCID = IPC_MAX;
 	tmpIpc[IPC_SEM].ptr = NULL;
 
+	/*
+	memcpy(tmpIpc[IPC_GSTREAM_PTZ].name,tmp,sizeof(tmp));
+	tmpIpc[IPC_GSTREAM_PTZ].Identify = IPC_SEM;
+	tmpIpc[IPC_GSTREAM_PTZ].Class = IPC_Class_MSG;
+	tmpIpc[IPC_GSTREAM_PTZ].IPCID = IPC_MAX;
+	tmpIpc[IPC_GSTREAM_PTZ].length = 0;
+	tmpIpc[IPC_GSTREAM_PTZ].ptr = NULL;
+	*/
 	return;
 }
 

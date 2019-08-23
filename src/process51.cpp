@@ -1632,6 +1632,10 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 		case 3:
 			sendIpc4PTZpos();
 			break;
+
+		case 4:
+			sendIpc2setPos();
+			break;
 			
 		default:
 			break;

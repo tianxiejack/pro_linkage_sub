@@ -740,7 +740,7 @@ void* recv_msgpth(SENDST *pInData)
 			pIn->intPrm[0],pIn->intPrm[1],
 			pIn->intPrm[2],pIn->intPrm[3]);
 	}
-	printf("pInData->cmd_ID = %d \n" , pInData->cmd_ID);
+	//printf("pInData->cmd_ID = %d \n" , pInData->cmd_ID);
 	switch(pInData->cmd_ID)
 	{
 		case read_shm_config:
@@ -1066,17 +1066,19 @@ void* recv_msgpth(SENDST *pInData)
 
 		case querypos:
 			pPos = (IPC_ONVIF_POS*)pInData->param;
-			printf("get PTZ = %f,%f,%f \n",pPos->p,pPos->t,pPos->z);
+			printf("%s:LINE:%d   get PTZ = %f,%f,%f \n",__func__,__LINE__,pPos->p,pPos->t,pPos->z);
 			break;
 
 		default:
 			break;
 	}
+	return NULL;
 }
 
 static void * ipc_dataRecv(Void * prm)
 {
 	SENDST test;
+	int result;
 	while(ipc_loop)
 	{
 		ipc_recvmsg(IPC_TOIMG_MSG, &test);
@@ -1392,9 +1394,27 @@ int* getSysconfig()
 
 void sendIpc4PTZpos()
 {
+	IPCSendMsg(querypos,0,0);
+}
+
+void sendIpc2setPos()
+{
 	SENDST tmp;
 	memset(&tmp, 0, sizeof(tmp));
-	tmp.cmd_ID = querypos;
+	tmp.cmd_ID = setPos;
+	IPC_ONVIF_POS tmppos;
+
+	static float p = -1.0,t = -1.0,z = 0;
+
+	p += 0.01;
+	t += 0.01;
+	z += 0.005;
+	
+	tmppos.p = p;
+	tmppos.t = t;
+	tmppos.z = z;
+	printf("set pos ptz = (%f,%f,%f)\n",p,t,z);
+	memcpy(tmp.param,&tmppos,sizeof(tmppos));
 	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
 }
 
