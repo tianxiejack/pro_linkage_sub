@@ -122,10 +122,10 @@ typedef struct{
 }CtrlParams_t;
 
 typedef enum{
-	manual_linkage = 1,
+	manual_linkage = 0,
 	Auto_linkage,
 	ballctrl
-}work_Mode;
+}Work_Mode_t;
 
 typedef enum{
 	jos = 1,

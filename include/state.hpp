@@ -34,9 +34,8 @@ public:
 public:
 	virtual void buttonWorkMode(){};
 	virtual void buttonMenu(){};
-	void upMenu();
-	void downMenu();
-	virtual int ChangeState(char nextState);
+	virtual void upMenu();
+	virtual void downMenu();
 	virtual void operationChangeState(){};
 	
 	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);

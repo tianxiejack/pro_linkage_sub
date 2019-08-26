@@ -65,6 +65,8 @@ public:
 	void drawPoints(cv::Mat frame);
 	bool get_PTZ_flag(){return m_state->ptz_flag;};
 	
+	void sendWorkMode2main();
+	
 	std::vector<cv::Point>& getPoly();
 	std::vector<cv::Point>& getPolyTmp();
 	std::vector< std::vector<cv::Point> >& getunRoiPoly();
@@ -77,10 +79,10 @@ private:
 
 private:
 	char m_defworkmode;
-	int m_curState;
-	State *m_linkmanual,*m_linkcalib;
+	State *m_linkmanual,*m_linkcalib,*m_linkball;
 	CMvDectInterface * m_pMv;
 	static StateManger* pThis;
+	int m_curState;
 
 };
 

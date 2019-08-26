@@ -71,22 +71,6 @@ void State::create()
 }
 
 
-int State::ChangeState(char nextState)
-{
-	m_curState = nextState;
-	switch(m_curState)
-	{
-		case LINKMANUAL:
-			m_changeStatFunc(LINKMANUAL);
-			break;
-
-		default:
-			break;
-	}
-	return m_curState;
-}
-
-
 void State::upMenu()
 {
 	m_pMenu->upMenu();
@@ -501,3 +485,4 @@ void State::app_insertPos(float x, float y)
 	inPos.y = y;
 	m_autofr->insertPos(inPos);
 }
+

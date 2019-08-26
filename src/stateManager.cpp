@@ -21,8 +21,8 @@ StateManger::StateManger()
 {
 	m_linkmanual = new CLinkManual();
 	m_linkcalib = new CLinkCalib();
+	m_linkball = new CLinkManual();
 	m_state = m_linkmanual;
-	m_curState = LINKMANUAL;
 	pThis = this;
 }
 
@@ -51,15 +51,18 @@ void StateManger::specialEvent(char key)
 {
 	switch(key)
 	{
-		case JOSF1_AUTOLINKMODE:
+		case JOSF1:
+			if(m_curState <= LINKBALL)
 			{
-				//GB_WorkMode nextMode = (GB_WorkMode)(param - 1);
-				//setWorkMode(nextMode);
+				m_curState = (m_curState + 1)%3;
+				callbackChangeStat(m_curState);
+				printf("m_curstat = %d \n" , m_curState);
 			}
+			else if(m_curState == LINKCALIB)
+				;
 			break;
-		case JOSF2_MENU:			
-				m_state->buttonMenu();
-				
+		case JOSF2:			
+			m_state->buttonMenu();	
 			break;
 		default:
 			break;
@@ -71,6 +74,7 @@ void StateManger::specialEvent(char key)
 
 void StateManger::callbackChangeStat(char nextmode)
 {
+	pThis->m_curState = nextmode;
 	switch(nextmode)
 	{
 		case LINKMANUAL:
@@ -81,10 +85,14 @@ void StateManger::callbackChangeStat(char nextmode)
 			pThis->ChangeState(pThis->m_linkcalib);
 			break;
 
+		case LINKBALL:
+			pThis->ChangeState(pThis->m_linkball);
+			break;
+
 		default:
 			break;
 	}
-	
+	pThis->sendWorkMode2main();
 	return;
 }
 
@@ -207,4 +215,11 @@ void StateManger::drawPoints(cv::Mat frame)
 	m_state->drawPoints(frame);
 	return;
 }
+
+void StateManger::sendWorkMode2main()
+{
+	notifyWorkMode(m_curState);
+	return;
+}
+
 

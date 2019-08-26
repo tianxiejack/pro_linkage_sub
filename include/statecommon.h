@@ -21,10 +21,7 @@ typedef enum{
 	LINKMANUAL,
 	LINKAUTO,
 	LINKBALL,
-	LINKCALIB,
-
-	
-	
+	LINKCALIB,	
 	LEVELMAX,
 }state_enum;
 
@@ -57,8 +54,8 @@ typedef enum{
 
 enum
 {
-	JOSF1_AUTOLINKMODE = 1,
-	JOSF2_MENU,
+	JOSF1 = 1,
+	JOSF2,
 };
 
 

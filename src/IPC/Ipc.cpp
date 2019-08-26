@@ -1522,4 +1522,12 @@ void notifyMenuStat(int status)
 }
 
 
+void notifyWorkMode(int status)
+{
+	SENDST tmp;
+	memset(&tmp, 0, sizeof(tmp));
+	tmp.cmd_ID = workmode;
+	memcpy(tmp.param,&status,sizeof(int));
+	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
+}
 
