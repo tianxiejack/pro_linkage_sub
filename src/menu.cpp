@@ -59,7 +59,7 @@ void CMenu::menuButton()
 	else if(m_menuStat == MENU_MAIN)
 		gotoBlankMenu();
 
-	
+	notifyMenuStat(m_menuStat);
 	return;
 }
 

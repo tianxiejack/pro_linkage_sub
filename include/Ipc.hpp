@@ -24,6 +24,8 @@ int* getSysconfig();
 
 void sendIpc4PTZpos();
 void sendIpc2setPos(float p, float t, float z);
+void notifyMenuStat(int status);
+
 
 #endif /* IPC_HPP_ */
 

@@ -1086,20 +1086,19 @@ void* recv_msgpth(SENDST *pInData)
 			switch(Rjosctrl.type)
 			{
 				case jos_button:
-					printf("111 button =%d\n",Rjosctrl.jos_button);			
 					if(Rjosctrl.jos_button>=button0 && Rjosctrl.jos_button<=button9)
-						plat->OnKeyDwn(Rjosctrl.jos_button+48);
+						plat->m_stateManger->normalKeyEvent(Rjosctrl.jos_button+48);
 					else if(Rjosctrl.jos_button>=buttonF1 && Rjosctrl.jos_button<=buttonF3)
-						plat->OnSpecialKeyDwn(Rjosctrl.jos_button-buttonF1+1);
+						plat->m_stateManger->specialEvent(Rjosctrl.jos_button-buttonF1+1);
 					else if(Rjosctrl.jos_button == buttonEnter)
-						plat->OnKeyDwn(13);
+						plat->m_stateManger->enterKeyEvent();
 					break;
 
 				case jos_Dir:
 					if(cursor_up == Rjosctrl.jos_Dir)
-						printf("\r\n[%s]: up \n",__FUNCTION__);
+						plat->m_stateManger->upMenu();
 					else if(cursor_down == Rjosctrl.jos_Dir)
-						printf("\r\n[%s]: down \n",__FUNCTION__);
+						plat->m_stateManger->downMenu();
 					break;
 
 					
@@ -1512,5 +1511,15 @@ void sendIpc2setPos(float p, float t, float z)
 	memcpy(tmp.param,&tmppos,sizeof(tmppos));
 	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
 }
+
+void notifyMenuStat(int status)
+{
+	SENDST tmp;
+	memset(&tmp, 0, sizeof(tmp));
+	tmp.cmd_ID = josctrl;
+	memcpy(tmp.param,&status,sizeof(int));
+	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
+}
+
 
 

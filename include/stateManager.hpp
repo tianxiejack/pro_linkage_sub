@@ -64,8 +64,6 @@ public:
 	void set_gridinter_mode(jos_mouse_Mode value);
 	void drawPoints(cv::Mat frame);
 	bool get_PTZ_flag(){return m_state->ptz_flag;};
-
-
 	
 	std::vector<cv::Point>& getPoly();
 	std::vector<cv::Point>& getPolyTmp();

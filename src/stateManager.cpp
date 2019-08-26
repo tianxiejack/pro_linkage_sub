@@ -59,6 +59,7 @@ void StateManger::specialEvent(char key)
 			break;
 		case JOSF2_MENU:			
 				m_state->buttonMenu();
+				
 			break;
 		default:
 			break;
@@ -206,6 +207,4 @@ void StateManger::drawPoints(cv::Mat frame)
 	m_state->drawPoints(frame);
 	return;
 }
-
-
 

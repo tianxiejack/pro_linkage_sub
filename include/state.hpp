@@ -30,7 +30,7 @@ public:
 	virtual void showOsd() = 0;
 	virtual void inputNumber(char key) = 0;
 	virtual void enter() = 0;
-
+	
 public:
 	virtual void buttonWorkMode(){};
 	virtual void buttonMenu(){};
@@ -38,7 +38,6 @@ public:
 	void downMenu();
 	virtual int ChangeState(char nextState);
 	virtual void operationChangeState(){};
-	
 	
 	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);
 
