@@ -47,6 +47,7 @@ typedef enum
 	
 	querypos,
 	setPos,
+	josctrl,
 	
 }CMD_ID;
 
@@ -58,8 +59,11 @@ typedef enum
     IPC_IMG_SHA,
     IPC_USER_SHA,
     IPC_SEM,
+   
+    
     IPC_GSTREAM_PTZ=10, //attach to the gstreamer app of DAO
-    IPC_MAX
+	IPC_MAX,
+
 }IPC_MTYPE;
 
 typedef enum
@@ -80,6 +84,42 @@ typedef enum
 	workMode,
 	ctrlMode
 }josType;
+
+
+typedef enum
+{
+	button0 = 0,
+	button1,
+	button2,
+	button3,
+	button4,
+	button5,
+	button6,
+	button7,
+	button8,
+	button9,
+	buttonF1,
+	buttonF2,
+	buttonF3,
+	buttonEnter,
+	buttonLeft,
+	buttonRigth,
+}JosHKButton_t;
+
+
+typedef struct{
+	int type;
+	int cursor_x;  //0~1920
+	int cursor_y;	//0~1080
+	int jos_button;	//0~9
+	int jos_Dir;	//up down left right
+	int mouse_button;	//left button --- right button
+	int mouse_state;	//down:1  up:2
+	int enter;	//0,1
+	int menu;	//0,1
+	int workMode;	//1~3
+	int ctrlMode;	//1,2
+}CtrlParams_t;
 
 typedef enum{
 	manual_linkage = 1,
@@ -105,14 +145,12 @@ typedef enum{
 	cursor_right,
 }josDir;
 
-
 typedef struct
 {
 	float p;
 	float t;
 	float z;
 }IPC_ONVIF_POS;
-
 
 typedef struct
 {
@@ -162,14 +200,13 @@ static void Ipc_init()
 	tmpIpc[IPC_SEM].IPCID = IPC_MAX;
 	tmpIpc[IPC_SEM].ptr = NULL;
 
-	/*
 	memcpy(tmpIpc[IPC_GSTREAM_PTZ].name,tmp,sizeof(tmp));
 	tmpIpc[IPC_GSTREAM_PTZ].Identify = IPC_SEM;
 	tmpIpc[IPC_GSTREAM_PTZ].Class = IPC_Class_MSG;
 	tmpIpc[IPC_GSTREAM_PTZ].IPCID = IPC_MAX;
 	tmpIpc[IPC_GSTREAM_PTZ].length = 0;
 	tmpIpc[IPC_GSTREAM_PTZ].ptr = NULL;
-	*/
+
 	return;
 }
 

@@ -722,6 +722,8 @@ void* recv_msgpth(SENDST *pInData)
 {
 	IPC_PRM_INT *pIn=NULL;
 	IPC_ONVIF_POS *pPos = NULL;
+	CtrlParams_t Rjosctrl;
+	
 	int configId, blkId, feildId;
 
 	if(pInData==NULL)
@@ -1078,6 +1080,96 @@ void* recv_msgpth(SENDST *pInData)
 			}
 			break;
 
+		case josctrl:
+			memcpy(&Rjosctrl,pInData->param,sizeof(Rjosctrl));
+			printf("%s,%d,type=%d, workmode=%d\n",__FILE__,__LINE__,Rjosctrl.type, Rjosctrl.workMode);			
+			switch(Rjosctrl.type)
+			{
+				case jos_button:
+					printf("111 button =%d\n",Rjosctrl.jos_button);			
+					if(Rjosctrl.jos_button>=button0 && Rjosctrl.jos_button<=button9)
+						plat->OnKeyDwn(Rjosctrl.jos_button+48);
+					else if(Rjosctrl.jos_button>=buttonF1 && Rjosctrl.jos_button<=buttonF3)
+						plat->OnSpecialKeyDwn(Rjosctrl.jos_button-buttonF1+1);
+					else if(Rjosctrl.jos_button == buttonEnter)
+						plat->OnKeyDwn(13);
+					break;
+
+				case jos_Dir:
+					if(cursor_up == Rjosctrl.jos_Dir)
+						printf("\r\n[%s]: up \n",__FUNCTION__);
+					else if(cursor_down == Rjosctrl.jos_Dir)
+						printf("\r\n[%s]: down \n",__FUNCTION__);
+					break;
+
+					
+				#if 0
+				case cursor_move:
+				{
+					int cond1 = (-1==proc->extMenuCtrl.MenuStat)||(submenu_handleMatchPoints==proc->extMenuCtrl.MenuStat)||(1==proc->extInCtrl->MtdSetRigion)||(MENU_TEST_RESULT_VIEW==g_displayMode);
+
+					if(((HANDLE_LINK_MODE == g_AppWorkMode)&&(cond1)) ||
+						((ONLY_BALL_MODE == g_AppWorkMode)&&(cond1))  )
+					{
+						proc->set_mouse_show(1);
+						proc->dtimer.startTimer(proc->mouse_show_id,3000);
+					}
+					
+					int x = Rjosctrl.cursor_x;
+					int y = Rjosctrl.cursor_y;
+					proc->draw_mouse_move(x, y);
+					
+					if(GLUT_DOWN == mouse_state)
+						proc->mousemotion_event(x, y);
+				}
+					break;
+
+				case mouse_button:
+				{
+					int param_flag = 0;
+					int button = Rjosctrl.mouse_button;
+					int state = Rjosctrl.mouse_state;
+					int x = Rjosctrl.cursor_x;
+					int y = Rjosctrl.cursor_y;
+					if(3 == button)
+						button = GLUT_LEFT_BUTTON;//0
+					else if(4 == button)
+						button = GLUT_RIGHT_BUTTON;//2
+					else 
+						param_flag = 1;
+					
+					if(1 == state)
+						mouse_state = GLUT_DOWN;//0
+					else if(0 == state)
+						mouse_state = GLUT_UP;// 
+					else 
+						param_flag = 1;
+
+					if(0 == param_flag)
+					{
+						proc->mouse_event(button, mouse_state, x, y);
+					}
+				}
+					break;
+
+				case workMode:
+				{
+					int workmode = Rjosctrl.workMode;
+					proc->OnJosCtrl(1, workmode);
+				}
+					break;
+				case ctrlMode:
+				{
+					int ctrlMode = Rjosctrl.ctrlMode;
+					proc->SetCtrlmode(ctrlMode);
+				}
+					break;						
+				default:
+					break;
+				#endif
+			}
+
+			break;
 		default:
 			break;
 	}

@@ -61,7 +61,7 @@ public:
 	void OnMouseRightDwn(int x, int y);
 	void OnMouseRightUp(int x, int y);
 	void OnKeyDwn(unsigned char key);
-	void OnSpecialKeyDwn(int key,int x, int y);
+	void OnSpecialKeyDwn(int key,int x = 0, int y = 0);
 	void drawPatternRect();
 	
 	CMD_EXT* extInCtrl;
@@ -208,6 +208,9 @@ public:
 	std::vector<cv::Point> m_polyBak , m_polyTmpBak;
 	std::vector< std::vector<cv::Point> > m_polyUnRoiBak;
 
+
+public:
+	void OnJosCtrl(int key, int param);
 };
 
 

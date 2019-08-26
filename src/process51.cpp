@@ -3581,5 +3581,23 @@ void CProcess::drawPolyUnRoi(bool bdraw)
 }
 
 
-
+void CProcess::OnJosCtrl(int key, int param)
+{
+	switch(key)
+	{
+		case JOSF1_OPEN_AUTOLINKMODE:
+		{
+			GB_WorkMode nextMode = (GB_WorkMode)(param - 1);
+			//setWorkMode(nextMode);
+		}
+			break;
+		case JOSF2_ENTER_MENU:				
+			//app_ctrl_setMenu_jos(param);
+			
+			break;
+		default:
+			break;
+	}
+	return;
+}
 
