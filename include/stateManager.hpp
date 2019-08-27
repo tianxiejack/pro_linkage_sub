@@ -72,6 +72,8 @@ public:
 	std::vector< std::vector<cv::Point> >& getunRoiPoly();
 public:
 	State *m_state;
+	int m_curState;
+
 private:
 	friend class State;
 	void ChangeState(State* state);
@@ -82,7 +84,7 @@ private:
 	State *m_linkmanual,*m_linkcalib,*m_linkball,*m_linkauto;
 	CMvDectInterface * m_pMv;
 	static StateManger* pThis;
-	int m_curState;
+
 
 };
 

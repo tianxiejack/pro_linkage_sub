@@ -1490,7 +1490,86 @@ void CProcess::mvIndexHandle(std::vector<TRK_INFO_APP> &mvList,std::vector<TRK_R
 }
 #endif
 
-bool CProcess::OnProcess(int chId, Mat &frame)
+void CProcess::DrawMtd_Rigion_Target()
+{
+	static bool mainObjFlag = false;
+	unsigned int mat_Id = 1;
+	Osd_cvPoint startwarnpoly,endwarnpoly;
+	int polwarn_flag = 0;
+	static bool drawflag = false;
+	int color = 0;;
+	int i ,j ,cnt;
+	int detectNum = 10;
+	cv::Rect tmp;
+	mouserect recttmp;
+	Rect2d tmpTarget;
+
+	if(drawflag)
+	{
+		for(std::vector<TRK_INFO_APP>::iterator plist = mvList.begin(); plist != mvList.end(); ++plist)
+		{	
+			color = 0;
+			recttmp.x = (*plist).trkobj.targetRect.x;
+			recttmp.y = (*plist).trkobj.targetRect.y;
+			recttmp.w = (*plist).trkobj.targetRect.width;
+			recttmp.h = (*plist).trkobj.targetRect.height;
+			tmpTarget.x = recttmp.x + recttmp.w/2;
+			tmpTarget.y = recttmp.y + recttmp.h/2;
+			
+			recttmp = mapfullscreen2gunv20(recttmp);
+			tmp.x = recttmp.x;
+			tmp.y = recttmp.y;
+			tmp.width = recttmp.w;
+			tmp.height = recttmp.h;
+			DrawRect(m_display.m_imgOsd[mat_Id], tmp ,color);
+		}
+	}
+
+	if(m_stateManger->m_curState == LINKAUTO)
+		if(m_bMoveDetect)
+		{
+			pThis->detect_bak = pThis->detect_vect;
+			mvIndexHandle(mvList,pThis->detect_bak,detectNum);
+			for(std::vector<TRK_INFO_APP>::iterator plist = mvList.begin(); plist != mvList.end(); ++plist)
+			{	
+				color = 3;
+
+				recttmp.x = (*plist).trkobj.targetRect.x;
+				recttmp.y = (*plist).trkobj.targetRect.y;
+				recttmp.w = (*plist).trkobj.targetRect.width;
+				recttmp.h = (*plist).trkobj.targetRect.height;
+				tmpTarget.x = recttmp.x + recttmp.w/2;
+				tmpTarget.y = recttmp.y + recttmp.h/2;
+
+				recttmp = mapfullscreen2gunv20(recttmp);
+				tmp.x = recttmp.x;
+				tmp.y = recttmp.y;
+				tmp.width = recttmp.w;
+				tmp.height = recttmp.h;
+
+				DrawRect(m_display.m_imgOsd[mat_Id], tmp ,color);
+			}
+
+			if((mvList.size()>0) && cur_targetRect.width && cur_targetRect.height )		
+			{		
+				#if 0
+				cur_targetRect_bak = cur_targetRect;
+				memcpy(m_targetVectorBK,m_targetVector,sizeof(cv::Rect)*10);
+				if( m_bAutoLink && (0 == m_chSceneNum)){
+					OSA_semSignal(&m_mvObjSync);
+				}
+
+				if(false == m_bAutoLink)
+					m_bAutoLink = true;
+				#endif
+			}
+			drawflag = true;
+		}
+	return;	
+}
+
+
+bool CProcess::OnProcess()
 {				
 	int frcolor= gSYS_Osd.osdDrawColor;
 	int startx=0;

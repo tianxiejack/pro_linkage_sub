@@ -55,7 +55,7 @@ public:
 	void OnStop();
 	void Ontimer();
 	bool OnPreProcess(int chId, Mat &frame);
-	bool OnProcess(int chId, Mat &frame);
+	bool OnProcess();
 	void OnMouseLeftDwn(int x, int y);
 	void OnMouseLeftUp(int x, int y);
 	void OnMouseRightDwn(int x, int y);
@@ -211,6 +211,8 @@ public:
 
 public:
 	void OnJosCtrl(int key, int param);
+	void DrawMtd_Rigion_Target();
+	
 };
 
 

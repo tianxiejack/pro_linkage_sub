@@ -115,7 +115,7 @@ public:
 	virtual void OnStop(){};
 	virtual void Ontimer(){};
 	virtual bool OnPreProcess(int chId, Mat &frame){return true;}
-	virtual bool OnProcess(int chId, Mat &frame){return true;}
+	virtual bool OnProcess(){return true;}
 	virtual void OnMouseLeftDwn(int x, int y){};
 	virtual void OnMouseLeftUp(int x, int y){};
 	virtual void OnMouseRightDwn(int x, int y){};
@@ -320,6 +320,7 @@ public:
 	void mousehandle_gunfull(int button, int state, int x, int y);
 	void mousehandle_gunpicpball(int button, int state, int x, int y);
 	void mouse_eventv_polygon(int button, int state, int x, int y);
+	mouserect mapfullscreen2gunv20(mouserect rectcur);
 
 public:
 	StateManger* m_stateManger;
@@ -327,7 +328,13 @@ public:
 
 public:
 	
+	mouserect maprect(mouserect rectcur,mouserect rectsrc,mouserect rectdest);
 	static void processFrame(const cv::Mat frame,const int chId);
+	cv::Rect cur_targetRect, cur_targetRect_bak;
+	int m_chSceneNum;
+	
+	bool m_bAutoLink,m_mainObjDrawFlag;
+	int m_ScreenWidth,m_ScreenHeight;
 
 };
 

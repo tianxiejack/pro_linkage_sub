@@ -24,6 +24,7 @@ StateManger::StateManger()
 	m_linkball = new CLinkManual();
 	m_linkauto = new CLinkAuto();
 	m_state = m_linkmanual;
+	m_curState = LINKMANUAL;
 	pThis = this;
 }
 
@@ -57,7 +58,7 @@ void StateManger::specialEvent(char key)
 			{
 				m_curState = (m_curState + 1)%3;
 				callbackChangeStat(m_curState);
-				printf("m_curstat = %d \n" , m_curState);
+				printf("!!!!!m_curstat = %d \n" , m_curState);
 				
 			}
 			else if(m_curState == LINKCALIB)

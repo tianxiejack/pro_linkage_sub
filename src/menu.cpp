@@ -594,11 +594,6 @@ void CMenu::save_polygon_unroi()
 	if(polyWarnUnRoi.size() != 0)
 		SaveMtdSelectArea("SaveMtdUnRoi.yml", polyWarnUnRoi);
 
-	for(int i = 0; i < areanum; i++)
-	{
-		//m_pMv->setWarningRoi(polyWarnUnRoi[i], i);
-	}
-
 	return ;
 }
 

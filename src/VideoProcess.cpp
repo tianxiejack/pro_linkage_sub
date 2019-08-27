@@ -14,6 +14,7 @@
 #include "osd_cv.h"
 #include "encTrans.hpp"
 #include "cuda_convert.cuh"
+#include "process51.hpp"
 
 typedef Rect_<double> Rect2d;
 
@@ -39,6 +40,7 @@ bool CVideoProcess::motionlessflag = false;
 int64 CVideoProcess::tstart = 0;
 static int count=0;
 int ScalerLarge,ScalerMid,ScalerSmall;
+extern CProcess *plat;
 
 #ifdef ENCTRANS_ON
 #define ZeroCpy	(0)
@@ -246,23 +248,18 @@ void CVideoProcess::main_proc_func()
 		
 
 		if(!m_bTrack && !m_bMtd &&!m_bMoveDetect&&!m_bSceneTrack&&!m_bPatterDetect){
-			OnProcess(chId, frame);
+			OnProcess();
 			continue;
 		}
 		
 
-		if(chId != m_curChId)
+		if(chId != m_curSubChId)
 			continue;
 	
 		frame_gray = Mat(frame.rows, frame.cols, CV_8UC1);
 
 		if(channel == 2)
-		{
-			if((chId == video_gaoqing0)||(chId == video_gaoqing)||(chId == video_gaoqing2)||(chId == video_gaoqing3))
-				extractYUYV2Gray2(frame, frame_gray);
-			else if(chId == video_pal)
-				extractUYVY2Gray(frame, frame_gray);
-		}
+			extractUYVY2Gray(frame, frame_gray);
 		else
 		{
 			memcpy(frame_gray.data, frame.data, frame.cols * frame.rows*channel*sizeof(unsigned char));
@@ -493,8 +490,8 @@ void CVideoProcess::main_proc_func()
 			#endif
 		}
 
-		
-		OnProcess(chId, frame);
+		if(!bMoveDetect)
+			OnProcess();
 		framecount++;
 
 	/************************* while ********************************/
@@ -519,7 +516,8 @@ int CVideoProcess::MAIN_threadDestroy(void)
 
 CVideoProcess::CVideoProcess()
 	:m_track(NULL),adaptiveThred(40),
-	m_curChId(video_gaoqing),m_curSubChId(video_gaoqing0)
+	m_curChId(video_gaoqing),m_curSubChId(video_gaoqing0),
+	m_ScreenWidth(1920),m_ScreenHeight(1080)
 {
 	pThis = this;
 	memset(m_mtd, 0, sizeof(m_mtd));
@@ -1041,8 +1039,13 @@ int CVideoProcess::dynamic_config(int type, int iPrm, void* pPrm)
 		break;
 	case VP_CFG_MvDetect:
 		m_bMoveDetect = iPrm;
-		if(m_bMoveDetect)
-			m_sceneObj.start();
+		if(m_bMoveDetect){
+			m_chSceneNum = 0;
+			m_bAutoLink = false;
+			m_mainObjDrawFlag = false;
+			cur_targetRect.width = 0;
+			mvList.clear();
+		}
 		break;
 	case VP_CFG_SceneTrkEnable:
 		m_bSceneTrack = iPrm;
@@ -1308,7 +1311,6 @@ int CVideoProcess::process_frame(int chId, int virchId, Mat frame)
 
 	OSA_mutexLock(&m_mutex);
 
-
 	if(chId == m_curSubChId)
 	{
 		mainFrame[mainProcThrObj.pp] = frame;
@@ -1473,52 +1475,8 @@ void	CVideoProcess::initMvDetect()
 
 	for(i=0; i<MAX_CHAN; i++)
 	{
-		recttmp.x = vdisWH[i][0] * min_width_ratio;
-		recttmp.y = vdisWH[i][1] * min_height_ratio;
-		recttmp.w = vdisWH[i][0] * (max_width_ratio - min_width_ratio);
-		recttmp.h = vdisWH[i][1] * (max_height_ratio - min_height_ratio); 
-
-		pThis->polWarnRect[i][0].x = recttmp.x;
-		pThis->polWarnRect[i][0].y = recttmp.y;
-		pThis->polWarnRect[i][1].x = recttmp.x+recttmp.w;
-		pThis->polWarnRect[i][1].y = recttmp.y;
-		pThis->polWarnRect[i][2].x = recttmp.x+recttmp.w;
-		pThis->polWarnRect[i][2].y = recttmp.y+recttmp.h;
-		pThis->polWarnRect[i][3].x = recttmp.x;
-		pThis->polWarnRect[i][3].y = recttmp.y+recttmp.h;
-		pThis->polwarn_count[i] = 4;
-
-		polyWarnRoi[0]	= cv::Point(recttmp.x,recttmp.y);
-		polyWarnRoi[1]	= cv::Point(recttmp.x+recttmp.w,recttmp.y);
-		polyWarnRoi[2]	= cv::Point(recttmp.x+recttmp.w,recttmp.y+recttmp.h);
-		polyWarnRoi[3]	= cv::Point(recttmp.x,recttmp.y+recttmp.h);
-
 		m_pMovDetector->setWarnMode(WARN_WARN_MODE, i);
-		m_pMovDetector->setWarningRoi(polyWarnRoi,	i);
 	}
-
-		recttmp.x = gCFG_Mtd.detectArea_X - gCFG_Mtd.detectArea_wide/2;
-		recttmp.y = gCFG_Mtd.detectArea_Y - gCFG_Mtd.detectArea_high/2;
-		recttmp.w =gCFG_Mtd.detectArea_wide;
-		recttmp.h = gCFG_Mtd.detectArea_high;
-
-		pThis->polWarnRect[msgextInCtrl->SensorStat][0].x = recttmp.x;
-		pThis->polWarnRect[msgextInCtrl->SensorStat][0].y = recttmp.y;
-		pThis->polWarnRect[msgextInCtrl->SensorStat][1].x = recttmp.x+recttmp.w;
-		pThis->polWarnRect[msgextInCtrl->SensorStat][1].y = recttmp.y;
-		pThis->polWarnRect[msgextInCtrl->SensorStat][2].x = recttmp.x+recttmp.w;
-		pThis->polWarnRect[msgextInCtrl->SensorStat][2].y = recttmp.y+recttmp.h;
-		pThis->polWarnRect[msgextInCtrl->SensorStat][3].x = recttmp.x;
-		pThis->polWarnRect[msgextInCtrl->SensorStat][3].y = recttmp.y+recttmp.h;
-		pThis->polwarn_count[msgextInCtrl->SensorStat] = 4;
-
-		polyWarnRoi[0]	= cv::Point(recttmp.x,recttmp.y);
-		polyWarnRoi[1]	= cv::Point(recttmp.x+recttmp.w,recttmp.y);
-		polyWarnRoi[2]	= cv::Point(recttmp.x+recttmp.w,recttmp.y+recttmp.h);
-		polyWarnRoi[3]	= cv::Point(recttmp.x,recttmp.y+recttmp.h);
-		
-		m_pMovDetector->setWarningRoi(polyWarnRoi, msgextInCtrl->SensorStat);
-
 }
 
 void	CVideoProcess::DeInitMvDetect()
@@ -1532,9 +1490,10 @@ void CVideoProcess::NotifyFunc(void *context, int chId)
 	CVideoProcess *pParent = (CVideoProcess*)context;
 	pThis->detect_vect.clear();
 	pThis->m_pMovDetector->getWarnTarget(pThis->detect_vect,chId);
-	printf("mtd notify !!!!!\n");
-	//pParent->m_display.m_bOsd = true;
-	//pThis->m_display.UpDateOsd(0);
+	printf("mtd notify !!!!!  size = %d \n" , pThis->detect_vect.size());
+
+	plat->DrawMtd_Rigion_Target();
+	plat->OnProcess();
 }
 #endif
 
@@ -1600,5 +1559,35 @@ void CVideoProcess::processFrame(const cv::Mat frame,const int chId)
 	
 	
 	return;
+}
+
+
+mouserect CVideoProcess::mapfullscreen2gunv20(mouserect rectcur)
+{
+	mouserect rect1080p;
+	mouserect rectgun;
+
+	rect1080p.x = 0;
+	rect1080p.y = 0;
+	rect1080p.w = m_ScreenWidth;
+	rect1080p.h = m_ScreenHeight;
+
+	rectgun.x = 0;
+	rectgun.y = m_ScreenHeight/2;
+	rectgun.w = m_ScreenWidth;
+	rectgun.h = m_ScreenHeight/2;
+	
+	return maprect(rectcur, rect1080p, rectgun);
+}
+
+mouserect CVideoProcess::maprect(mouserect rectcur,mouserect rectsrc,mouserect rectdest)
+{
+	mouserect rect_result;
+
+	rect_result.x = (rectcur.x-rectsrc.x)*rectdest.w/rectsrc.w+rectdest.x;
+	rect_result.y = (rectcur.y-rectsrc.y)*rectdest.h/rectsrc.h+rectdest.y;
+	rect_result.w = rectcur.w*rectdest.w/rectsrc.w;
+	rect_result.h = rectcur.h*rectdest.h/rectsrc.h;
+	return rect_result;
 }
 
