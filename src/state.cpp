@@ -11,6 +11,8 @@ int State::twinkle_point_id = 0;
 bool State::twinkle_flag = false;
 
 static State* pThis = NULL;
+std::vector< FEATUREPOINT_T > State::app_recommendPoints;
+std::vector< FEATUREPOINT_T > State::app_recommendPoints_bak;
 
 State::State():draw_print_stat(false),drawpoints_stat(false)
 {	
@@ -152,7 +154,8 @@ void State::Drawfeaturepoints(cv::Mat frame)
 		m_autofr->drawPoints(frame, app_recommendPoints_bak, 0);
 		drawpoint_falg = 0;
 	}
-	//if(get_drawpoints_stat())
+
+	//if(get_drawpoints_stat())	
 	if(MENU_CALIB == m_pMenu->getMenuState())
 	{
 		app_recommendPoints_bak = app_recommendPoints;

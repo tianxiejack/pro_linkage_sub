@@ -93,6 +93,7 @@ public:
 	static void TcallbackFunc(void *p);
 	void TimerCreate();
 	void TcallbackHandle(void *p);
+	bool readParams4MtdRegion();
 
 public:
 	OSDFUNC drawFunc;
@@ -129,6 +130,7 @@ private:
 	int m_ScreenWidth,m_ScreenHeight;
 	CMvDectInterface * m_pMv;
 	cv::FileStorage m_fsWriteMtd;
+	cv::FileStorage m_readfs;
 
 public:
 	std::vector<cv::Point> m_poly , m_polyTmp;

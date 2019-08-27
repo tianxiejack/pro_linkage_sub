@@ -42,6 +42,8 @@ CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pDisplaymode,CHANGESTAT pchStatfun,CHDEFWOR
 
 	m_ScreenWidth = 1920;
 	m_ScreenHeight = 1080;
+
+	readParams4MtdRegion();
 }
 
 CMenu::~CMenu()
@@ -115,7 +117,7 @@ void CMenu::gotoCalibMode()
 void CMenu::gotoMtdRegion()
 {
 	m_menuPointer = 0;
-	m_poly.clear();
+	//m_poly.clear();
 	lv_4_mtdregionOsd(false);
 	m_menuStat = MENU_MTD_REGION;
 	changeDisModeFunc(GUN_FULL);
@@ -1210,6 +1212,60 @@ void CMenu::getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b
 	return ;
 }
 
+bool CMenu::readParams4MtdRegion()
+{
+	char paramName[40];
+	memset(paramName, 0, sizeof(paramName));
+	string cfgFile;
+	cfgFile = "SaveMtdRoi.yml";
+	m_readfs.open(cfgFile, FileStorage::READ);
+	int size,areanum;
+	int setx, sety = 0;
+	cv::Point tpoint;
+	
+	if (m_readfs.isOpened()) {
+		sprintf(paramName, "AreaCount");
+		m_readfs[paramName] >> areanum;
+		sprintf(paramName, "AreaIndex_0");
+		m_readfs[paramName] >> size;
+		for(int k=0;k<areanum;k++)
+		for (int i = 0; i < size; i++) {
+			sprintf(paramName, "Point_%d_%d_x",k,i);
+			m_readfs[paramName] >> tpoint.x;
+			sprintf(paramName, "Point_%d_%d_y",k,i);
+			m_readfs[paramName] >> tpoint.y;
+			m_poly.push_back(tpoint);
+		}
+		m_readfs.release();
 
+		if(m_poly.size() < 3)
+			return false;
+		
+		polyWarnRoi.resize(areanum);
+		edge_contours.resize(areanum);
+		
+		for(int i = 0; i < areanum; i++)
+		{
+			polyWarnRoi[i].resize(m_poly.size());
+			edge_contours[i].resize(m_poly.size());
+			for(int j = 0; j < m_poly.size(); j++)
+			{		
+				setx = m_poly[j].x;
+				sety = m_poly[j].y;
+				polyWarnRoi[i][j] = cv::Point(setx, sety);
+		
+				mapfullscreen2gun_pointv20(&setx, &sety);
+				edge_contours[i][j].x = setx;
+				edge_contours[i][j].y = sety;
+			}
+		}
+				
+		for(int i = 0; i < areanum; i++)
+			m_pMv->setWarningRoi(polyWarnRoi[i], i);
+
+		return true;
+	}
+	return false;
+}
 
 

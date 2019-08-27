@@ -52,8 +52,8 @@ public:
 public:
 	static CAutoManualFindRelation* m_autofr;
 
-	std::vector< FEATUREPOINT_T > app_recommendPoints;
-	std::vector< FEATUREPOINT_T > app_recommendPoints_bak;
+	static std::vector< FEATUREPOINT_T > app_recommendPoints;
+	static std::vector< FEATUREPOINT_T > app_recommendPoints_bak;
 
 	cv::Point2i twinkle_point, twinkle_point_bak;
 	jos_mouse_Mode gridinter_mode;
