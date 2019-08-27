@@ -56,6 +56,7 @@ enum
 {
 	JOSF1 = 1,
 	JOSF2,
+	JOSF3
 };
 
 

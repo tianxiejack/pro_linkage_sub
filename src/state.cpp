@@ -489,3 +489,15 @@ void State::app_insertPos(float x, float y)
 	m_autofr->insertPos(inPos);
 }
 
+
+void State::operationChangeState()
+{
+	CMD_EXT stat;
+	memset(&stat,0,sizeof(CMD_EXT));
+	app_ctrl_getSysData(&stat);
+	
+	stat.MtdState[stat.SensorStat] = eImgAlg_Disable;
+	app_ctrl_setMtdStat(&stat);
+}
+
+

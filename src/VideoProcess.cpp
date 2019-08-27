@@ -900,8 +900,8 @@ void CVideoProcess::keyboard_event(unsigned char key, int x, int y)
 	pThis->OnKeyDwn(key);
 
 	if(key == 27){
-		pThis->destroy();
-		exit(0);
+		//pThis->destroy();
+		//exit(0);
 	}
 }
 
@@ -1532,7 +1532,7 @@ void CVideoProcess::NotifyFunc(void *context, int chId)
 	CVideoProcess *pParent = (CVideoProcess*)context;
 	pThis->detect_vect.clear();
 	pThis->m_pMovDetector->getWarnTarget(pThis->detect_vect,chId);
-	
+	printf("mtd notify !!!!!\n");
 	//pParent->m_display.m_bOsd = true;
 	//pThis->m_display.UpDateOsd(0);
 }

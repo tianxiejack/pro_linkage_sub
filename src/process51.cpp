@@ -1616,7 +1616,9 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 	static float p = -1.0,t = -1.0,z = 0;
 	switch(key) 
 	{
+		case 1:
 		case 2:
+		case 3:
 			m_stateManger->specialEvent(key);
 			//m_display.linkage.OnJosEvent(JOSF2_ENTER_MENU,f);
 			break;
@@ -1631,16 +1633,6 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 			//m_display.linkage.app_ctrl_downMenu();
 			break; 
 
-		case 3:
-			sendIpc4PTZpos();
-			break;
-
-		case 4:
-			p += 0.01;
-			t += 0.01;
-			z += 0.005;
-			sendIpc2setPos(p, t, z);
-			break;
 			
 		default:
 			break;
@@ -2349,16 +2341,16 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
         int Mtdstatus = (pIStuts->MtdState[pIStuts->SensorStat]&0x01) ;
         if(Mtdstatus)
         {  
-		m_pMovDetector->mvOpen(pIStuts->SensorStat);
-		dynamic_config(VP_CFG_MvDetect, 1,NULL);
-		chooseDetect = 10;
-		pIStuts->MtdDetectStat = m_bMoveDetect;  
+			m_pMovDetector->mvOpen(pIStuts->SensorStat);
+			dynamic_config(VP_CFG_MvDetect, 1,NULL);
+			chooseDetect = 10;
+			pIStuts->MtdDetectStat = m_bMoveDetect;  
         }
         else
         {
-		dynamic_config(VP_CFG_MvDetect, 0,NULL);
-		m_pMovDetector->mvClose(pIStuts->SensorStat);
-		pIStuts->MtdDetectStat = m_bMoveDetect;
+			dynamic_config(VP_CFG_MvDetect, 0,NULL);
+			m_pMovDetector->mvClose(pIStuts->SensorStat);
+			pIStuts->MtdDetectStat = m_bMoveDetect;
         }
         OSA_printf("====== MTD cmdstat %d algstat %d \n", pIStuts->MtdState[pIStuts->SensorStat], pIStuts->MtdDetectStat);
     }

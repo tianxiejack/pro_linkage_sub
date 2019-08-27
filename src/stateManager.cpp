@@ -22,6 +22,7 @@ StateManger::StateManger()
 	m_linkmanual = new CLinkManual();
 	m_linkcalib = new CLinkCalib();
 	m_linkball = new CLinkManual();
+	m_linkauto = new CLinkAuto();
 	m_state = m_linkmanual;
 	pThis = this;
 }
@@ -57,12 +58,15 @@ void StateManger::specialEvent(char key)
 				m_curState = (m_curState + 1)%3;
 				callbackChangeStat(m_curState);
 				printf("m_curstat = %d \n" , m_curState);
+				
 			}
 			else if(m_curState == LINKCALIB)
-				;
+				;//do noting
 			break;
 		case JOSF2:			
 			m_state->buttonMenu();	
+			break;
+		case JOSF3:
 			break;
 		default:
 			break;
@@ -87,6 +91,9 @@ void StateManger::callbackChangeStat(char nextmode)
 
 		case LINKBALL:
 			pThis->ChangeState(pThis->m_linkball);
+			break;
+		case LINKAUTO:
+			pThis->ChangeState(pThis->m_linkauto);
 			break;
 
 		default:
