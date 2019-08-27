@@ -142,6 +142,8 @@ void StateManger::mouseEvent(int button, int state, int x, int y)
 		{
 			m_state->process_trigmode_left_point(x, y);
 		}
+		else if(m_curState == LINKMANUAL)
+			m_state->link2pos(x,y);
 	}
 
 	if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)

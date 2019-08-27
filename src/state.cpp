@@ -203,7 +203,7 @@ void State::get_featurepoint()
 
 
 
-void State::grid_manuallinkage_moveball(int x, int y, int changezoom)
+void State::manuallinkage_moveball(int x, int y)
 {
 
 	SENDST trkmsg={0};
@@ -213,45 +213,14 @@ void State::grid_manuallinkage_moveball(int x, int y, int changezoom)
 	
 	int delta_X ;
 	int offset_x = 0;
-#if 0
-	if(changezoom)
-	{
-		switch(m_display.g_CurDisplayMode) 
-		{
-			case TRIG_INTER_MODE:	
-				offset_x = 0;  
-				break;
-			case MAIN_VIEW:
-				offset_x =0;
-				break;			
-			default:
-				break;
-		}
-
-		LeftPoint.x -= offset_x;
-		RightPoint.x -=offset_x;
-		
-		delta_X = abs(LeftPoint.x - RightPoint.x) ;
-		
-		if(delta_X < MIN_VALID_RECT_WIDTH_IN_PIXEL)
-		{
-			zoom = 2.0;
-		}
-		else
-		{
-			zoom = checkZoomPosTable(delta_X);		
-		}
-	}
-	else
-#endif
-		zoom = 2.0;
+	zoom = 2.0;
 
 	inPoint.x = x;
 	inPoint.y = y;
-	if( -1 != pThis->m_autofr->Point2getPos(inPoint, outPoint))
+
+	if( -1 != m_autofr->Point2getPos(inPoint, outPoint))
 	{		
 		printf("%s, %d,grid inter mode: inPoint(%d,%d),outPos(%f,%f)\n", __FILE__,__LINE__,inPoint.x,inPoint.y,outPoint.x,outPoint.y);
-
 		sendIpc2setPos(outPoint.x, outPoint.y, zoom);
 	}
 
@@ -419,7 +388,7 @@ void State::start_twinkle(int x, int y)
 		tmp.x = twinkle_point.x;
 		tmp.y = twinkle_point.y;
 		mapout2inresol(&tmp);
-		grid_manuallinkage_moveball(tmp.x, tmp.y, 0);
+		manuallinkage_moveball(tmp.x, tmp.y);
 		app_set_triangle_point(tmp.x, tmp.y);
 	}
 	return;
@@ -498,6 +467,49 @@ void State::operationChangeState()
 	
 	stat.MtdState[stat.SensorStat] = eImgAlg_Disable;
 	app_ctrl_setMtdStat(&stat);
+	return;
 }
 
+void State::link2pos(int x,int y)
+{
+	printf("x,y = %d,%d \n" , x, y);
+	if( x > m_pMenu->m_ScreenWidth/4 && x < m_pMenu->m_ScreenWidth/4*3 
+		&& y > 0 && y < m_pMenu->m_ScreenHeight/2)
+	{
+		//link ball itself	
+	}
+	else 
+	{
+		mapgun2fullscreen_auto(&x,&y);
+		manuallinkage_moveball(x,y);
+	}
+	return;
+}
+
+int State::mapgun2fullscreen_auto(int *x, int *y)
+{
+	mouserect rect1080p;
+	mouserect rectgun;
+	
+	rect1080p.x = 0;
+	rect1080p.y = 0;
+	rect1080p.w = m_pMenu->m_ScreenWidth;// 1920;
+	rect1080p.h = m_pMenu->m_ScreenHeight;
+
+	rectgun.x = 0;
+	rectgun.y = m_pMenu->m_ScreenHeight/2;
+	rectgun.w = m_pMenu->m_ScreenWidth;// 1920;
+	rectgun.h = m_pMenu->m_ScreenHeight/2;
+	
+	return maprect_point(x, y, rectgun, rect1080p);
+}
+
+int State::maprect_point(int *x, int *y, mouserect rectsrc,mouserect rectdest)
+{
+	if(NULL != x)
+		*x = (*x-rectsrc.x)*rectdest.w/rectsrc.w+rectdest.x;
+	if(NULL != y)
+		*y = (*y-rectsrc.y)*rectdest.h/rectsrc.h+rectdest.y;
+	return 0;
+}
 

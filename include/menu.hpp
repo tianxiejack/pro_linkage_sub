@@ -127,12 +127,13 @@ private:
 	std::vector< std::vector< cv::Point > > edge_contours;
 	std::vector< std::vector< cv::Point > > polyWarnUnRoi;
 	std::vector< std::vector< cv::Point > > edge_contours_UnRoi;
-	int m_ScreenWidth,m_ScreenHeight;
+
 	CMvDectInterface * m_pMv;
 	cv::FileStorage m_fsWriteMtd;
 	cv::FileStorage m_readfs;
 
 public:
+	int m_ScreenWidth,m_ScreenHeight;
 	std::vector<cv::Point> m_poly , m_polyTmp;
 	std::vector< std::vector<cv::Point> > m_unroiPoly;
 	

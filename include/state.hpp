@@ -38,7 +38,7 @@ public:
 	virtual void upMenu();
 	virtual void downMenu();
 	virtual void operationChangeState();
-	
+	virtual void link2pos(int x,int y);	
 	void getRGBA(int color,unsigned char& r,unsigned char& g,unsigned char& b,unsigned char& a);
 
 	static void TcallbackFunc(void *p);
@@ -70,7 +70,8 @@ public:
 	bool get_print_stat(){return draw_print_stat;};
 	void set_print_stat(bool value){draw_print_stat = value;};
 
-	void grid_manuallinkage_moveball(int x, int y, int changezoom);
+	void manuallinkage_moveball(int x, int y);
+	
 	void mapout2inresol(cv::Point *tmppoint);
 	void app_set_triangle_point(int x, int y);
 	void process_trigmode_right_point(int x, int y);
@@ -99,8 +100,9 @@ public:
 	void app_self_deletePoint(cv::Point2i Pixel);
 	void start_twinkle(int x, int y);
 	void stoptwinkle();
-
-
+	int mapgun2fullscreen_auto(int *x, int *y);
+	int maprect_point(int *x, int *y, mouserect rectsrc,mouserect rectdest);
+	
 };
 
 

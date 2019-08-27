@@ -411,6 +411,7 @@ int CAutoManualFindRelation::Point2getPos(const Point2i inPoint,Point2f &result)
 
 	result.x = (float)tmp.x/FDXS;
 	result.y = (float)tmp.y/FDXS;
+	
 	return ret;
 }
 

@@ -1507,7 +1507,7 @@ void sendIpc2setPos(float p, float t, float z)
 	tmppos.p = p;
 	tmppos.t = t;
 	tmppos.z = z;
-	printf("set pos ptz = (%f,%f,%f)\n",p,t,z);
+	printf("%s:LINE:%d   set pos ptz = (%f,%f,%f)\n",__func__,__LINE__,p,t,z);
 	memcpy(tmp.param,&tmppos,sizeof(tmppos));
 	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
 }
