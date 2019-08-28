@@ -123,10 +123,6 @@ private:
 	CHAR m_menuStat;
 	CHAR m_ctlBallMode;
 
-	std::vector< std::vector< cv::Point > > polyWarnRoi;
-	std::vector< std::vector< cv::Point > > edge_contours;
-	std::vector< std::vector< cv::Point > > polyWarnUnRoi;
-	std::vector< std::vector< cv::Point > > edge_contours_UnRoi;
 
 	CMvDectInterface * m_pMv;
 	cv::FileStorage m_fsWriteMtd;
@@ -137,6 +133,11 @@ public:
 	std::vector<cv::Point> m_poly , m_polyTmp;
 	std::vector< std::vector<cv::Point> > m_unroiPoly;
 	
+
+	std::vector< std::vector< cv::Point > > polyWarnRoi;
+	std::vector< std::vector< cv::Point > > edge_contours;
+	std::vector< std::vector< cv::Point > > polyWarnUnRoi;
+	std::vector< std::vector< cv::Point > > edge_contours_UnRoi;
 };
 
 

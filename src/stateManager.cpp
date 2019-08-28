@@ -57,9 +57,7 @@ void StateManger::specialEvent(char key)
 			if(m_curState <= LINKBALL)
 			{
 				m_curState = (m_curState + 1)%3;
-				callbackChangeStat(m_curState);
-				printf("!!!!!m_curstat = %d \n" , m_curState);
-				
+				callbackChangeStat(m_curState);				
 			}
 			else if(m_curState == LINKCALIB)
 				;//do noting
@@ -230,6 +228,17 @@ void StateManger::sendWorkMode2main()
 {
 	notifyWorkMode(m_curState);
 	return;
+}
+
+std::vector< cv::Point >& StateManger::getEdgecounter()
+{
+	return 	m_state->m_pMenu->edge_contours[0];
+}
+
+
+std::vector< std::vector< cv::Point > >& StateManger::getUnregionEdgecounter()
+{
+	return 	m_state->m_pMenu->edge_contours_UnRoi;
 }
 
 

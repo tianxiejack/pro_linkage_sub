@@ -9,7 +9,7 @@ CMenu* State::m_pMenu = NULL;
 CAutoManualFindRelation* State::m_autofr = NULL;
 int State::twinkle_point_id = 0;
 bool State::twinkle_flag = false;
-
+IPC_ONVIF_POS State::m_curpos = {0};
 static State* pThis = NULL;
 std::vector< FEATUREPOINT_T > State::app_recommendPoints;
 std::vector< FEATUREPOINT_T > State::app_recommendPoints_bak;
@@ -220,13 +220,134 @@ void State::manuallinkage_moveball(int x, int y)
 
 	if( -1 != m_autofr->Point2getPos(inPoint, outPoint))
 	{		
-		printf("%s, %d,grid inter mode: inPoint(%d,%d),outPos(%f,%f)\n", __FILE__,__LINE__,inPoint.x,inPoint.y,outPoint.x,outPoint.y);
 		sendIpc2setPos(outPoint.x, outPoint.y, zoom);
 	}
 
 	return;
 }
 
+
+void State::autolinkage_moveball(int x, int y)
+{
+
+	SENDST trkmsg={0};
+	float zoom;
+	Point2i inPoint;
+	Point2f outPoint;
+	
+	int delta_X ;
+	int offset_x = 0;
+	zoom = 2.0;
+
+	inPoint.x = x;
+	inPoint.y = y;
+		
+	if( -1 != m_autofr->Point2getPos(inPoint, outPoint))
+	{		
+		transPix2rate(outPoint.x,outPoint.y);
+		sendIpc2setSpeed(outPoint.x, outPoint.y, zoom);
+	}
+
+	return;
+}
+
+float State::deltaPan2rate(float x)
+{
+	enum{
+		LEFT,
+		RIGHT
+	};
+	float delta = m_curpos.p - x;
+printf("ppppp delta = %f \n" , delta );	
+	float ret = 0;
+	bool moveway = LEFT; // 0 left , 1 right
+
+	float deltax1,deltax2;
+
+	if(fabs(delta) > 1.0)
+	{
+		if(delta < 0)
+		{
+			deltax1 = fabs(delta);
+			deltax2 = m_curpos.p - x + 2.0;
+			delta = (deltax1 < deltax2)?deltax1:deltax2;
+			moveway = RIGHT;
+		}else{
+			deltax1 = delta;
+			deltax2 = x - m_curpos.p + 2.0;
+			delta = (deltax1 < deltax2)?deltax1:deltax2;
+			moveway = LEFT;
+		}
+	}else{
+		if(delta < 0)
+			moveway = RIGHT;
+		else
+			moveway = LEFT;
+	}
+
+	if(fabs(delta) < 0.03)
+		ret = 0.0;
+	else if(fabs(delta) < 0.1)
+		ret = 0.5;
+	else if(fabs(delta) < 0.5)
+		ret = 0.8;
+	else
+		ret = 0.9;
+	
+	if(!moveway)
+		ret = -1*ret;
+	
+	return ret;
+}
+
+float State::deltaTil2rate(float y)
+{
+	enum{
+		UP,
+		DOWN
+	};
+	float delta = m_curpos.t - y;
+printf("ttttt  delta = %f \n" , delta );	
+	float ret = 0;
+	bool moveway = UP;
+
+	float deltay;
+
+
+	if(delta < 0)
+		moveway = UP;
+	else
+		moveway = DOWN;
+
+
+	if(fabs(delta) < 0.03)
+		ret = 0.0;
+	else if(fabs(delta) < 0.1)
+		ret = 0.5;
+	else if(fabs(delta) < 0.5)
+		ret = 0.8;
+	else
+		ret = 1.0;
+	
+	if(!moveway)
+		ret = -1*ret;
+	
+	return ret;
+}
+
+
+
+void State::transPix2rate(float& x, float& y)
+{
+	float tmpx,tmpy;
+	
+	tmpx = deltaPan2rate(x);
+	tmpy = deltaTil2rate(y);
+
+	x = tmpx;
+	y = tmpy;
+	return;
+}
 
 
 jos_mouse_Mode State::get_gridinter_mode()
@@ -467,12 +588,12 @@ void State::operationChangeState()
 	
 	stat.MtdState[stat.SensorStat] = eImgAlg_Disable;
 	app_ctrl_setMtdStat(&stat);
+	sendIpc2ballstop();
 	return;
 }
 
 void State::link2pos(int x,int y)
 {
-	printf("x,y = %d,%d \n" , x, y);
 	if( x > m_pMenu->m_ScreenWidth/4 && x < m_pMenu->m_ScreenWidth/4*3 
 		&& y > 0 && y < m_pMenu->m_ScreenHeight/2)
 	{

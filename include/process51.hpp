@@ -208,6 +208,7 @@ public:
 	std::vector<cv::Point> m_polyBak , m_polyTmpBak;
 	std::vector< std::vector<cv::Point> > m_polyUnRoiBak;
 
+	std::vector< cv::Point > edge_contours_bak;
 
 public:
 	void OnJosCtrl(int key, int param);

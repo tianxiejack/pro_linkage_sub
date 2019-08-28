@@ -70,6 +70,9 @@ public:
 	std::vector<cv::Point>& getPoly();
 	std::vector<cv::Point>& getPolyTmp();
 	std::vector< std::vector<cv::Point> >& getunRoiPoly();
+	std::vector< cv::Point >& getEdgecounter();
+	std::vector< std::vector< cv::Point > >& getUnregionEdgecounter();
+	
 public:
 	State *m_state;
 	int m_curState;

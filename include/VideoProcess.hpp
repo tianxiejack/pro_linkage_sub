@@ -333,8 +333,13 @@ public:
 	cv::Rect cur_targetRect, cur_targetRect_bak;
 	int m_chSceneNum;
 	
+	OSA_SemHndl m_mvObjSync;
 	bool m_bAutoLink,m_mainObjDrawFlag;
 	int m_ScreenWidth,m_ScreenHeight;
+	Rect2d m_sceInitRect,m_sceInitRectBK;
+	bool judgeMainObjInOut(Rect2d inTarget);
+	cv::Rect m_mainObjBK;
+	int losenumber = -1;	
 
 };
 

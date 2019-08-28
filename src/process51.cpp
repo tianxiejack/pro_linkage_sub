@@ -1417,7 +1417,7 @@ void CProcess::mvIndexHandle(std::vector<TRK_INFO_APP> &mvList,std::vector<TRK_R
 	int tmpIndex , i ;
 	bool flag;
 	TRK_INFO_APP pTmpMv;
-
+	
 	if(!mvList.empty())
 	{	
 		i = 0;
@@ -1433,7 +1433,11 @@ void CProcess::mvIndexHandle(std::vector<TRK_INFO_APP> &mvList,std::vector<TRK_R
 			{
 				if( tmpIndex == (*pDetect).index )
 				{
-					memcpy((void*)&((*pMvList).trkobj.targetRect),(void*)&((*pDetect).targetRect),sizeof(TRK_RECT_INFO));
+					memcpy((void*)&((*pMvList).trkobj.targetRect),(void*)&((*pDetect).targetRect),sizeof(TRK_RECT_INFO));				
+					if((chooseDetect == (*pMvList).number) && (losenumber != (*pMvList).number))
+					{
+						cur_targetRect = (*pMvList).trkobj.targetRect;
+					}
 					detect.erase(pDetect);
 					flag = 1;
 					break;
@@ -1444,51 +1448,73 @@ void CProcess::mvIndexHandle(std::vector<TRK_INFO_APP> &mvList,std::vector<TRK_R
 
 			if(!flag)
 			{
-				if( (*pMvList).number == chooseDetect )
-					chooseDetect = getMvListNextValidNum(chooseDetect);	
+				if((chooseDetect == (*pMvList).number))
+				{
+					losenumber = (*pMvList).number;
+					chooseDetect = 10;
+					cur_targetRect.width = 0;
+				}
 				removeMvListValidNum((*pMvList).number);
 				mvList.erase(pMvList);
 			}
 			else
 				++pMvList;
-
+		
 		}
 
 		i = 0;
+		Rect2d tmpTarget;
 		while(detect.size() > 0)
 		{	
 			if(mvList.size() >= detectNum)
 				break ;
+			if(i >= detect.size())
+				break;
+			i++;
+			tmpTarget.x = detect[i].targetRect.x;
+			tmpTarget.y = detect[i].targetRect.y;
 			pTmpMv.number = getMvListFirstUnusedNum();
 			if(pTmpMv.number < 10)
 			{
 				addMvListValidNum(pTmpMv.number);
-				memcpy((void*)&(pTmpMv.trkobj),(void *)&(detect[i++].targetRect),sizeof(TRK_RECT_INFO));
-				mvList.push_back(pTmpMv);		
+				memcpy((void*)&(pTmpMv.trkobj),(void *)&(detect[i].targetRect),sizeof(TRK_RECT_INFO));
+				mvList.push_back(pTmpMv);	
 			}
-			if( chooseDetect == 10 )
-				chooseDetect = pTmpMv.number;
 		}	
 	}
 	else
 	{
-		int tmpnum = detect.size() < detectNum ? detect.size() : detectNum ;
-		for(i =0 ; i < tmpnum ; i++)
+		Rect2d tmpTarget;
+		while( mvList.size()<detectNum &&  detect.size()>0 )
 		{
+			tmpTarget.x = detect[0].targetRect.x;
+			tmpTarget.y = detect[0].targetRect.y;			
 			pTmpMv.number = getMvListFirstUnusedNum();
 			if(pTmpMv.number < 10)
 			{
 				addMvListValidNum(pTmpMv.number);
-				memcpy((void*)&(pTmpMv.trkobj),(void *)&(detect[i++].targetRect),sizeof(TRK_RECT_INFO));
+				memcpy((void*)&(pTmpMv.trkobj),(void *)&(detect[0].targetRect),sizeof(TRK_RECT_INFO));
 				mvList.push_back(pTmpMv);
 			}
-			if( chooseDetect == 10 )
-				chooseDetect = pTmpMv.number;
+			detect.erase(detect.begin());
 		}
 	}
+
+	if( chooseDetect == 10 )
+	{
+		chooseDetect = getMvListNextValidNum(10);
+		for(int i=0; i<mvList.size(); i++ ){
+			if(mvList[i].number == chooseDetect){
+				cur_targetRect = mvList[i].trkobj.targetRect;
+			}
+		}
+	}
+
 	
 }
+
 #endif
+
 
 void CProcess::DrawMtd_Rigion_Target()
 {
@@ -1503,9 +1529,21 @@ void CProcess::DrawMtd_Rigion_Target()
 	cv::Rect tmp;
 	mouserect recttmp;
 	Rect2d tmpTarget;
+	int setx, sety = 0;
 
 	if(drawflag)
 	{
+		color = 0;
+		for(int j = 0; j < edge_contours_bak.size(); j++)
+		{
+			polwarn_flag = (j+1)%edge_contours_bak.size();
+			startwarnpoly.x = edge_contours_bak[j].x;
+			startwarnpoly.y = edge_contours_bak[j].y;
+			endwarnpoly.x = edge_contours_bak[polwarn_flag].x;
+			endwarnpoly.y = edge_contours_bak[polwarn_flag].y;
+			DrawcvLine(m_display.m_imgOsd[mat_Id],&startwarnpoly,&endwarnpoly,color,2);	
+		}
+	
 		for(std::vector<TRK_INFO_APP>::iterator plist = mvList.begin(); plist != mvList.end(); ++plist)
 		{	
 			color = 0;
@@ -1523,13 +1561,49 @@ void CProcess::DrawMtd_Rigion_Target()
 			tmp.height = recttmp.h;
 			DrawRect(m_display.m_imgOsd[mat_Id], tmp ,color);
 		}
+
+		if(mainObjFlag){
+			DrawRect(m_display.m_imgOsd[mat_Id], m_mainObjBK ,0);
+			mainObjFlag = false;
+		}
 	}
 
 	if(m_stateManger->m_curState == LINKAUTO)
 		if(m_bMoveDetect)
 		{
-			pThis->detect_bak = pThis->detect_vect;
+			edge_contours_bak = m_stateManger->getEdgecounter();
+			color = 5;
+			for(int j = 0; j < edge_contours_bak.size(); j++)
+			{
+				polwarn_flag = (j+1)%edge_contours_bak.size();
+				startwarnpoly.x = edge_contours_bak[j].x;
+				startwarnpoly.y = edge_contours_bak[j].y;
+				endwarnpoly.x = edge_contours_bak[polwarn_flag].x;
+				endwarnpoly.y = edge_contours_bak[polwarn_flag].y;
+				DrawcvLine(m_display.m_imgOsd[mat_Id],&startwarnpoly,&endwarnpoly,color,2);	
+			}
+	
+			detect_bak = detect_vect;
 			mvIndexHandle(mvList,pThis->detect_bak,detectNum);
+
+
+			if(forwardflag)
+			{
+				m_chSceneNum = 0;
+				m_bAutoLink = false;
+				m_sceInitRect.width=0;
+				m_mainObjDrawFlag=false;
+				switchMvTargetForwad();
+				forwardflag = 0;
+				cur_targetRect.width = 0;
+			}
+			else if(backflag)
+			{
+				switchMvTargetForwad();
+				backflag = 0;
+			}
+
+
 			for(std::vector<TRK_INFO_APP>::iterator plist = mvList.begin(); plist != mvList.end(); ++plist)
 			{	
 				color = 3;
@@ -1552,17 +1626,29 @@ void CProcess::DrawMtd_Rigion_Target()
 
 			if((mvList.size()>0) && cur_targetRect.width && cur_targetRect.height )		
 			{		
-				#if 0
 				cur_targetRect_bak = cur_targetRect;
-				memcpy(m_targetVectorBK,m_targetVector,sizeof(cv::Rect)*10);
 				if( m_bAutoLink && (0 == m_chSceneNum)){
 					OSA_semSignal(&m_mvObjSync);
 				}
 
 				if(false == m_bAutoLink)
 					m_bAutoLink = true;
-				#endif
 			}
+
+			if(m_mainObjDrawFlag){
+				recttmp.x = m_sceInitRectBK.x;
+				recttmp.y = m_sceInitRectBK.y;
+				recttmp.w = m_sceInitRectBK.width;
+				recttmp.h = m_sceInitRectBK.height;
+				recttmp = mapfullscreen2gunv20(recttmp);
+				m_mainObjBK.x = recttmp.x;
+				m_mainObjBK.y = recttmp.y;
+				m_mainObjBK.width = recttmp.w;
+				m_mainObjBK.height = recttmp.h;
+				DrawRect(m_display.m_imgOsd[mat_Id], m_mainObjBK ,6);
+				mainObjFlag = true;				
+			}
+			
 			drawflag = true;
 		}
 	return;	
@@ -1627,7 +1713,7 @@ bool CProcess::OnProcess()
 	DrawMtdPolygonUnRoi();
 	DrawPipCross();
 	Drawfeaturepoints();
-
+	
 	
 
 	prisensorstatus=extInCtrl->SensorStat;
@@ -1712,6 +1798,9 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 			//m_display.linkage.app_ctrl_downMenu();
 			break; 
 
+		case 5:
+			sendIpc4PTZpos();
+			break;
 			
 		default:
 			break;
@@ -1725,35 +1814,9 @@ void CProcess::OnKeyDwn(unsigned char key)
 	CMD_EXT *pIStuts = extInCtrl;
 	CMD_EXT tmpCmd = {0};
 		
-	if (key == 'l' || key == 'L')
+	if (key == 'e' || key == 'E')
 	{
-		if(PatternDetect)
-			PatternDetect = eImgAlg_Disable;
-		else
-			PatternDetect = eImgAlg_Enable;
-		msgdriv_event(MSGID_EXT_PATTERNDETECT, NULL);
-	}
-
-	if (key == 'k' || key == 'K')
-	{
-		if(pIStuts->MtdState[pIStuts->SensorStat])
-			pIStuts->MtdState[pIStuts->SensorStat] = eImgAlg_Disable;
-		else
-		{
-			pIStuts->MtdState[pIStuts->SensorStat] = eImgAlg_Enable;
-#if __MOVE_DETECT__
-			chooseDetect = 10;
-#endif
-		}
-		msgdriv_event(MSGID_EXT_MVDETECT, NULL);
-
-		//printf("pIStuts->MtdState[pIStuts->SensorStat]  = %d\n",pIStuts->MtdState[pIStuts->SensorStat] );
-	}
-
-	if(key == 'Q' || key == 'q') 
-	{
-		//DisplayMode_t nextMode = DisplayMode_t((int)(m_display.linkage.displayMode+1) % MENU_DISPLAY_COUNT);
-		//m_display.linkage.setDisplayMode(nextMode);
+		forwardflag = true;
 	}
 
 	if((key >= '0') && (key <= '9'))

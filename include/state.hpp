@@ -56,6 +56,8 @@ public:
 	static std::vector< FEATUREPOINT_T > app_recommendPoints;
 	static std::vector< FEATUREPOINT_T > app_recommendPoints_bak;
 
+	static IPC_ONVIF_POS m_curpos;
+	
 	cv::Point2i twinkle_point, twinkle_point_bak;
 	jos_mouse_Mode gridinter_mode;
 	cv::Point2i point_triangle , point_triangle_bak;
@@ -71,6 +73,7 @@ public:
 	void set_print_stat(bool value){draw_print_stat = value;};
 
 	void manuallinkage_moveball(int x, int y);
+	void autolinkage_moveball(int x, int y);
 	
 	void mapout2inresol(cv::Point *tmppoint);
 	void app_set_triangle_point(int x, int y);
@@ -102,6 +105,13 @@ public:
 	void stoptwinkle();
 	int mapgun2fullscreen_auto(int *x, int *y);
 	int maprect_point(int *x, int *y, mouserect rectsrc,mouserect rectdest);
+
+private:
+	
+	float deltaPan2rate(float x);
+	float deltaTil2rate(float x);
+	void transPix2rate(float& x, float& y);
+
 	
 };
 

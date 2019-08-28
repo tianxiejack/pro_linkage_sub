@@ -1072,6 +1072,9 @@ void* recv_msgpth(SENDST *pInData)
 		case querypos:
 			pPos = (IPC_ONVIF_POS*)pInData->param;
 			printf("%s:LINE:%d   get PTZ = %f,%f,%f \n",__func__,__LINE__,pPos->p,pPos->t,pPos->z);
+			
+			memcpy(&plat->m_stateManger->m_state->m_curpos,pPos,sizeof(IPC_ONVIF_POS));
+
 			if(plat->m_stateManger->get_PTZ_flag())
 			{
 				plat->m_stateManger->m_state->app_selectPoint(plat->m_stateManger->m_state->twinkle_point.x,plat->m_stateManger->m_state->twinkle_point.y);
@@ -1499,6 +1502,7 @@ void sendIpc4PTZpos()
 
 void sendIpc2setPos(float p, float t, float z)
 {
+	static float rp = 0,rt = 0,rz = 0;
 	SENDST tmp;
 	memset(&tmp, 0, sizeof(tmp));
 	tmp.cmd_ID = setPos;
@@ -1507,10 +1511,18 @@ void sendIpc2setPos(float p, float t, float z)
 	tmppos.p = p;
 	tmppos.t = t;
 	tmppos.z = z;
-	printf("%s:LINE:%d   set pos ptz = (%f,%f,%f)\n",__func__,__LINE__,p,t,z);
 	memcpy(tmp.param,&tmppos,sizeof(tmppos));
 	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
 }
+
+void sendIpc2ballstop()
+{
+	SENDST tmp;
+	memset(&tmp, 0, sizeof(tmp));
+	tmp.cmd_ID = ballstop;
+	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
+}
+
 
 void notifyMenuStat(int status)
 {
@@ -1528,6 +1540,21 @@ void notifyWorkMode(int status)
 	memset(&tmp, 0, sizeof(tmp));
 	tmp.cmd_ID = workmode;
 	memcpy(tmp.param,&status,sizeof(int));
+	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
+}
+
+void sendIpc2setSpeed(float p, float t, float z)
+{
+	static float rp = 0,rt = 0,rz = 0;
+	SENDST tmp;
+	memset(&tmp, 0, sizeof(tmp));
+	tmp.cmd_ID = setSpeed;
+	IPC_ONVIF_POS tmppos;
+	
+	tmppos.p = p;
+	tmppos.t = t;
+	tmppos.z = z;
+	memcpy(tmp.param,&tmppos,sizeof(tmppos));
 	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
 }
 

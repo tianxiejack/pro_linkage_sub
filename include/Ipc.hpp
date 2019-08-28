@@ -24,8 +24,10 @@ int* getSysconfig();
 
 void sendIpc4PTZpos();
 void sendIpc2setPos(float p, float t, float z);
+void sendIpc2setSpeed(float p, float t, float z);
 void notifyMenuStat(int status);
 void notifyWorkMode(int status);
+void sendIpc2ballstop();
 
 
 #endif /* IPC_HPP_ */

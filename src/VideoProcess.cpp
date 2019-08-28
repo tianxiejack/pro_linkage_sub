@@ -184,6 +184,7 @@ void CVideoProcess::main_proc_func()
 	double value;
 	int tmpVal;
 	bool retFlag;
+	static bool stopflag=false; // true :can stop , false: already stop
 	
 	std::vector<cv::Point2f> sceDetectResult;
 	cv::Point2f tmpSceDetectResult;
@@ -207,6 +208,7 @@ void CVideoProcess::main_proc_func()
 	static int channelId;
 	unsigned int patternTime,pTime;
 	unsigned int timePoint;
+	static int mtdcount = 0;
 #endif
 	while(mainProcThrObj.exitProcThread ==  false)
 	{
@@ -400,44 +402,51 @@ void CVideoProcess::main_proc_func()
 		#if __MOVE_DETECT__
 			if(m_pMovDetector != NULL)
 			{	
-				if(!motionlessflag)
-				{ 		
-					#if 1
-						if( 0 == sceneJudge )
-							t1 = OSA_getCurTimeInMsec();
-						m_sceneObj.detect(frame_gray, chId);	
-						m_sceneObj.getResult(tmpSceDetectResult);
-						sceDetectResult.push_back(tmpSceDetectResult);
-						if(sceDetectResult.size() >= 5)
-						{
-						
-							if( abs(sceDetectResult[0].x -  sceDetectResult[1].x ) < 1
-								&& abs(sceDetectResult[1].x -  sceDetectResult[2].x ) < 1
-								&& abs(sceDetectResult[2].x -  sceDetectResult[3].x ) < 1
-								&& abs(sceDetectResult[3].x -  sceDetectResult[4].x ) < 1
-								&& abs(sceDetectResult[0].y -  sceDetectResult[1].y ) < 1
-								&& abs(sceDetectResult[1].y -  sceDetectResult[2].y ) < 1
-								&& abs(sceDetectResult[2].y -  sceDetectResult[3].y ) < 1
-								&& abs(sceDetectResult[3].y -  sceDetectResult[4].y ) < 1 )
-							{
-								motionlessflag = true;
-								sceDetectResult.clear();
-							}
-							sceDetectResult.erase(sceDetectResult.begin(),sceDetectResult.begin()+1);
+				m_pMovDetector->setFrame(frame_gray,msgextInCtrl->SensorStat,gCFG_Mtd.detectSpeed, gCFG_Mtd.tmpMinPixel, gCFG_Mtd.tmpMaxPixel, gCFG_Mtd.sensitivityThreshold);
+				if(m_bAutoLink){
+					if( 0 == m_chSceneNum){
+						if(!OSA_semWait(&m_mvObjSync,20)){
+			
+							m_rcTrack.x = cur_targetRect_bak.x;
+							m_rcTrack.y = cur_targetRect_bak.y;
+							m_rcTrack.width = cur_targetRect_bak.width;
+							m_rcTrack.height = cur_targetRect_bak.height;
+							m_iTrackStat = process_track(0, frame_gray, frame_gray, m_rcTrack);
+							m_sceInitRectBK.x = m_rcTrack.x;
+							m_sceInitRectBK.y = m_rcTrack.y;
+							m_sceInitRectBK.width = m_rcTrack.width;
+							m_sceInitRectBK.height = m_rcTrack.height;
+
+							m_chSceneNum = 1;	
+							m_mainObjDrawFlag = true;
 						}
-						if( sceneJudge > 50 )
-							motionlessflag = true;
-					#else
-						if( 0 == sceneJudge )
-							t1 = OSA_getCurTimeInMsec();
-						if( OSA_getCurTimeInMsec() - t1 > 1000)
-							motionlessflag = true;
-					#endif
-					sceneJudge++;
-				}
-				 if(motionlessflag)
-				{
-					m_pMovDetector->setFrame(frame_gray,msgextInCtrl->SensorStat,gCFG_Mtd.detectSpeed, gCFG_Mtd.tmpMinPixel, gCFG_Mtd.tmpMaxPixel, gCFG_Mtd.sensitivityThreshold);
+					}
+
+					if( 1 == m_chSceneNum){
+						
+						m_iTrackStat = process_track(m_iTrackStat, frame_gray, frame_gray, m_rcTrack);
+						m_sceInitRect.x = m_rcTrack.x;
+						m_sceInitRect.y = m_rcTrack.y;
+						m_sceInitRect.width = m_rcTrack.width;
+						m_sceInitRect.height = m_rcTrack.height;
+
+						if(judgeMainObjInOut(m_sceInitRect))
+						{
+							m_sceInitRectBK = m_sceInitRect;
+							if(0 == mtdcount)
+								sendIpc4PTZpos();
+							else if(1 == mtdcount)
+								m_stateManger->m_state->autolinkage_moveball(m_sceInitRectBK.x + m_sceInitRectBK.width/2, 
+									m_sceInitRectBK.y + m_sceInitRectBK.height/2);
+							mtdcount = (++mtdcount%2);
+						}
+					}
+				}else{	
+					if(stopflag)
+					{
+						sendIpc2ballstop();
+						stopflag = false;
+					}
 				}
 			}
 		#endif
@@ -491,7 +500,10 @@ void CVideoProcess::main_proc_func()
 		}
 
 		if(!bMoveDetect)
+		{
+			mtdcount = 0;
 			OnProcess();
+		}
 		framecount++;
 
 	/************************* while ********************************/
@@ -615,6 +627,8 @@ int CVideoProcess::creat()
 	detectornew->getversion();
 	detectornew->setasyncdetect(detectcall,trackcall);
 #endif
+	OSA_semCreate(&m_mvObjSync,1,0);
+
 	return 0;
 }
 
@@ -622,6 +636,7 @@ int CVideoProcess::creat()
 int CVideoProcess::destroy()
 {
 	stop();
+	OSA_semDelete(&m_mvObjSync);
 	OSA_mutexDelete(&m_mutex);
 	OSA_mutexDelete(&m_algboxLock);
 	OSA_mutexDelete(&m_trackboxLock);
@@ -1490,7 +1505,6 @@ void CVideoProcess::NotifyFunc(void *context, int chId)
 	CVideoProcess *pParent = (CVideoProcess*)context;
 	pThis->detect_vect.clear();
 	pThis->m_pMovDetector->getWarnTarget(pThis->detect_vect,chId);
-	printf("mtd notify !!!!!  size = %d \n" , pThis->detect_vect.size());
 
 	plat->DrawMtd_Rigion_Target();
 	plat->OnProcess();
@@ -1589,5 +1603,35 @@ mouserect CVideoProcess::maprect(mouserect rectcur,mouserect rectsrc,mouserect r
 	rect_result.w = rectcur.w*rectdest.w/rectsrc.w;
 	rect_result.h = rectcur.h*rectdest.h/rectsrc.h;
 	return rect_result;
+}
+
+bool CVideoProcess::judgeMainObjInOut(Rect2d inTarget)
+{
+	std::vector< cv::Point > counters;
+	cv::Point2f rc_center ;
+	rc_center = cv::Point2f(inTarget.x + inTarget.width/2,inTarget.y + inTarget.height/2);
+	bool retFlag = false;
+
+
+	double	distance	= cv::pointPolygonTest( m_stateManger->getPoly(), rc_center, true );///1.0
+
+	double	tgw	= inTarget.width;
+	double	tgh	= inTarget.height;
+	double	diagd	 = sqrt(tgw*tgw+tgh*tgh);
+	double	maxd	=  diagd*3/4;
+	double	mind	=	tgw>tgh?tgw/4:tgh/4;
+	maxd = maxd<60.0?60.0:maxd;
+	
+	if(distance>=mind){//TARGET_IN_POLYGON;
+		retFlag = true;
+	}else if(distance>-mind	&& distance<mind){//TARGET_IN_EDGE;
+		retFlag = true;
+	}else if(distance<=	-mind){//TARGET_OUT_POLYGON;
+		retFlag = false;
+	}else{//TARGET_NORAM;
+		retFlag = false;
+	}
+	
+	return retFlag;
 }
 
