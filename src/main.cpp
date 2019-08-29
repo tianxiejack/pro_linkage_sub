@@ -127,7 +127,7 @@ int main(int argc, char **argv)
 	string rtspAddress;
 	rtspAddress.clear();
 	rtspAddress = "rtsp://"+gun_username+":"+gun_password+"@"+gun_ip+":554/h264/ch0/main/av_stream";
-cout<<"aaaaa: "<<rtspAddress<<endl;
+
 	rtp0->init(rtspAddress.c_str(),0,1920,1080,CVideoProcess::processFrame);
 
 	Capture* rtp1 = RTSPCapture_Create();	//qiu

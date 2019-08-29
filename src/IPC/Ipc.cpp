@@ -1071,7 +1071,7 @@ void* recv_msgpth(SENDST *pInData)
 
 		case querypos:
 			pPos = (IPC_ONVIF_POS*)pInData->param;
-			printf("%s:LINE:%d   get PTZ = %f,%f,%f \n",__func__,__LINE__,pPos->p,pPos->t,pPos->z);
+			//printf("%s:LINE:%d   get PTZ = %f,%f,%f \n",__func__,__LINE__,pPos->p,pPos->t,pPos->z);
 			
 			memcpy(&plat->m_stateManger->m_state->m_curpos,pPos,sizeof(IPC_ONVIF_POS));
 
@@ -1085,7 +1085,7 @@ void* recv_msgpth(SENDST *pInData)
 
 		case josctrl:
 			memcpy(&Rjosctrl,pInData->param,sizeof(Rjosctrl));
-			printf("%s,%d,type=%d, workmode=%d\n",__FILE__,__LINE__,Rjosctrl.type, Rjosctrl.workMode);			
+			//printf("%s,%d,type=%d, workmode=%d\n",__FILE__,__LINE__,Rjosctrl.type, Rjosctrl.workMode);			
 			switch(Rjosctrl.type)
 			{
 				case jos_button:

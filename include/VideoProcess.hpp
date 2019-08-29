@@ -327,7 +327,7 @@ public:
 
 
 public:
-	
+	void initagainMv();
 	mouserect maprect(mouserect rectcur,mouserect rectsrc,mouserect rectdest);
 	static void processFrame(const cv::Mat frame,const int chId);
 	cv::Rect cur_targetRect, cur_targetRect_bak;
@@ -340,6 +340,8 @@ public:
 	bool judgeMainObjInOut(Rect2d inTarget);
 	cv::Rect m_mainObjBK;
 	int losenumber = -1;	
+	bool forwardflag,backflag;
+	bool validMtdRecord[10];
 
 };
 

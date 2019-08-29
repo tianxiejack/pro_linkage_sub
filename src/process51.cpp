@@ -291,7 +291,6 @@ void CProcess::loadIPCParam()
 #if __MOVE_DETECT__
 	chooseDetect = 10;
 #endif
-	forwardflag = backflag = false;
 
 	memset(validMtdRecord,0,10);
 	
@@ -1375,7 +1374,7 @@ void CProcess::switchMvTargetForwad()
 		do{
 			chooseDetect = (chooseDetect + 1)%10;
 		}while(!validMtdRecord[chooseDetect]);
-	}	
+	}		
 	return ;
 }
 
@@ -1485,6 +1484,7 @@ void CProcess::mvIndexHandle(std::vector<TRK_INFO_APP> &mvList,std::vector<TRK_R
 	else
 	{
 		Rect2d tmpTarget;
+		
 		while( mvList.size()<detectNum &&  detect.size()>0 )
 		{
 			tmpTarget.x = detect[0].targetRect.x;
@@ -1497,16 +1497,16 @@ void CProcess::mvIndexHandle(std::vector<TRK_INFO_APP> &mvList,std::vector<TRK_R
 				mvList.push_back(pTmpMv);
 			}
 			detect.erase(detect.begin());
-		}
+		}		
 	}
 
 	if( chooseDetect == 10 )
 	{
 		chooseDetect = getMvListNextValidNum(10);
-		for(int i=0; i<mvList.size(); i++ ){
-			if(mvList[i].number == chooseDetect){
+		for(int i=0; i<mvList.size(); i++ )
+		{			
+			if(mvList[i].number == chooseDetect)
 				cur_targetRect = mvList[i].trkobj.targetRect;
-			}
 		}
 	}
 
@@ -1586,23 +1586,17 @@ void CProcess::DrawMtd_Rigion_Target()
 			detect_bak = detect_vect;
 			mvIndexHandle(mvList,pThis->detect_bak,detectNum);
 
-
 			if(forwardflag)
 			{
-				m_chSceneNum = 0;
-				m_bAutoLink = false;
-				m_sceInitRect.width=0;
-				m_mainObjDrawFlag=false;
+				initagainMv();
 				switchMvTargetForwad();
 				forwardflag = 0;
-				cur_targetRect.width = 0;
 			}
 			else if(backflag)
 			{
-				switchMvTargetForwad();
+				//switchMvTargetForwad();
 				backflag = 0;
 			}
-
 
 			for(std::vector<TRK_INFO_APP>::iterator plist = mvList.begin(); plist != mvList.end(); ++plist)
 			{	
@@ -1623,14 +1617,13 @@ void CProcess::DrawMtd_Rigion_Target()
 
 				DrawRect(m_display.m_imgOsd[mat_Id], tmp ,color);
 			}
-
-			if((mvList.size()>0) && cur_targetRect.width && cur_targetRect.height )		
+		
+			if((mvList.size()>0) && cur_targetRect.width )		
 			{		
 				cur_targetRect_bak = cur_targetRect;
 				if( m_bAutoLink && (0 == m_chSceneNum)){
 					OSA_semSignal(&m_mvObjSync);
 				}
-
 				if(false == m_bAutoLink)
 					m_bAutoLink = true;
 			}

@@ -440,6 +440,11 @@ void CVideoProcess::main_proc_func()
 									m_sceInitRectBK.y + m_sceInitRectBK.height/2);
 							mtdcount = (++mtdcount%2);
 						}
+						else
+						{
+							forwardflag = true;
+							sendIpc2ballstop();
+						}
 					}
 				}else{	
 					if(stopflag)
@@ -482,7 +487,8 @@ int CVideoProcess::MAIN_threadDestroy(void)
 CVideoProcess::CVideoProcess()
 	:m_track(NULL),adaptiveThred(40),
 	m_curChId(video_gaoqing),m_curSubChId(video_gaoqing0),
-	m_ScreenWidth(1920),m_ScreenHeight(1080)
+	m_ScreenWidth(1920),m_ScreenHeight(1080),
+	forwardflag(false),backflag(false)
 {
 	pThis = this;
 	memset(m_mtd, 0, sizeof(m_mtd));
@@ -1008,10 +1014,9 @@ int CVideoProcess::dynamic_config(int type, int iPrm, void* pPrm)
 	case VP_CFG_MvDetect:
 		m_bMoveDetect = iPrm;
 		if(m_bMoveDetect){
-			m_chSceneNum = 0;
-			m_bAutoLink = false;
-			m_mainObjDrawFlag = false;
-			cur_targetRect.width = 0;
+			initagainMv();
+			chooseDetect = 10;
+			memset(validMtdRecord,0,10);
 			mvList.clear();
 		}
 		break;
@@ -1587,4 +1592,15 @@ bool CVideoProcess::judgeMainObjInOut(Rect2d inTarget)
 	
 	return retFlag;
 }
+
+void CVideoProcess::initagainMv()
+{	
+	m_chSceneNum = 0;
+	m_bAutoLink = false;
+	m_sceInitRect.width=0;
+	m_mainObjDrawFlag=false;
+	cur_targetRect.width = 0;
+	return;
+}
+
 

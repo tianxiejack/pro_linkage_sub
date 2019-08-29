@@ -36,10 +36,6 @@ class CProcess : public CVideoProcess
 	char warnTargetIndex[8];
 	Osd_cvPoint debugBak;
 	char timedisplay[128];
-	bool forwardflag,backflag;
-
-public:
-	bool validMtdRecord[10];
 
 public:
 	CProcess();
