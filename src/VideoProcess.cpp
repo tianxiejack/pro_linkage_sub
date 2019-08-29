@@ -451,53 +451,6 @@ void CVideoProcess::main_proc_func()
 			}
 		#endif
 		}
-		else if( bSceneTrack )
-		{	
-			if(channelId < 10)
-				channelId++;
-
-			if( 1 == channelId )
-			{	
-				SceneRectInit.x = vcapWH[chId][0]/4;
-				SceneRectInit.y = vcapWH[chId][1]/4;
-				SceneRectInit.width = vcapWH[chId][0]*1/2;
-				SceneRectInit.height = vcapWH[chId][1]*1/2;
-				m_sceneObj.sceneLockInit( frame_gray , SceneRectInit);
-			}
-			else
-			{
-				unsigned long int t1 = cv::getTickCount();
-				retFlag = m_sceneObj.sceneLockProcess( frame_gray, getSceneRect );
-				unsigned long int t2 = cv::getTickCount();
-				//printf("  cost time = %f \n",(t2 - t1)/getTickFrequency()*1000);
-				if(!retFlag)
-					printf(" warning : scene Lost !!!\n");
-					
-				if( retFlag )
-				{
-					getSceneRectBK = getSceneRect;
-				}
-	
-				tmpPoint.x = (float)(getSceneRectBK.x + getSceneRectBK.width/2 - msgextInCtrl->opticAxisPosX[msgextInCtrl->SensorStat]); 
-				tmpPoint.y = (float)(getSceneRectBK.y + getSceneRectBK.height/2 - msgextInCtrl->opticAxisPosY[msgextInCtrl->SensorStat]);	
-
-				
-				
-				//send IPC
-				if( getSceneRectBK.width && getSceneRectBK.height && getSceneRectBK.x && getSceneRectBK.y )
-				{
-					cfg_set_trkFeedback(msgextInCtrl->SceneAvtTrkStat, tmpPoint.x, tmpPoint.y);
-				}	
-			}	
-		}
-
-		if(bPatternDetect)
-		{
-			
-			#if __PATTERN_DETECT__
-				detectornew->detectasync(frame);
-			#endif
-		}
 
 		if(!bMoveDetect)
 		{

@@ -251,6 +251,141 @@ void State::autolinkage_moveball(int x, int y)
 	return;
 }
 
+
+float State::getPanSpeed(float deltax)
+{
+	float ret;
+	if(deltax < 0.0002)
+		ret = 0;
+	if(deltax < 0.00027)
+		ret = 0.08;
+	else if( deltax <0.00333)
+		ret = 0.09;
+	else if( deltax <0.0039)
+		ret = 0.109;
+	else if( deltax <0.0044)
+		ret = 0.125;
+	else if( deltax <0.005)
+		ret = 0.14;
+	else if(deltax < 0.0056)
+		ret = 0.156;
+	else if( deltax <0.011)
+		ret = 0.219;
+	else if(deltax<0.017)
+		ret = 0.28;
+	else if(deltax< 0.022)
+		ret = 0.33;
+	else if( deltax <0.028)
+		ret = 0.34;
+	else if(deltax < 0.033)
+		ret = 0.36;
+	else if(deltax< 0.044)
+		ret = 0.375;
+	else if(deltax<0.056)
+		ret = 0.39;
+	else if(deltax<0.067)
+		ret = 0.406;
+	else if( deltax <0.083)
+		ret = 0.438;
+	else if(deltax < 0.1)
+		ret = 0.469;
+	else if(deltax < 0.11)
+		ret = 0.5;
+	else if(deltax<0.14)
+		ret = 0.53;
+	else if( deltax <0.167)
+		ret = 0.56;
+	else if(deltax < 0.194)
+		ret = 0.594;
+	else if(deltax < 0.22)
+		ret = 0.7;
+	else if(deltax < 0.25)
+		ret = 0.78;
+	else if( deltax <0.278)
+		ret = 0.843;
+	else if(deltax < 0.333)
+		ret = 0.86;
+	else if(deltax < 0.389)
+		ret = 0.875;
+	else if(deltax < 0.44)
+		ret = 0.89;
+	else if(deltax < 0.5)
+		ret = 0.91;
+	else if( deltax <0.56)
+		ret = 0.922;
+	else
+		ret = 0.938;
+	return ret;
+}
+
+float State::getTilSpeed(float deltax)
+{
+	float ret;
+	if(deltax < 0.0002)
+		ret = 0;
+	if(deltax < 0.00027)
+		ret = 0.08;
+	else if( deltax <0.00333)
+		ret = 0.09;
+	else if( deltax <0.0039)
+		ret = 0.109;
+	else if( deltax <0.0044)
+		ret = 0.125;
+	else if( deltax <0.005)
+		ret = 0.14;
+	else if(deltax < 0.0056)
+		ret = 0.156;
+	else if( deltax <0.011)
+		ret = 0.219;
+	else if(deltax<0.017)
+		ret = 0.28;
+	else if(deltax< 0.022)
+		ret = 0.33;
+	else if( deltax <0.028)
+		ret = 0.34;
+	else if(deltax < 0.033)
+		ret = 0.36;
+	else if(deltax< 0.044)
+		ret = 0.375;
+	else if(deltax<0.056)
+		ret = 0.39;
+	else if(deltax<0.067)
+		ret = 0.406;
+	else if( deltax <0.083)
+		ret = 0.438;
+	else if(deltax < 0.1)
+		ret = 0.469;
+	else if(deltax < 0.11)
+		ret = 0.5;
+	else if(deltax<0.14)
+		ret = 0.53;
+	else if( deltax <0.167)
+		ret = 0.56;
+	else if(deltax < 0.194)
+		ret = 0.594;
+	else if(deltax < 0.22)
+		ret = 0.7;
+	else if(deltax < 0.25)
+		ret = 0.78;
+	else if( deltax <0.278)
+		ret = 0.843;
+	else if(deltax < 0.333)
+		ret = 0.86;
+	else if(deltax < 0.389)
+		ret = 0.875;
+	else if(deltax < 0.44)
+		ret = 0.89;
+	else if(deltax < 0.5)
+		ret = 0.91;
+	else if( deltax <0.56)
+		ret = 0.922;
+	else
+		ret = 0.938;
+	return ret;
+}
+
+
+
 float State::deltaPan2rate(float x)
 {
 	enum{
@@ -258,7 +393,7 @@ float State::deltaPan2rate(float x)
 		RIGHT
 	};
 	float delta = m_curpos.p - x;
-printf("ppppp delta = %f \n" , delta );	
+
 	float ret = 0;
 	bool moveway = LEFT; // 0 left , 1 right
 
@@ -285,14 +420,7 @@ printf("ppppp delta = %f \n" , delta );
 			moveway = LEFT;
 	}
 
-	if(fabs(delta) < 0.03)
-		ret = 0.0;
-	else if(fabs(delta) < 0.1)
-		ret = 0.5;
-	else if(fabs(delta) < 0.5)
-		ret = 0.8;
-	else
-		ret = 0.9;
+	ret = getPanSpeed(fabs(delta));
 	
 	if(!moveway)
 		ret = -1*ret;
@@ -307,7 +435,7 @@ float State::deltaTil2rate(float y)
 		DOWN
 	};
 	float delta = m_curpos.t - y;
-printf("ttttt  delta = %f \n" , delta );	
+printf("ttttt  delta = %f " , delta );	
 	float ret = 0;
 	bool moveway = UP;
 
@@ -319,16 +447,9 @@ printf("ttttt  delta = %f \n" , delta );
 	else
 		moveway = DOWN;
 
+	ret = getTilSpeed(fabs(delta));
+printf("   ret  = %f \n" , ret );	
 
-	if(fabs(delta) < 0.03)
-		ret = 0.0;
-	else if(fabs(delta) < 0.1)
-		ret = 0.5;
-	else if(fabs(delta) < 0.5)
-		ret = 0.8;
-	else
-		ret = 1.0;
-	
 	if(!moveway)
 		ret = -1*ret;
 	
@@ -601,6 +722,7 @@ void State::link2pos(int x,int y)
 	}
 	else 
 	{
+		printf("link2pos\n");
 		mapgun2fullscreen_auto(&x,&y);
 		manuallinkage_moveball(x,y);
 	}

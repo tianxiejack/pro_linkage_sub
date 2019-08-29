@@ -1729,11 +1729,11 @@ void CDisplayer::gl_display(void)
 		//linkage.osdshow();
 		plat->m_stateManger->showOsd();
 
-		
+
+		OSDWorkMode();
 		#if 0
 			IrisAndFocus();
 			OSDChid();
-			OSDWorkMode();
 			if(m_userOsd)
 				OSDFunc();
 		#endif
@@ -1849,46 +1849,22 @@ void CDisplayer::OSDWorkMode()
 {
 	int x = 15, x1 = 240, y = 1040;
 	int R = 255, G = 255, B = 255;
-	if(gSYS_Osd.m_workOsd)
+	int fontx = 80 , fonty = 80;
+	switch(plat->m_stateManger->m_curState)
 	{
-		switch(gSYS_Osd.workMode)
-		{
-		case 2:
-			chinese_osd(x,y,L"工作模式:自动监视",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
+		case LINKMANUAL:
+			chinese_osd(fontx,fonty,L"手动联动",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
 			break;
-
-		case 3:
-			chinese_osd(x,y,L"工作模式:场景跟踪",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			chinese_osd(x1,y,L"状态:捕获",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
+		case LINKAUTO:
+			chinese_osd(fontx,fonty,L"自动联动",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
 			break;
-
-		case 4:
-			chinese_osd(x,y,L"工作模式:常规跟踪",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			chinese_osd(x1,y,L"目标选择方式:移动转台",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
+		case LINKBALL:
+			chinese_osd(fontx,fonty,L"单控球机",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
 			break;
-
-		case 5:
-			chinese_osd(x,y,L"工作模式:常规跟踪",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			chinese_osd(x1,y,L"目标选择方式:移动波门",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			break;
-
-		case 6:
-			chinese_osd(x,y,L"工作模式:常规跟踪",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			chinese_osd(x1,y,L"目标选择方式:移动检测",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			break;
-
-		case 7:
-			chinese_osd(x,y,L"工作模式:场景跟踪",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			if(sceneLost)
-				chinese_osd(x1,y,L"状态:丟失",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			else
-				chinese_osd(x1,y,L"状态:跟踪",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			break;
-
-			default:
-			break;
-		}
+		default:
+			break;	
 	}
+	
 }
 
 int CDisplayer::OSDChid()

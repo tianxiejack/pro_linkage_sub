@@ -56,7 +56,7 @@ void StateManger::specialEvent(char key)
 		case JOSF1:
 			if(m_curState <= LINKBALL)
 			{
-				m_curState = (m_curState + 1)%3;
+				m_curState = (m_curState + 1)%(LINKAUTO+1);
 				callbackChangeStat(m_curState);				
 			}
 			else if(m_curState == LINKCALIB)

@@ -111,6 +111,8 @@ private:
 	float deltaPan2rate(float x);
 	float deltaTil2rate(float x);
 	void transPix2rate(float& x, float& y);
+	float getPanSpeed(float deltax);
+	float getTilSpeed(float deltax);
 
 	
 };
