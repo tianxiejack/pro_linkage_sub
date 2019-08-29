@@ -88,7 +88,10 @@ private:
 	CMvDectInterface * m_pMv;
 	static StateManger* pThis;
 
-
+public:
+	int readMtdConfigFile();
+	int writeMtdDefaultWorkMode();
+	
 };
 
 

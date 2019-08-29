@@ -21,10 +21,8 @@ StateManger::StateManger()
 {
 	m_linkmanual = new CLinkManual();
 	m_linkcalib = new CLinkCalib();
-	m_linkball = new CLinkManual();
+	m_linkball = new CLinkBall();
 	m_linkauto = new CLinkAuto();
-	m_state = m_linkmanual;
-	m_curState = LINKMANUAL;
 	pThis = this;
 }
 
@@ -36,6 +34,29 @@ StateManger::~StateManger()
 
 void StateManger::init(OSDFUNC func,CHANGESTAT chDisMode,CMvDectInterface *pMov)
 {
+	readMtdConfigFile();
+
+	switch(m_curState)
+	{
+		case LINKMANUAL:
+			m_state = m_linkmanual;
+			m_curState = LINKMANUAL;
+			break;
+
+		case LINKAUTO:			
+			m_state = m_linkauto;
+			m_curState = LINKAUTO;
+			break;
+
+		case LINKBALL:
+			m_state = m_linkball;
+			m_curState = LINKBALL;
+			break;
+			
+		default:
+			break;
+	}
+
 	m_pMv = pMov;
 	m_state->StateInit(func,chDisMode,callbackChangeStat,callbackChangeDefaultWorkMode,pMov);
 	return;
@@ -56,7 +77,7 @@ void StateManger::specialEvent(char key)
 		case JOSF1:
 			if(m_curState <= LINKBALL)
 			{
-				m_curState = (m_curState + 1)%(LINKAUTO+1);
+				m_curState = (m_curState + 1)%(LINKBALL+1);
 				callbackChangeStat(m_curState);				
 			}
 			else if(m_curState == LINKCALIB)
@@ -105,8 +126,7 @@ void StateManger::callbackChangeStat(char nextmode)
 void StateManger::callbackChangeDefaultWorkMode(char workmode)
 {
 	pThis->m_defworkmode = workmode;
-	//wait to add save param in param;
-	printf("m_defworkmode = %d \n" , 	pThis->m_defworkmode);
+	pThis->writeMtdDefaultWorkMode();
 	return;
 }
 
@@ -150,10 +170,6 @@ void StateManger::mouseEvent(int button, int state, int x, int y)
 			m_state->process_trigmode_right_point(x, y);	
 	}
 	
-
-
-
-
 	return;
 }
 
@@ -239,6 +255,81 @@ std::vector< cv::Point >& StateManger::getEdgecounter()
 std::vector< std::vector< cv::Point > >& StateManger::getUnregionEdgecounter()
 {
 	return 	m_state->m_pMenu->edge_contours_UnRoi;
+}
+
+
+int StateManger::readMtdConfigFile()
+{	
+	string cfgAvtFile;
+	char cfg_avt[30] = "cfg_";
+	cfgAvtFile = "mtdparam.yml";
+	FILE *fp = fopen(cfgAvtFile.c_str(), "rt");
+
+	if(fp != NULL){
+		fseek(fp, 0, SEEK_END);
+		int len = ftell(fp);
+		fclose(fp);
+		if(len < 10)
+			return  -1;
+		else
+		{
+			FileStorage fr(cfgAvtFile, FileStorage::READ);
+			if(fr.isOpened())
+			{
+				sprintf(cfg_avt, "defaultWorkMode");
+				fr[cfg_avt] >> m_curState;
+								
+ 			}
+			else
+			{
+				printf("[get params]open YML failed\n");
+				exit(-1);
+			}
+		}
+	}
+	else
+	{
+		printf("[get params] Can not find YML. Please put this file into the folder of execute file\n");
+		exit (-1);
+	}
+	return 0;
+}
+
+int StateManger::writeMtdDefaultWorkMode()
+{
+	string cfgAvtFile;
+	char cfg_avt[30] = "cfg_";
+	cfgAvtFile = "mtdparam.yml";
+	FILE *fp = fopen(cfgAvtFile.c_str(), "rt");
+
+
+	if(fp != NULL){
+		fseek(fp, 0, SEEK_END);
+		int len = ftell(fp);
+		fclose(fp);
+		if(len < 10)
+			return  -1;
+		else
+		{
+			FileStorage fr(cfgAvtFile, FileStorage::WRITE);
+			if(fr.isOpened())
+			{
+				sprintf(cfg_avt, "defaultWorkMode");
+				fr << cfg_avt << m_defworkmode;
+ 			}
+			else
+			{
+				printf("[get params]open YML failed\n");
+				exit(-1);
+			}
+		}
+	}
+	else
+	{
+		printf("[get params] Can not find YML. Please put this file into the folder of execute file\n");
+		exit (-1);
+	}
+	return 0;
 }
 
 

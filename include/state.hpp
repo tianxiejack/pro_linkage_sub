@@ -171,53 +171,18 @@ public:
 };
 
 
-
-
-class LevelTwo:public State
+class CLinkBall:public State
 {
 public:
-	LevelTwo();
-	virtual ~LevelTwo();
+	CLinkBall();
+	virtual ~CLinkBall();
 	
 	void showOsd();
 	void inputNumber(char key);
 	void enter();
 
 public:
-	void initOsd();
 	void buttonMenu();
-	void operationChangeState();
-
-	
-private:
-	osdInfo_t disMenuBuf;
-	char m_menuPointer;
-
-
-};
-
-
-class CSetWorkMode:public State
-{
-public:
-	CSetWorkMode();
-	virtual ~CSetWorkMode();
-	
-	void showOsd();
-
-
-public:
-	void initOsd();
-	void buttonMenu();
-	void operationChangeState();
-	void upMenu();
-	void downMenu();
-	void enter();
-	
-private:
-	osdInfo_t disMenuBuf;
-	char m_menuPointer;
-
 };
 
 
