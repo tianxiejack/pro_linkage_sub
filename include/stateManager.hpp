@@ -83,15 +83,9 @@ private:
 	void OperationChangState();
 
 private:
-	char m_defworkmode;
 	State *m_linkmanual,*m_linkcalib,*m_linkball,*m_linkauto;
 	CMvDectInterface * m_pMv;
 	static StateManger* pThis;
-
-public:
-	int readMtdConfigFile();
-	int writeMtdDefaultWorkMode();
-	
 };
 
 

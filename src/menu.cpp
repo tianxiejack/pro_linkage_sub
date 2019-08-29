@@ -330,9 +330,7 @@ void CMenu::menuMtdparam_setnum()
 		set_mtd_num_osd();
 		if((m_mtdnum >= MIN_MTDTARGET_NUM) && (m_mtdnum <= MAX_MTDTARGET_NUM))
 		{
-			//m_config[CFGID_MTD_detnum] = m_menuCtrl.osd_mudnum;
-			//storeMtdConfigFlag = true;
-			//wait to save param
+			writeMtdconfigfile();
 		}
 		memset(m_mtdnum_arr, 0, sizeof(m_mtdnum_arr));
 	}
@@ -352,10 +350,7 @@ void CMenu::menuMtdparam_settrktime()
 		set_mtd_trktime_osd();
 		if((m_mtdtrktime >= MIN_MTDTRKTIME) && (m_mtdtrktime <= MAX_MTDTRKTIME))
 		{
-			//processdurationMenu_osd(m_mtdtrktime);
-			//m_config[CFGID_MTD_maxtrk] = m_mtdtrktime;
-			//storeMtdConfigFlag = true;
-			//wait to save param
+			writeMtdconfigfile();
 		}
 		memset(m_trktime_arr, 0, sizeof(m_trktime_arr));
 	}
@@ -373,10 +368,7 @@ void CMenu::menuMtdparam_setmaxsize()
 		set_mtd_maxsize_osd();
 		if((m_mtdmaxsize >= m_mtdminsize ) && (m_mtdmaxsize <= MAX_MTDMAXSIZE))
 		{
-			//maxsize = m_mtdmaxsize;
-			//m_config[CFGID_MTD_maxpixel] = m_menuCtrl.osd_maxsize;
-			//storeMtdConfigFlag = true;
-			//wait to save param
+			writeMtdconfigfile();
 		}
 		memset(m_maxsize_arr, 0, sizeof(m_maxsize_arr));
 	}
@@ -395,10 +387,7 @@ void CMenu::menuMtdparam_setminsize()
 		set_mtd_minsize_osd();
 		if((m_mtdminsize >= MIN_MTDMINSIZE) && (m_mtdminsize <= m_mtdmaxsize))
 		{
-			//m_mtdminsize = m_mtdminsize;
-			//m_config[CFGID_MTD_minpixel] = m_mtdminsize;
-			//storeMtdConfigFlag = true;
-			//wait to save param
+			writeMtdconfigfile();
 		}
 		memset(m_minsize_arr, 0, sizeof(m_minsize_arr));
 	}
@@ -408,7 +397,6 @@ void CMenu::menuMtdparam_setminsize()
 
 void CMenu::menuMtdparam_setsensi()
 {
-	printf("shin_sensi = %d \n" , shin_sensi);
 	shin_sensi = !shin_sensi;
 	if(shin_sensi)
 		m_timer.startTimer(sensi_timeId,500);
@@ -418,9 +406,7 @@ void CMenu::menuMtdparam_setsensi()
 		set_mtd_sensi_osd();
 		if((m_mtdsensi >= MIN_MTDSENSI) && (m_mtdsensi <= MAX_MTDSENSI))
 		{
-			//sensi = m_menuCtrl.osd_sensi;
-			//m_config[CFGID_INPUT_SENISIVITY(CFGID_INPUT1_BKID)] = m_menuCtrl.osd_sensi;
-			//storeMtdConfigFlag = true;
+			writeMtdconfigfile();
 		}
 		memset(m_sensi_arr, 0, sizeof(m_sensi_arr));	
 	}
@@ -889,31 +875,91 @@ void CMenu::enter()
 
 void CMenu::normalKey(char key)
 {	
-	if(m_menuStat == MENU_INPUTPW)
+	switch(m_menuStat)
 	{
-		int offset = strlen(m_passwd) * sizeof(char);		
-		if(offset < sizeof(m_passwd) - 1)
-		{
-			sprintf(m_passwd + offset,"%c", key);
-			sprintf(m_dispasswd + offset,"%c", '*');
-			swprintf(disMenuBuf.osdBuffer[1].disMenu, 33, L"%s", m_dispasswd);		
-		}
-		else
-			printf("password reached max length:128");
-		
-		printf("%s --> LINE:%d ****** passwd=%s\n",__FILE__,__LINE__,m_passwd);
-	}
-	else if(m_menuStat == MENU_MTD_REGION)
-	{
-		if('0' == key)
-			m_poly.clear();
-	}
-	else if(m_menuStat == MENU_MTD_UNREGION)
-	{
-		if('0' == key)
-			m_polyTmp.clear();
-	}
+		case MENU_INPUTPW:
+			{
+				int offset = strlen(m_passwd) * sizeof(char);		
+				if(offset < sizeof(m_passwd) - 1)
+				{
+					sprintf(m_passwd + offset,"%c", key);
+					sprintf(m_dispasswd + offset,"%c", '*');
+					swprintf(disMenuBuf.osdBuffer[1].disMenu, 33, L"%s", m_dispasswd);		
+				}
+				else
+					printf("password reached max length:128");
+				
+				printf("%s --> LINE:%d ****** passwd=%s\n",__FILE__,__LINE__,m_passwd);
+			}
+			break;
 
+		case MENU_MTD_TRKTIME:
+			{
+				int offset = strlen(m_trktime_arr) * sizeof(char);
+				if(offset < sizeof(m_trktime_arr) - 1)
+					sprintf(m_trktime_arr + offset,"%c", key);
+				else
+					printf("trktime reached max length:128");
+				m_mtdtrktime = atoi(m_trktime_arr);
+			}
+			break;
+
+		case MENU_MTD_MAXSIZE:
+			{
+				int offset = strlen(m_maxsize_arr) * sizeof(char);
+				if(offset < sizeof(m_maxsize_arr) - 1)
+					sprintf(m_maxsize_arr + offset,"%c", key);
+				else
+					printf("trktime reached max length:128");
+				m_mtdmaxsize = atoi(m_maxsize_arr);
+			}
+			break;
+
+		case MENU_MTD_MINSIZE:
+			{
+				int offset = strlen(m_minsize_arr) * sizeof(char);
+				if(offset < sizeof(m_minsize_arr) - 1)
+					sprintf(m_minsize_arr + offset,"%c", key);
+				else
+					printf("trktime reached max length:128");
+				m_mtdminsize = atoi(m_minsize_arr);
+			}
+			break;
+
+		case MENU_MTD_SENSI:
+			{
+				int offset = strlen(m_sensi_arr) * sizeof(char);
+				if(offset < sizeof(m_sensi_arr) - 1)
+					sprintf(m_sensi_arr + offset,"%c", key);
+				else
+					printf("trktime reached max length:128");
+				m_mtdsensi = atoi(m_sensi_arr);
+			}
+			break;
+
+		case MENU_MTD_SETNUM:
+			{
+				int offset = strlen(m_mtdnum_arr) * sizeof(char);
+				if(offset < sizeof(m_mtdnum_arr) - 1)
+					sprintf(m_mtdnum_arr + offset,"%c", key);
+				else
+					printf("trktime reached max length:128");
+				m_mtdnum = atoi(m_mtdnum_arr);
+			}
+			break;
+				
+		case MENU_MTD_REGION:	
+			if('0' == key)
+				m_poly.clear();
+			break;
+
+		case MENU_MTD_UNREGION:
+			if('0' == key)
+				m_polyTmp.clear();
+			break;	
+		default:
+			break;
+	}
 	return;
 }
 
@@ -1261,6 +1307,76 @@ bool CMenu::readParams4MtdRegion()
 		return true;
 	}
 	return false;
+}
+
+
+
+int CMenu::writeMtdconfigfile()
+{
+	char paramName[40];
+	memset(paramName, 0, sizeof(paramName));
+	string cfgFile;
+	cfgFile = "mtdparam.yml";
+
+	m_readfs.open(cfgFile, FileStorage::WRITE);
+	if(m_readfs.isOpened())
+	{		
+		sprintf(paramName, "defaultWorkMode");
+		m_readfs << paramName << (int)m_defworkmode;
+		memset(paramName, 0, sizeof(paramName));
+
+		sprintf(paramName, "mtdnum");
+		m_readfs << paramName << (int)m_mtdnum;
+		memset(paramName, 0, sizeof(paramName));
+		
+		sprintf(paramName, "sensi");
+		m_readfs << paramName << (int)m_mtdsensi;
+		memset(paramName, 0, sizeof(paramName));
+		
+		sprintf(paramName, "minsize");
+		m_readfs << paramName << (int)m_mtdminsize;
+		memset(paramName, 0, sizeof(paramName));
+		
+		sprintf(paramName, "maxsize");
+		m_readfs << paramName << (int)m_mtdmaxsize;
+		memset(paramName, 0, sizeof(paramName));
+		
+		sprintf(paramName, "trktime");
+		m_readfs << paramName << (int)m_mtdtrktime;
+		memset(paramName, 0, sizeof(paramName));
+		
+		m_readfs.release();
+	}
+	return 0;
+	
+}
+
+int CMenu::readMtdConfigFile()
+{
+	char paramName[40];
+	memset(paramName, 0, sizeof(paramName));
+	string cfgFile;
+	cfgFile = "mtdparam.yml";
+
+	m_readfs.open(cfgFile, FileStorage::READ);
+
+	if(m_readfs.isOpened())
+	{
+		sprintf(paramName, "defaultWorkMode");
+		m_readfs[paramName] >> m_defworkmode;
+		sprintf(paramName, "mtdnum");
+		m_readfs[paramName] >> m_mtdnum;
+		sprintf(paramName, "sensi");
+		m_readfs[paramName] >> m_mtdsensi;
+		sprintf(paramName, "minsize");
+		m_readfs[paramName] >> m_mtdminsize;
+		sprintf(paramName, "maxsize");
+		m_readfs[paramName] >> m_mtdmaxsize;
+		sprintf(paramName, "trktime");
+		m_readfs[paramName] >> m_mtdtrktime;		
+		m_readfs.release();	
+	}
+	return 0;
 }
 
 

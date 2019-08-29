@@ -824,6 +824,7 @@ bool CAutoManualFindRelation::readParams(std::vector<FEATUREPOINT_T>& getParam)
 		getParam = m_featurePoints;
 		m_readfs.release();
 		collectMarkedPoints();
+		m_writefs.release();
 		return true;
 	}
 	return false;
@@ -870,7 +871,6 @@ bool CAutoManualFindRelation::writeParams(void)
 		m_writefs.release();
 		return true;
 	}
-
 	return false;
 }
 

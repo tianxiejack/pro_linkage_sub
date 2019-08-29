@@ -62,6 +62,7 @@ int ReadOnvifConfigFile()
 				ball_username = (string)fr[cfg_avt];
 				sprintf(cfg_avt, "cfg_ball_password_1");
 				ball_password = (string)fr[cfg_avt];
+				fr.release();
  			}
 			else
 			{

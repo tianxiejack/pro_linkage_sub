@@ -23,6 +23,8 @@ StateManger::StateManger()
 	m_linkcalib = new CLinkCalib();
 	m_linkball = new CLinkBall();
 	m_linkauto = new CLinkAuto();
+	m_state = m_linkmanual;
+	m_curState = LINKMANUAL;
 	pThis = this;
 }
 
@@ -33,10 +35,12 @@ StateManger::~StateManger()
 
 
 void StateManger::init(OSDFUNC func,CHANGESTAT chDisMode,CMvDectInterface *pMov)
-{
-	readMtdConfigFile();
-
-	switch(m_curState)
+{	
+	m_pMv = pMov;
+	m_state->StateInit(func,chDisMode,callbackChangeStat,callbackChangeDefaultWorkMode,pMov);
+	m_state->m_pMenu->readMtdConfigFile();
+	
+	switch(m_state->m_pMenu->m_defworkmode)
 	{
 		case LINKMANUAL:
 			m_state = m_linkmanual;
@@ -56,9 +60,6 @@ void StateManger::init(OSDFUNC func,CHANGESTAT chDisMode,CMvDectInterface *pMov)
 		default:
 			break;
 	}
-
-	m_pMv = pMov;
-	m_state->StateInit(func,chDisMode,callbackChangeStat,callbackChangeDefaultWorkMode,pMov);
 	return;
 }
 
@@ -125,8 +126,8 @@ void StateManger::callbackChangeStat(char nextmode)
 
 void StateManger::callbackChangeDefaultWorkMode(char workmode)
 {
-	pThis->m_defworkmode = workmode;
-	pThis->writeMtdDefaultWorkMode();
+	pThis->m_state->m_pMenu->m_defworkmode = workmode;
+	pThis->m_state->m_pMenu->writeMtdconfigfile();
 	return;
 }
 
@@ -256,80 +257,4 @@ std::vector< std::vector< cv::Point > >& StateManger::getUnregionEdgecounter()
 {
 	return 	m_state->m_pMenu->edge_contours_UnRoi;
 }
-
-
-int StateManger::readMtdConfigFile()
-{	
-	string cfgAvtFile;
-	char cfg_avt[30] = "cfg_";
-	cfgAvtFile = "mtdparam.yml";
-	FILE *fp = fopen(cfgAvtFile.c_str(), "rt");
-
-	if(fp != NULL){
-		fseek(fp, 0, SEEK_END);
-		int len = ftell(fp);
-		fclose(fp);
-		if(len < 10)
-			return  -1;
-		else
-		{
-			FileStorage fr(cfgAvtFile, FileStorage::READ);
-			if(fr.isOpened())
-			{
-				sprintf(cfg_avt, "defaultWorkMode");
-				fr[cfg_avt] >> m_curState;
-								
- 			}
-			else
-			{
-				printf("[get params]open YML failed\n");
-				exit(-1);
-			}
-		}
-	}
-	else
-	{
-		printf("[get params] Can not find YML. Please put this file into the folder of execute file\n");
-		exit (-1);
-	}
-	return 0;
-}
-
-int StateManger::writeMtdDefaultWorkMode()
-{
-	string cfgAvtFile;
-	char cfg_avt[30] = "cfg_";
-	cfgAvtFile = "mtdparam.yml";
-	FILE *fp = fopen(cfgAvtFile.c_str(), "rt");
-
-
-	if(fp != NULL){
-		fseek(fp, 0, SEEK_END);
-		int len = ftell(fp);
-		fclose(fp);
-		if(len < 10)
-			return  -1;
-		else
-		{
-			FileStorage fr(cfgAvtFile, FileStorage::WRITE);
-			if(fr.isOpened())
-			{
-				sprintf(cfg_avt, "defaultWorkMode");
-				fr << cfg_avt << m_defworkmode;
- 			}
-			else
-			{
-				printf("[get params]open YML failed\n");
-				exit(-1);
-			}
-		}
-	}
-	else
-	{
-		printf("[get params] Can not find YML. Please put this file into the folder of execute file\n");
-		exit (-1);
-	}
-	return 0;
-}
-
 

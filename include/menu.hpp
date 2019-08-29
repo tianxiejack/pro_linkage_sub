@@ -111,8 +111,6 @@ private:
 	bool shin_mtdnum,shin_trktime,shin_maxsize,shin_minsize,shin_sensi;
 	int mtdnum_timeId, trktime_timeId, maxsize_timeId, minsize_timeId, sensi_timeId;
 
-	int m_mtdnum , m_mtdtrktime , m_mtdmaxsize , m_mtdminsize , m_mtdsensi;
-	
 	char m_mtdnum_arr[128];
 	char m_trktime_arr[128];
 	char m_maxsize_arr[128];
@@ -129,6 +127,8 @@ private:
 	cv::FileStorage m_readfs;
 
 public:
+	int m_mtdnum , m_mtdtrktime , m_mtdmaxsize , m_mtdminsize , m_mtdsensi ,m_defworkmode;
+	
 	int m_ScreenWidth,m_ScreenHeight;
 	std::vector<cv::Point> m_poly , m_polyTmp;
 	std::vector< std::vector<cv::Point> > m_unroiPoly;
@@ -138,6 +138,10 @@ public:
 	std::vector< std::vector< cv::Point > > edge_contours;
 	std::vector< std::vector< cv::Point > > polyWarnUnRoi;
 	std::vector< std::vector< cv::Point > > edge_contours_UnRoi;
+	
+	int writeMtdconfigfile();
+	int readMtdConfigFile();
+
 };
 
 
