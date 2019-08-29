@@ -435,7 +435,7 @@ float State::deltaTil2rate(float y)
 		DOWN
 	};
 	float delta = m_curpos.t - y;
-printf("ttttt  delta = %f " , delta );	
+
 	float ret = 0;
 	bool moveway = UP;
 
@@ -448,7 +448,6 @@ printf("ttttt  delta = %f " , delta );
 		moveway = DOWN;
 
 	ret = getTilSpeed(fabs(delta));
-printf("   ret  = %f \n" , ret );	
 
 	if(!moveway)
 		ret = -1*ret;

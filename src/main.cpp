@@ -25,6 +25,60 @@ using namespace cv;
 
 extern int startEnable, ipcDbgOn;
 
+string gun_ip;
+string gun_username;
+string gun_password;
+string ball_ip;
+string ball_username;
+string ball_password;
+
+int ReadOnvifConfigFile()
+{	
+	string cfgAvtFile;
+	char cfg_avt[30] = "cfg_";
+	cfgAvtFile = "onvif.yml";
+	FILE *fp = fopen(cfgAvtFile.c_str(), "rt");
+
+	if(fp != NULL){
+		fseek(fp, 0, SEEK_END);
+		int len = ftell(fp);
+		fclose(fp);
+		if(len < 10)
+			return  -1;
+		else
+		{
+			FileStorage fr(cfgAvtFile, FileStorage::READ);
+			if(fr.isOpened())
+			{
+				sprintf(cfg_avt, "cfg_gun_ip_1");
+				gun_ip = (string)fr[cfg_avt];
+				sprintf(cfg_avt, "cfg_gun_name_1");
+				gun_username = (string)fr[cfg_avt];
+				sprintf(cfg_avt, "cfg_gun_password_1");
+				gun_password= (string)fr[cfg_avt];
+				sprintf(cfg_avt, "cfg_ball_ip_1");
+				ball_ip = (string)fr[cfg_avt];
+				sprintf(cfg_avt, "cfg_ball_name_1");
+				ball_username = (string)fr[cfg_avt];
+				sprintf(cfg_avt, "cfg_ball_password_1");
+				ball_password = (string)fr[cfg_avt];
+ 			}
+			else
+			{
+				printf("[get params]open YML failed\n");
+				exit(-1);
+			}
+		}
+	}
+	else
+	{
+		printf("[get params] Can not find YML. Please put this file into the folder of execute file\n");
+		exit (-1);
+	}
+	return 0;
+}
+
+
 
 int main(int argc, char **argv)
 {
@@ -67,11 +121,18 @@ int main(int argc, char **argv)
 	proc.init();
 	proc.run();
 
+	ReadOnvifConfigFile();
+
 	Capture* rtp0 = RTSPCapture_Create();	//qiang
-	rtp0->init("rtsp://admin:admin%2018@192.168.0.66:554/h264/ch0/main/av_stream",0,1920,1080,CVideoProcess::processFrame);
+	string rtspAddress;
+	rtspAddress.clear();
+	rtspAddress = "rtsp://"+gun_username+":"+gun_password+"@"+gun_ip+":554/h264/ch0/main/av_stream";
+cout<<"aaaaa: "<<rtspAddress<<endl;
+	rtp0->init(rtspAddress.c_str(),0,1920,1080,CVideoProcess::processFrame);
 
 	Capture* rtp1 = RTSPCapture_Create();	//qiu
-	rtp1->init("rtsp://admin:admin$2018@192.168.0.64:554/h264/ch0/main/av_stream",1,1920,1080,CVideoProcess::processFrame);
+	rtspAddress = "rtsp://"+ball_username+":"+ball_password+"@"+ball_ip+":554/h264/ch0/main/av_stream";
+	rtp1->init(rtspAddress.c_str(),1,1920,1080,CVideoProcess::processFrame);
 
 	if(testMode)
 		glutKeyboardFunc(keyboard_event);
