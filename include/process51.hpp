@@ -196,13 +196,14 @@ public:
 	void DrawPipCross();
 	void drawPolyUnRoi(bool bdraw);
 	void Drawfeaturepoints();
+	void drawEdgecounterUnRoi(bool bdraw);
 
 	
 	void drawPolyRoi(bool bdraw);
-	bool m_bDrawPolyRoi,m_bDrawPolyUnRoi;
+	bool m_bDrawPolyRoi,m_bDrawPolyUnRoi,m_bDrawEdgeUnRoi;
 
 	std::vector<cv::Point> m_polyBak , m_polyTmpBak;
-	std::vector< std::vector<cv::Point> > m_polyUnRoiBak;
+	std::vector< std::vector<cv::Point> > edge_contoursUnRoi_bak;
 
 	std::vector< cv::Point > edge_contours_bak;
 

@@ -1850,19 +1850,22 @@ void CDisplayer::OSDWorkMode()
 	int x = 15, x1 = 240, y = 1040;
 	int R = 255, G = 255, B = 255;
 	int fontx = 80 , fonty = 80;
-	switch(plat->m_stateManger->m_curState)
+	if( MENU_MTD_REGION == plat->m_stateManger->getMenuState() || MENU_MTD_UNREGION == plat->m_stateManger->getMenuState())
 	{
-		case LINKMANUAL:
-			chinese_osd(fontx,fonty,L"手动联动",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			break;
-		case LINKAUTO:
-			chinese_osd(fontx,fonty,L"自动联动",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			break;
-		case LINKBALL:
-			chinese_osd(fontx,fonty,L"单控球机",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
-			break;
-		default:
-			break;	
+		switch(plat->m_stateManger->m_curState)
+		{
+			case LINKMANUAL:
+				chinese_osd(fontx,fonty,L"手动联动",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
+				break;
+			case LINKAUTO:
+				chinese_osd(fontx,fonty,L"自动联动",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
+				break;
+			case LINKBALL:
+				chinese_osd(fontx,fonty,L"单控球机",1,4,255,255,255,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
+				break;
+			default:
+				break;	
+		}
 	}
 	
 }

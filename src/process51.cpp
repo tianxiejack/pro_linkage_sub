@@ -75,7 +75,7 @@ void getMtdxy(int &x,int &y,int &w,int &h)
 }
 #endif
 
-CProcess::CProcess():m_bDrawPolyRoi(false),m_bDrawPolyUnRoi(false)
+CProcess::CProcess():m_bDrawPolyRoi(false),m_bDrawPolyUnRoi(false),m_bDrawEdgeUnRoi(false)
 {	
 	extInCtrl = (CMD_EXT*)OSA_memAlloc(sizeof(CMD_EXT));
 	memset(extInCtrl,0,sizeof(CMD_EXT));
@@ -3575,14 +3575,16 @@ void CProcess::DrawMtdPolygonUnRoi()
 {
 	if(m_bDrawPolyUnRoi)
 		drawPolyUnRoi(false);
+	if(m_bDrawEdgeUnRoi)
+		drawEdgecounterUnRoi(false);
 	
 	if(m_stateManger->getMenuState() == MENU_MTD_UNREGION)
 	{
 		m_polyTmpBak = m_stateManger->getPolyTmp();
-		//m_polyUnRoiBak = m_stateManger->getunRoiPoly();
-		drawPolyUnRoi(true);
+		edge_contoursUnRoi_bak = m_stateManger->getEdgeUnRoi();
+		drawPolyUnRoi(true);	
+		drawEdgecounterUnRoi(true);
 	}
-
 	return;
 }
 
@@ -3665,8 +3667,6 @@ void CProcess::drawPolyUnRoi(bool bdraw)
 	Osd_cvPoint start,end;
 	int color = 0;
 	int index , cnt;
-	//if(!m_polyTmpBak.size() && !m_polyUnRoiBak.size())
-		//return;
 
 	if(bdraw)
 	{
@@ -3678,32 +3678,46 @@ void CProcess::drawPolyUnRoi(bool bdraw)
 
 	cnt = m_polyTmpBak.size();
 
-	//if(cnt >= 2)
-		for(int i=0;i<cnt;i++)
+	for(int i=0;i<cnt;i++)
+	{
+		index = (i+1)%cnt;
+		start.x = m_polyTmpBak[i].x;
+		start.y = m_polyTmpBak[i].y;
+		end.x = m_polyTmpBak[index].x;
+		end.y = m_polyTmpBak[index].y;
+		DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);
+	}
+
+	return;
+}
+
+void CProcess::drawEdgecounterUnRoi(bool bdraw)
+{
+	Osd_cvPoint start,end;
+	int color = 0;
+	int index , cnt;
+
+	if(bdraw)
+	{
+		m_bDrawEdgeUnRoi = true;
+		color = 3;
+	}
+	else
+		m_bDrawEdgeUnRoi = false;
+
+
+	cnt = edge_contoursUnRoi_bak.size();
+
+	for(int j=0;j<cnt;j++)
+		for(int i=0;i<edge_contoursUnRoi_bak[i].size();i++)
 		{
 			index = (i+1)%cnt;
-			start.x = m_polyTmpBak[i].x;
-			start.y = m_polyTmpBak[i].y;
-			end.x = m_polyTmpBak[index].x;
-			end.y = m_polyTmpBak[index].y;
-			DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);
+			start.x = edge_contoursUnRoi_bak[j][i].x;
+			start.y = edge_contoursUnRoi_bak[j][i].y;
+			end.x = edge_contoursUnRoi_bak[j][index].x;
+			end.y = edge_contoursUnRoi_bak[j][index].y;
+			DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);	
 		}
-
-/*
-	for(int i=0 ; i< m_polyUnRoiBak.size();i++)
-	{
-		cnt = m_polyUnRoiBak[i].size();
-		for(int j=0 ; j< cnt ;j++)
-		{
-			index = (j+1)%cnt;
-			start.x = m_polyUnRoiBak[i][j].x;
-			start.y = m_polyUnRoiBak[i][j].y;
-			end.x = m_polyUnRoiBak[i][index].x;
-			end.y = m_polyUnRoiBak[i][index].y;
-			DrawcvLine(m_display.m_imgOsd[1],&start,&end,color,1);		
-		}
-	}
-*/
 	return;
 }
 

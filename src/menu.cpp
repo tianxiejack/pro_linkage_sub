@@ -546,40 +546,39 @@ void CMenu::save_polygon_unroi()
 	int curId = 0;
 	float floatx,floaty;
 	int setx, sety = 0;
-	int areanum = 1;
+	
+	std::vector< cv::Point >  polyUnRoi;
+	std::vector< cv::Point >  mainUnRoi;
 
+	polyUnRoi.clear();
+	mainUnRoi.clear();
+	
 	lv_4_mtdUnregionOsd(true);
-
+	
 	if(m_polyTmp.size() < 3)
 		return;
 
-	polyWarnUnRoi.resize(areanum);
-	edge_contours_UnRoi.resize(areanum);
-
-	for(int i = 0; i < areanum; i++)
+	for(int j = 0; j < m_polyTmp.size(); j++)
 	{
-		polyWarnUnRoi[i].resize(m_polyTmp.size());
-		edge_contours_UnRoi[i].resize(m_polyTmp.size());
-		for(int j = 0; j < m_polyTmp.size(); j++)
-		{
-			floatx = m_polyTmp[j].x;
-			floaty = m_polyTmp[j].y;
-			map1080p2normal_point(&floatx, &floaty);
-			mapnormal2curchannel_point(&floatx, &floaty, vdisWH[curId][0], vdisWH[curId][1]);
+		floatx = m_polyTmp[j].x;
+		floaty = m_polyTmp[j].y;
+		map1080p2normal_point(&floatx, &floaty);
+		mapnormal2curchannel_point(&floatx, &floaty, vdisWH[curId][0], vdisWH[curId][1]);
 
-			setx = floatx;
-			sety = floaty;
-			polyWarnUnRoi[i][j] = cv::Point(setx, sety);
-
-			mapfullscreen2gun_pointv20(&setx, &sety);
-			edge_contours_UnRoi[i][j].x = setx;
-			edge_contours_UnRoi[i][j].y = sety;
-		}
+		setx = floatx;
+		sety = floaty;
+		
+		polyUnRoi.push_back(cv::Point(setx, sety));
+		mapfullscreen2gun_pointv20(&setx, &sety);
+		mainUnRoi.push_back(cv::Point(setx, sety));
 	}
+	polyWarnUnRoi.push_back(polyUnRoi);
+	edge_contours_UnRoi.push_back(mainUnRoi);
 
 	if(polyWarnUnRoi.size() != 0)
 		SaveMtdSelectArea("SaveMtdUnRoi.yml", polyWarnUnRoi);
 
+	m_polyTmp.clear();
 	return ;
 }
 

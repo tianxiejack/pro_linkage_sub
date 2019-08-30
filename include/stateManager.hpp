@@ -72,6 +72,7 @@ public:
 	std::vector< std::vector<cv::Point> >& getunRoiPoly();
 	std::vector< cv::Point >& getEdgecounter();
 	std::vector< std::vector< cv::Point > >& getUnregionEdgecounter();
+	std::vector< std::vector<cv::Point> >& getEdgeUnRoi();
 	
 public:
 	State *m_state;

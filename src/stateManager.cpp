@@ -76,13 +76,16 @@ void StateManger::specialEvent(char key)
 	switch(key)
 	{
 		case JOSF1:
-			if(m_curState <= LINKBALL)
+			if(getMenuState() == MENU_MTD_REGION || getMenuState() == MENU_MTD_UNREGION)
 			{
-				m_curState = (m_curState + 1)%(LINKBALL+1);
-				callbackChangeStat(m_curState);				
+				if(m_curState <= LINKBALL)
+				{
+					m_curState = (m_curState + 1)%(LINKBALL+1);
+					callbackChangeStat(m_curState);				
+				}
+				else if(m_curState == LINKCALIB)
+					;//do noting
 			}
-			else if(m_curState == LINKCALIB)
-				;//do noting
 			break;
 		case JOSF2:			
 			m_state->buttonMenu();	
@@ -206,6 +209,11 @@ std::vector<cv::Point>& StateManger::getPolyTmp()
 std::vector< std::vector<cv::Point> >& StateManger::getunRoiPoly()
 {
 	return m_state->m_pMenu->m_unroiPoly;
+}
+
+std::vector< std::vector<cv::Point> >& StateManger::getEdgeUnRoi()
+{
+	return m_state->m_pMenu->edge_contours_UnRoi;
 }
 
 
