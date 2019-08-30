@@ -28,6 +28,7 @@ void sendIpc2setSpeed(float p, float t, float z);
 void notifyMenuStat(int status);
 void notifyWorkMode(int status);
 void sendIpc2ballstop();
+void sendIpc2switchJosMode(int status);
 
 
 #endif /* IPC_HPP_ */

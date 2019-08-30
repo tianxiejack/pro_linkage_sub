@@ -342,6 +342,7 @@ public:
 	int losenumber = -1;	
 	bool forwardflag,backflag;
 	bool validMtdRecord[10];
+	cv::Point m_josMouse;
 
 };
 

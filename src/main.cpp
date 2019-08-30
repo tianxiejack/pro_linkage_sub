@@ -129,11 +129,11 @@ int main(int argc, char **argv)
 	rtspAddress.clear();
 	rtspAddress = "rtsp://"+gun_username+":"+gun_password+"@"+gun_ip+":554/h264/ch0/main/av_stream";
 
-	rtp0->init(rtspAddress.c_str(),0,1920,1080,CVideoProcess::processFrame);
+	rtp0->init(rtspAddress.c_str(),1,1920,1080,CVideoProcess::processFrame);
 
 	Capture* rtp1 = RTSPCapture_Create();	//qiu
 	rtspAddress = "rtsp://"+ball_username+":"+ball_password+"@"+ball_ip+":554/h264/ch0/main/av_stream";
-	rtp1->init(rtspAddress.c_str(),1,1920,1080,CVideoProcess::processFrame);
+	rtp1->init(rtspAddress.c_str(),0,1920,1080,CVideoProcess::processFrame);
 
 	if(testMode)
 		glutKeyboardFunc(keyboard_event);

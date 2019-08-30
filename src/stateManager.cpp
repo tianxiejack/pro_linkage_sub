@@ -17,7 +17,7 @@
 StateManger* StateManger::pThis = NULL;
 
 
-StateManger::StateManger()
+StateManger::StateManger():m_mousectrlState(false)
 {
 	m_linkmanual = new CLinkManual();
 	m_linkcalib = new CLinkCalib();
@@ -91,6 +91,8 @@ void StateManger::specialEvent(char key)
 			m_state->buttonMenu();	
 			break;
 		case JOSF3:
+			m_mousectrlState = (m_mousectrlState+1)%2;
+			sendIpc2switchJosMode(m_mousectrlState);
 			break;
 		default:
 			break;

@@ -1104,74 +1104,14 @@ void* recv_msgpth(SENDST *pInData)
 						plat->m_stateManger->downMenu();
 					break;
 
-					
-				#if 0
 				case cursor_move:
-				{
-					int cond1 = (-1==proc->extMenuCtrl.MenuStat)||(submenu_handleMatchPoints==proc->extMenuCtrl.MenuStat)||(1==proc->extInCtrl->MtdSetRigion)||(MENU_TEST_RESULT_VIEW==g_displayMode);
-
-					if(((HANDLE_LINK_MODE == g_AppWorkMode)&&(cond1)) ||
-						((ONLY_BALL_MODE == g_AppWorkMode)&&(cond1))  )
-					{
-						proc->set_mouse_show(1);
-						proc->dtimer.startTimer(proc->mouse_show_id,3000);
-					}
-					
-					int x = Rjosctrl.cursor_x;
-					int y = Rjosctrl.cursor_y;
-					proc->draw_mouse_move(x, y);
-					
-					if(GLUT_DOWN == mouse_state)
-						proc->mousemotion_event(x, y);
-				}
+					plat->m_josMouse.x = Rjosctrl.cursor_x;
+					plat->m_josMouse.y = Rjosctrl.cursor_y;
+					printf("ipc rcv mouse x,y = %d ,%d \n" , plat->m_josMouse.x , plat->m_josMouse.y);
 					break;
-
-				case mouse_button:
-				{
-					int param_flag = 0;
-					int button = Rjosctrl.mouse_button;
-					int state = Rjosctrl.mouse_state;
-					int x = Rjosctrl.cursor_x;
-					int y = Rjosctrl.cursor_y;
-					if(3 == button)
-						button = GLUT_LEFT_BUTTON;//0
-					else if(4 == button)
-						button = GLUT_RIGHT_BUTTON;//2
-					else 
-						param_flag = 1;
-					
-					if(1 == state)
-						mouse_state = GLUT_DOWN;//0
-					else if(0 == state)
-						mouse_state = GLUT_UP;// 
-					else 
-						param_flag = 1;
-
-					if(0 == param_flag)
-					{
-						proc->mouse_event(button, mouse_state, x, y);
-					}
-				}
-					break;
-
-				case workMode:
-				{
-					int workmode = Rjosctrl.workMode;
-					proc->OnJosCtrl(1, workmode);
-				}
-					break;
-				case ctrlMode:
-				{
-					int ctrlMode = Rjosctrl.ctrlMode;
-					proc->SetCtrlmode(ctrlMode);
-				}
-					break;						
-				default:
-					break;
-				#endif
 			}
-
 			break;
+
 		default:
 			break;
 	}
@@ -1503,58 +1443,43 @@ void sendIpc4PTZpos()
 void sendIpc2setPos(float p, float t, float z)
 {
 	static float rp = 0,rt = 0,rz = 0;
-	SENDST tmp;
-	memset(&tmp, 0, sizeof(tmp));
-	tmp.cmd_ID = setPos;
 	IPC_ONVIF_POS tmppos;
-	
 	tmppos.p = p;
 	tmppos.t = t;
 	tmppos.z = z;
-	memcpy(tmp.param,&tmppos,sizeof(tmppos));
-	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
+	IPCSendMsg(setPos,&tmppos,sizeof(IPC_ONVIF_POS));
 }
 
 void sendIpc2ballstop()
 {
-	SENDST tmp;
-	memset(&tmp, 0, sizeof(tmp));
-	tmp.cmd_ID = ballstop;
-	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
+	IPCSendMsg(ballstop,0,0);
 }
 
 
 void notifyMenuStat(int status)
 {
-	SENDST tmp;
-	memset(&tmp, 0, sizeof(tmp));
-	tmp.cmd_ID = josctrl;
-	memcpy(tmp.param,&status,sizeof(int));
-	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
+	IPCSendMsg(josctrl,&status,sizeof(int));
 }
 
 
 void notifyWorkMode(int status)
-{
-	SENDST tmp;
-	memset(&tmp, 0, sizeof(tmp));
-	tmp.cmd_ID = workmode;
-	memcpy(tmp.param,&status,sizeof(int));
-	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
+{	
+	IPCSendMsg(workmode,&status,sizeof(int));
 }
 
 void sendIpc2setSpeed(float p, float t, float z)
 {
-	static float rp = 0,rt = 0,rz = 0;
-	SENDST tmp;
-	memset(&tmp, 0, sizeof(tmp));
-	tmp.cmd_ID = setSpeed;
 	IPC_ONVIF_POS tmppos;
-	
 	tmppos.p = p;
 	tmppos.t = t;
 	tmppos.z = z;
-	memcpy(tmp.param,&tmppos,sizeof(tmppos));
-	ipc_sendmsg(IPC_FRIMG_MSG, &tmp);
+	IPCSendMsg(setSpeed,&tmppos,sizeof(IPC_ONVIF_POS));
 }
+
+
+void sendIpc2switchJosMode(int status)
+{	
+	IPCSendMsg(josmode,&status,sizeof(int));
+}
+
 

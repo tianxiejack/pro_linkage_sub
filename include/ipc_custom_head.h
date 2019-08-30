@@ -49,10 +49,9 @@ typedef enum
 	querypos,
 	setPos,
 	setSpeed,
-	
 	ballstop,
 	josctrl,
-	
+	josmode,
 }CMD_ID;
 
 
@@ -122,7 +121,7 @@ typedef struct{
 	int enter;	//0,1
 	int menu;	//0,1
 	int workMode;	//1~3
-	int ctrlMode;	//1,2
+	int ctrlMode;	//0:ballctrl 1:virtual mouse
 }CtrlParams_t;
 
 typedef enum{

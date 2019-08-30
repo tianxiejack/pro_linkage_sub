@@ -77,6 +77,7 @@ public:
 public:
 	State *m_state;
 	int m_curState;
+	int m_mousectrlState; // 0 :ball  1: mouse
 
 private:
 	friend class State;

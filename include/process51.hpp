@@ -59,7 +59,8 @@ public:
 	void OnKeyDwn(unsigned char key);
 	void OnSpecialKeyDwn(int key,int x = 0, int y = 0);
 	void drawPatternRect();
-	
+	void DrawMouse();
+
 	CMD_EXT* extInCtrl;
 	static CProcess *sThis;
 	void process_osd_test(void *pPrm);
