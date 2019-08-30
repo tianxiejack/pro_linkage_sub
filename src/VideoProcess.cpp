@@ -1458,11 +1458,65 @@ void	CVideoProcess::DeInitMvDetect()
 		m_pMovDetector->destroy();
 }
 
+bool CVideoProcess::judgeObjInOutUnregion()
+{
+	std::vector< cv::Point > counters;
+	cv::Point2f rc_center ;
+	bool retFlag;  //true :out
+	double	distance;
+	double	tgw ;
+	double	tgh;
+	double	diagd;
+	double	maxd;
+	double	mind;
+	Rect2d  inTarget;
+
+	for(int i=0; i <pThis->detect_vect.size();i++)
+	{
+		inTarget.x = pThis->detect_vect[i].targetRect.x;
+		inTarget.y = pThis->detect_vect[i].targetRect.y;
+		inTarget.width = pThis->detect_vect[i].targetRect.width;
+		inTarget.height = pThis->detect_vect[i].targetRect.height;	
+		
+		rc_center = cv::Point2f(inTarget.x + inTarget.width/2,inTarget.y + inTarget.height/2);
+		retFlag = false;
+		
+		for(int k=0;k<m_stateManger->getEdgeFullUnRoi().size();k++)
+		{
+			distance = cv::pointPolygonTest( m_stateManger->getEdgeFullUnRoi()[k], rc_center, true );///1.0
+			
+			tgw = inTarget.width;
+			tgh = inTarget.height;
+			diagd	= sqrt(tgw*tgw+tgh*tgh);
+			maxd	=  diagd*3/4;
+			mind	=	tgw>tgh?tgw/4:tgh/4;
+			maxd = maxd<60.0?60.0:maxd;
+
+			if(distance>=mind){//TARGET_IN_POLYGON;
+				retFlag = false;
+			}else if(distance>-mind	&& distance<mind){//TARGET_IN_EDGE;
+				retFlag = false;
+			}else if(distance<=	-mind){//TARGET_OUT_POLYGON;
+				retFlag = true;
+			}else{//TARGET_NORAM;
+				retFlag = true;
+			}
+		}
+
+		if(retFlag)
+			pThis->detect_vect.erase(pThis->detect_vect.begin()+i);
+	}
+	
+	return 0;
+}
+
 void CVideoProcess::NotifyFunc(void *context, int chId)
 {
 	CVideoProcess *pParent = (CVideoProcess*)context;
 	pThis->detect_vect.clear();
 	pThis->m_pMovDetector->getWarnTarget(pThis->detect_vect,chId);
+
+	pThis->judgeObjInOutUnregion();
 
 	plat->DrawMtd_Rigion_Target();
 	plat->OnProcess();

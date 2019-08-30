@@ -328,6 +328,7 @@ public:
 
 public:
 	void initagainMv();
+	bool judgeObjInOutUnregion();
 	mouserect maprect(mouserect rectcur,mouserect rectsrc,mouserect rectdest);
 	static void processFrame(const cv::Mat frame,const int chId);
 	cv::Rect cur_targetRect, cur_targetRect_bak;

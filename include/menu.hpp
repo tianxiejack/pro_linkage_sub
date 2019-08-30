@@ -81,7 +81,7 @@ public:
 	int mapfullscreen2gun_pointv20(int *x, int *y);
 	int maprect_point(int *x, int *y, mouserect rectsrc,mouserect rectdest);
 	void SaveMtdSelectArea(const char* filename, std::vector< std::vector< cv::Point > > edge_contours);
-
+	void readMtdSelectArea(const char* filename );
 
 	void menuMtdparam_setnum();
 	void menuMtdparam_settrktime();
@@ -136,7 +136,7 @@ public:
 
 	std::vector< std::vector< cv::Point > > polyWarnRoi;
 	std::vector< std::vector< cv::Point > > edge_contours;
-	std::vector< std::vector< cv::Point > > polyWarnUnRoi;
+	std::vector< std::vector< cv::Point > > edge_contours_FullUnRoi;
 	std::vector< std::vector< cv::Point > > edge_contours_UnRoi;
 	
 	int writeMtdconfigfile();

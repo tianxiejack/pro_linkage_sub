@@ -44,6 +44,7 @@ CMenu::CMenu(OSDFUNC pfun,CHANGESTAT pDisplaymode,CHANGESTAT pchStatfun,CHDEFWOR
 	m_ScreenHeight = 1080;
 
 	readParams4MtdRegion();
+	readMtdSelectArea("SaveMtdUnRoi.yml");
 }
 
 CMenu::~CMenu()
@@ -269,7 +270,6 @@ void CMenu::downMenu()
 	}		
 	return;
 }
-
 
 void CMenu::menuhandle_main()
 {
@@ -572,11 +572,11 @@ void CMenu::save_polygon_unroi()
 		mapfullscreen2gun_pointv20(&setx, &sety);
 		mainUnRoi.push_back(cv::Point(setx, sety));
 	}
-	polyWarnUnRoi.push_back(polyUnRoi);
+	edge_contours_FullUnRoi.push_back(polyUnRoi);
 	edge_contours_UnRoi.push_back(mainUnRoi);
 
-	if(polyWarnUnRoi.size() != 0)
-		SaveMtdSelectArea("SaveMtdUnRoi.yml", polyWarnUnRoi);
+	if(edge_contours_FullUnRoi.size() != 0)
+		SaveMtdSelectArea("SaveMtdUnRoi.yml", edge_contours_FullUnRoi);
 
 	m_polyTmp.clear();
 	return ;
@@ -666,6 +666,49 @@ void CMenu::SaveMtdSelectArea(const char* filename, std::vector< std::vector< cv
 	}
 	return;
 }
+
+
+void CMenu::readMtdSelectArea(const char* filename)
+{
+	char paramName[40];
+	memset(paramName,0,sizeof(paramName));
+	m_readfs.open(filename,FileStorage::READ);
+	cv::Point tmpPoint;
+	int totalNum , num;
+	if(m_readfs.isOpened())
+	{				
+		memset(paramName,0,sizeof(paramName));
+		sprintf(paramName,"AreaCount");	
+		m_readfs[paramName] >> totalNum;
+
+		edge_contours_FullUnRoi.resize(totalNum);
+		edge_contours_UnRoi.resize(totalNum);
+	
+		for(int j=0;j<totalNum;j++)
+		{
+			memset(paramName,0,sizeof(paramName));
+			sprintf(paramName,"AreaIndex_%d",j); 
+			m_readfs[paramName] >> num;
+
+			for(int i=0;i< num;i++)
+			{
+				memset(paramName,0,sizeof(paramName));
+				sprintf(paramName,"Point_%d_%d_x",j,i); 
+				m_readfs[paramName] >> tmpPoint.x;
+				memset(paramName,0,sizeof(paramName));
+				sprintf(paramName,"Point_%d_%d_y",j,i); 
+				m_readfs[paramName] >> tmpPoint.y;
+				
+				edge_contours_FullUnRoi[j].push_back(tmpPoint);
+				mapfullscreen2gun_pointv20(&tmpPoint.x, &tmpPoint.y);
+				edge_contours_UnRoi[j].push_back(tmpPoint);
+			}	
+		}
+		m_readfs.release(); 		
+	}
+	return;
+}
+
 
 void CMenu::TimerCreate()
 {
@@ -1307,8 +1350,6 @@ bool CMenu::readParams4MtdRegion()
 	}
 	return false;
 }
-
-
 
 int CMenu::writeMtdconfigfile()
 {

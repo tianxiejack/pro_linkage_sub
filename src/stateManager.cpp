@@ -76,7 +76,7 @@ void StateManger::specialEvent(char key)
 	switch(key)
 	{
 		case JOSF1:
-			if(getMenuState() == MENU_MTD_REGION || getMenuState() == MENU_MTD_UNREGION)
+			if(getMenuState() != MENU_MTD_REGION || getMenuState() != MENU_MTD_UNREGION)
 			{
 				if(m_curState <= LINKBALL)
 				{
@@ -218,6 +218,11 @@ std::vector< std::vector<cv::Point> >& StateManger::getEdgeUnRoi()
 	return m_state->m_pMenu->edge_contours_UnRoi;
 }
 
+std::vector< std::vector<cv::Point> >& StateManger::getEdgeFullUnRoi()
+{
+	return m_state->m_pMenu->edge_contours_FullUnRoi;
+}
+
 
 void StateManger::enterKeyEvent()
 {
@@ -260,11 +265,5 @@ void StateManger::sendWorkMode2main()
 std::vector< cv::Point >& StateManger::getEdgecounter()
 {
 	return 	m_state->m_pMenu->edge_contours[0];
-}
-
-
-std::vector< std::vector< cv::Point > >& StateManger::getUnregionEdgecounter()
-{
-	return 	m_state->m_pMenu->edge_contours_UnRoi;
 }
 

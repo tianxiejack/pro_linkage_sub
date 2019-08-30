@@ -1850,7 +1850,7 @@ void CDisplayer::OSDWorkMode()
 	int x = 15, x1 = 240, y = 1040;
 	int R = 255, G = 255, B = 255;
 	int fontx = 80 , fonty = 80;
-	if( MENU_MTD_REGION == plat->m_stateManger->getMenuState() || MENU_MTD_UNREGION == plat->m_stateManger->getMenuState())
+	if( MENU_MTD_REGION != plat->m_stateManger->getMenuState() || MENU_MTD_UNREGION != plat->m_stateManger->getMenuState())
 	{
 		switch(plat->m_stateManger->m_curState)
 		{

@@ -198,14 +198,15 @@ public:
 	void drawPolyUnRoi(bool bdraw);
 	void Drawfeaturepoints();
 	void drawEdgecounterUnRoi(bool bdraw);
+	void drawEdgeFullUnRoi(bool bdraw);
 
 	
 	void drawPolyRoi(bool bdraw);
-	bool m_bDrawPolyRoi,m_bDrawPolyUnRoi,m_bDrawEdgeUnRoi;
+	bool m_bDrawPolyRoi,m_bDrawPolyUnRoi,m_bDrawEdgeUnRoi,m_bDrawFullEdgeUnRoi;
 
 	std::vector<cv::Point> m_polyBak , m_polyTmpBak;
 	std::vector< std::vector<cv::Point> > edge_contoursUnRoi_bak;
-
+	std::vector< std::vector<cv::Point> > edge_contoursFullUnRoi_bak;
 	std::vector< cv::Point > edge_contours_bak;
 
 public:
