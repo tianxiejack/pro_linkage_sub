@@ -1095,6 +1095,10 @@ void* recv_msgpth(SENDST *pInData)
 						plat->m_stateManger->specialEvent(Rjosctrl.jos_button-buttonF1+1);
 					else if(Rjosctrl.jos_button == buttonEnter)
 						plat->m_stateManger->enterKeyEvent();
+					else if(Rjosctrl.jos_button == buttonLeft)
+						plat->m_stateManger->mouseEvent(GLUT_LEFT_BUTTON, GLUT_DOWN, plat->m_josMouse.x , plat->m_josMouse.y);
+					else if(Rjosctrl.jos_button == buttonRigth)
+						plat->m_stateManger->mouseEvent(GLUT_RIGHT_BUTTON, GLUT_DOWN, plat->m_josMouse.x , plat->m_josMouse.y);
 					break;
 
 				case jos_Dir:
