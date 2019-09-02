@@ -1503,7 +1503,7 @@ bool CVideoProcess::judgeObjInOutUnregion()
 			}
 		}
 
-		if(retFlag)
+		if(!retFlag)
 			pThis->detect_vect.erase(pThis->detect_vect.begin()+i);
 	}
 	

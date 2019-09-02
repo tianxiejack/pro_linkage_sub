@@ -997,7 +997,11 @@ void CMenu::normalKey(char key)
 
 		case MENU_MTD_UNREGION:
 			if('0' == key)
+			{
 				m_polyTmp.clear();
+				edge_contours_FullUnRoi.clear();
+				edge_contours_UnRoi.clear();
+			}
 			break;	
 		default:
 			break;
