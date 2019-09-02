@@ -73,6 +73,9 @@ public:
 	std::vector< cv::Point >& getEdgecounter();
 	std::vector< std::vector<cv::Point> >& getEdgeUnRoi();
 	std::vector< std::vector<cv::Point> >& getEdgeFullUnRoi();
+	
+	int getTrktime();
+	 
 
 	
 public:

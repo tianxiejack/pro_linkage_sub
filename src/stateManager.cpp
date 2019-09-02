@@ -267,3 +267,8 @@ std::vector< cv::Point >& StateManger::getEdgecounter()
 	return 	m_state->m_pMenu->edge_contours[0];
 }
 
+int StateManger::getTrktime()
+{
+	return m_state->m_pMenu->m_mtdtrktime;
+}
+

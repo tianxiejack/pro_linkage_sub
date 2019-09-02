@@ -344,7 +344,10 @@ public:
 	bool forwardflag,backflag;
 	bool validMtdRecord[10];
 	cv::Point m_josMouse;
-
+	DxTimer* m_timer;
+	int m_trktimer;
+	
+	static void Tcallback(void *p);
 };
 
 

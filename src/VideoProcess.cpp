@@ -419,6 +419,7 @@ void CVideoProcess::main_proc_func()
 
 							m_chSceneNum = 1;	
 							m_mainObjDrawFlag = true;
+							m_timer->startTimer(m_trktimer,m_stateManger->getTrktime());
 						}
 					}
 
@@ -439,9 +440,11 @@ void CVideoProcess::main_proc_func()
 								m_stateManger->m_state->autolinkage_moveball(m_sceInitRectBK.x + m_sceInitRectBK.width/2, 
 									m_sceInitRectBK.y + m_sceInitRectBK.height/2);
 							mtdcount = (++mtdcount%2);
+							
 						}
 						else
 						{
+							m_timer->stopTimer(m_trktimer);
 							forwardflag = true;
 							sendIpc2ballstop();
 						}
@@ -536,9 +539,19 @@ CVideoProcess::CVideoProcess()
 	memset(polwarn_count, 0, sizeof(polwarn_count));
 	memset(polwarn_count_bak, 0, sizeof(polwarn_count_bak));
 	setrigon_polygon = 0;
-	
+	m_timer = new DxTimer();
+	m_trktimer = m_timer->createTimer();
+	m_timer->registerTimer(m_trktimer, Tcallback, &m_trktimer);
 	return ;
 }
+
+void CVideoProcess::Tcallback(void *p)
+{
+	pThis->m_timer->stopTimer(pThis->m_trktimer);
+	pThis->forwardflag = true;
+	return;
+}
+
 
 CVideoProcess::~CVideoProcess()
 {
