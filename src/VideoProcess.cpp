@@ -568,7 +568,7 @@ int CVideoProcess::creat()
 
 	MultiCh.m_user = this;
 	MultiCh.m_usrFunc = callback_process;
-	//MultiCh.creat();
+	MultiCh.creat();
 
 	MAIN_threadCreate();
 	OSA_mutexCreate(&m_mutex);
@@ -614,7 +614,7 @@ int CVideoProcess::destroy()
 	OSA_mutexDelete(&m_trackboxLock);
 	MAIN_threadDestroy();
 
-	//MultiCh.destroy();
+	MultiCh.destroy();
 	m_display.destroy();
 
 	OnDestroy();
@@ -1059,7 +1059,7 @@ int CVideoProcess::dynamic_config(int type, int iPrm, void* pPrm)
 
 int CVideoProcess::run()
 {
-	//MultiCh.run();
+	MultiCh.run();
 	m_display.run();
 	
 	#if __TRACK__
@@ -1092,7 +1092,7 @@ int CVideoProcess::stop()
 	m_track = NULL;
 	
 	m_display.stop();
-	//MultiCh.stop();
+	MultiCh.stop();
 
 	OnStop();
 
@@ -1287,8 +1287,10 @@ int CVideoProcess::process_frame(int chId, int virchId, Mat frame)
 		//	format = CV_YUV2BGR_YUYV;
 		//else if(chId == video_pal)
 		//	format = CV_YUV2BGR_UYVY;
-
-		format = CV_YUV2BGR_UYVY;
+		
+		format = CV_YUV2BGR_YUYV;
+		if(chId == video_gaoqing)
+			format = CV_YUV2BGR_UYVY;
 	}
 	else {
 //		cvtColor(frame,frame,CV_GRAY2BGR);

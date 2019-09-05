@@ -335,6 +335,6 @@ public:
 #define mallocwidth 1920
 #define mallocheight 1080
 
-#define PICBUFFERCOUNT 4
+#define PICBUFFERCOUNT 2
 
 #endif /* DISPLAYER_HPP_ */
