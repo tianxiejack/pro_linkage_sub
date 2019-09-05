@@ -1593,9 +1593,11 @@ void CVideoProcess::processFrame(const cv::Mat frame,const int chId)
 		cv::imshow("test", frame);
 		cv::waitKey(1);
 	#endif
-	pThis->process_frame(chId, 0, frame);
 
-	
+		pThis->process_frame(chId, 0, frame);
+
+		//Mat dst;
+		//cvtColor(frame, dst, COLOR_YUV2BGR_UYVY);
 	
 	return;
 }
