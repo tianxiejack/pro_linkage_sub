@@ -222,31 +222,22 @@ int CDisplayer::initRender(bool bInitBind)
 		m_renders[chId].video_chId = -1;
 		m_renders[chId].displayrect.x = 0;
 		m_renders[chId].displayrect.y = 0;
-		m_renders[chId].displayrect.w = VIDEO_DIS_WIDTH/2;
-		m_renders[chId].displayrect.h =  VIDEO_DIS_HEIGHT/2;
+		m_renders[chId].displayrect.w = 0;
+		m_renders[chId].displayrect.h =  0;
 
 		m_renders[chId].bFreeze=0;
 	}
 
-	m_renders[0].croprect.x=0;
-	m_renders[0].croprect.y=0;
-	m_renders[0].croprect.w=0;
-	m_renders[0].croprect.h=0;
+	m_renders[0].croprect.x = 0;
+	m_renders[0].croprect.y = 0;
+	m_renders[0].croprect.w = VIDEO_DIS_WIDTH;
+	m_renders[0].croprect.h = VIDEO_DIS_HEIGHT/3;
 	
-	m_renders[0].video_chId = BALL_CHID;
-	m_renders[0].displayrect.x = 0;
-	m_renders[0].displayrect.y = VIDEO_DIS_HEIGHT/2;
-	m_renders[0].displayrect.w = VIDEO_DIS_WIDTH/2;
-	m_renders[0].displayrect.h = VIDEO_DIS_HEIGHT/2;
+	m_renders[0].video_chId = GUN_CHID;
 	m_renders[0].videodect=1;
 
-	m_renders[1].video_chId = GUN_CHID;
-	m_renders[1].displayrect.x = VIDEO_DIS_WIDTH/2;
-	m_renders[1].displayrect.y = VIDEO_DIS_HEIGHT/2;
-	m_renders[1].displayrect.w = VIDEO_DIS_WIDTH/2;
-	m_renders[1].displayrect.h = VIDEO_DIS_HEIGHT/2;
+	m_renders[1].video_chId = BALL_CHID;
 	m_renders[1].videodect=1;
-
 	
 	m_img_novideo.cols=0;
 	m_img_novideo.rows=0;	
@@ -1241,10 +1232,11 @@ int CDisplayer::gl_updateVertex(void)
 			iRet ++;
 			continue;
 		}
+OSA_printf("\n\n\n %s: id :%d , crop : %d,%d  %dx%d\n", __func__,chId, rc.x, rc.y, rc.w, rc.h);
+		
 		if(rc.w == 0 && rc.h == 0){
 			continue;
 		}
-		//OSA_printf("%s: crop : %d,%d  %dx%d\n", __func__, rc.x, rc.y, rc.w, rc.h);
 		//OSA_printf("%s: crop : curvideo %d  %d x %d\n", __func__, chId, m_videoSize[chId].w, m_videoSize[chId].h);
 		m_glvTexCoords[winId][0] = (GLfloat)rc.x/m_videoSize[chId].w; 
 		m_glvTexCoords[winId][1] = (GLfloat)rc.y/m_videoSize[chId].h;
@@ -2259,15 +2251,16 @@ void CDisplayer::linkageSwitchMode(void)
 
 void CDisplayer::RenderVideoOnOrthoView( int videoChannel, int x, int y, int width, int height )
 {
+	int chId = videoChannel;
 	glViewport( x, y, width, height );
 	glPushMatrix();
 	glLoadIdentity();
 	glUniformMatrix4fv(Uniform_mattrans, 1, GL_FALSE, m_glmat44fTrans[0]);
 	glUniform1i(Uniform_tex_in, 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureId_input[videoChannel]);
-	glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, GL_FALSE, 0, m_glvVerts[0]);
-	glVertexAttribPointer(ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, m_glvTexCoords[0]);
+	glBindTexture(GL_TEXTURE_2D, textureId_input[chId]);
+	glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, GL_FALSE, 0, m_glvVerts[chId]);
+	glVertexAttribPointer(ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, m_glvTexCoords[chId]);
 	glEnableVertexAttribArray(ATTRIB_VERTEX);
 	glEnableVertexAttribArray(ATTRIB_TEXTURE);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

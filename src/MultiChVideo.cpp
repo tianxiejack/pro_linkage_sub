@@ -47,6 +47,8 @@ static int frameflag = 0;
 int MultiChVideo::creat()
 {
 	for(int i=0; i<MAX_CHAN; i++){	
+		if(i == video_gaoqing)
+			continue;
 		VCap[i] = new v4l2_camera(i);
 		VCap[i]->creat();
 	}
@@ -72,6 +74,8 @@ int MultiChVideo::run()
 	int iRet = 0;
 
 	for(int i=0; i<MAX_CHAN; i++){
+		if(i == video_gaoqing)
+			continue;
 		//milliseconds_sleep(100);
 		VCap[i]->run();
 		m_thrCxt[i].pUser = this;
@@ -94,6 +98,9 @@ int MultiChVideo::run()
 int MultiChVideo::stop()
 {
 	for(int i=0; i<MAX_CHAN; i++){
+		if(i == video_gaoqing)
+			continue;
+		
 		VCap[i]->stop();
 		OSA_thrDelete(&m_thrCap[i]);
 	}
@@ -107,6 +114,9 @@ int MultiChVideo::run(int chId)
 	if(chId<0 || chId>=MAX_CHAN)
 		return -1;
 
+	if(chId == video_gaoqing)
+		return 0;
+
 	VCap[chId]->run();
 	m_thrCxt[chId].pUser = this;
 	m_thrCxt[chId].chId = chId;
@@ -119,6 +129,8 @@ int MultiChVideo::stop(int chId)
 {
 	if(chId<0 || chId>=MAX_CHAN)
 		return -1;
+	if(chId == video_gaoqing)
+		return 0;
 
 	OSA_thrDelete(&m_thrCap[chId]);
 	VCap[chId]->stop();
