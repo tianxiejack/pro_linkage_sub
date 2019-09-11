@@ -269,6 +269,22 @@ std::vector< cv::Point >& StateManger::getEdgecounter()
 
 int StateManger::getTrktime()
 {
-	return m_state->m_pMenu->m_mtdtrktime;
+	//change s to ms
+	return 1000*m_state->m_pMenu->m_mtdtrktime;
+}
+
+int StateManger::getMtdMaxsize()
+{
+	return m_state->m_pMenu->m_mtdmaxsize;
+}
+
+int StateManger::getMtdMinsize()
+{
+	return m_state->m_pMenu->m_mtdminsize;
+}
+
+int StateManger::getMtdSensi()
+{
+	return m_state->m_pMenu->m_mtdsensi;
 }
 

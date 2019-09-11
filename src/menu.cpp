@@ -111,6 +111,7 @@ void CMenu::gotoCalibMode()
 	m_menuStat = MENU_CALIB;
 	changeStatFunc(LINKCALIB);
 	changeDisModeFunc(GUN_PIP_BALL);
+	notifyMenuStat(m_menuStat);
 	return;
 }
 
@@ -555,28 +556,32 @@ void CMenu::save_polygon_unroi()
 	
 	lv_4_mtdUnregionOsd(true);
 	
-	if(m_polyTmp.size() < 3)
-		return;
-
-	for(int j = 0; j < m_polyTmp.size(); j++)
+	if(m_polyTmp.size() >= 3)
 	{
-		floatx = m_polyTmp[j].x;
-		floaty = m_polyTmp[j].y;
-		map1080p2normal_point(&floatx, &floaty);
-		mapnormal2curchannel_point(&floatx, &floaty, vdisWH[curId][0], vdisWH[curId][1]);
+		for(int j = 0; j < m_polyTmp.size(); j++)
+		{
+			floatx = m_polyTmp[j].x;
+			floaty = m_polyTmp[j].y;
+			map1080p2normal_point(&floatx, &floaty);
+			mapnormal2curchannel_point(&floatx, &floaty, vdisWH[curId][0], vdisWH[curId][1]);
 
-		setx = floatx;
-		sety = floaty;
-		
-		polyUnRoi.push_back(cv::Point(setx, sety));
-		mapfullscreen2gun_pointv20(&setx, &sety);
-		mainUnRoi.push_back(cv::Point(setx, sety));
+			setx = floatx;
+			sety = floaty;
+			
+			polyUnRoi.push_back(cv::Point(setx, sety));
+			mapfullscreen2gun_pointv20(&setx, &sety);
+			mainUnRoi.push_back(cv::Point(setx, sety));
+		}
+		edge_contours_FullUnRoi.push_back(polyUnRoi);
+		edge_contours_UnRoi.push_back(mainUnRoi);
 	}
-	edge_contours_FullUnRoi.push_back(polyUnRoi);
-	edge_contours_UnRoi.push_back(mainUnRoi);
-
-	if(edge_contours_FullUnRoi.size() != 0)
-		SaveMtdSelectArea("SaveMtdUnRoi.yml", edge_contours_FullUnRoi);
+	else
+	{
+		edge_contours_FullUnRoi.clear();
+		edge_contours_UnRoi.clear();
+	}
+	
+	SaveMtdSelectArea("SaveMtdUnRoi.yml", edge_contours_FullUnRoi);
 
 	m_polyTmp.clear();
 	return ;
@@ -1160,7 +1165,7 @@ void CMenu::lv_4_mtdUnregionOsd(bool show_result)
 {
 	//L"鼠标左键:选择点 鼠标右键:删除点 回车:确认 F1:控球模式 0:删除所有点  1:保存"
 	int j;
-		if(show_result)
+	if(show_result)
 		disMenuBuf.cnt = 3;
 	else
 		disMenuBuf.cnt = 2;
@@ -1195,7 +1200,7 @@ void CMenu::lv_4_mtdUnregionOsd(bool show_result)
 		if(m_polyTmp.size() >= 3)
 			swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"点数:%d,保存成功", m_polyTmp.size());
 		else
-			swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"点数小于3,保存失败");
+			swprintf(disMenuBuf.osdBuffer[j].disMenu, 33, L"确认");
 	}
 	return;
 }

@@ -21,7 +21,7 @@ enum devvideo{
 #define MAX_MTDTARGET_NUM	10
 #define MIN_MTDTRKTIME		1
 #define MAX_MTDTRKTIME		20
-#define MIN_MTDMINSIZE		225
+#define MIN_MTDMINSIZE		9
 #define MAX_MTDMAXSIZE		70000
 #define MIN_MTDSENSI		10
 #define MAX_MTDSENSI		100

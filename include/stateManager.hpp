@@ -75,7 +75,9 @@ public:
 	std::vector< std::vector<cv::Point> >& getEdgeFullUnRoi();
 	
 	int getTrktime();
-	 
+	int getMtdMaxsize();
+	int getMtdMinsize();
+	int getMtdSensi();
 
 	
 public:

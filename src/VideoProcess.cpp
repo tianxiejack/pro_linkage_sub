@@ -402,7 +402,7 @@ void CVideoProcess::main_proc_func()
 		#if __MOVE_DETECT__
 			if(m_pMovDetector != NULL)
 			{	
-				m_pMovDetector->setFrame(frame_gray,msgextInCtrl->SensorStat,gCFG_Mtd.detectSpeed, gCFG_Mtd.tmpMinPixel, gCFG_Mtd.tmpMaxPixel, gCFG_Mtd.sensitivityThreshold);
+				m_pMovDetector->setFrame(frame_gray,msgextInCtrl->SensorStat,gCFG_Mtd.detectSpeed, m_stateManger->getMtdMinsize(),  m_stateManger->getMtdMaxsize(),  m_stateManger->getMtdSensi() );
 				if(m_bAutoLink){
 					if( 0 == m_chSceneNum){
 						if(!OSA_semWait(&m_mvObjSync,20)){
@@ -437,10 +437,11 @@ void CVideoProcess::main_proc_func()
 							if(0 == mtdcount)
 								sendIpc4PTZpos();
 							else if(1 == mtdcount)
+							{
 								m_stateManger->m_state->autolinkage_moveball(m_sceInitRectBK.x + m_sceInitRectBK.width/2, 
 									m_sceInitRectBK.y + m_sceInitRectBK.height/2);
-							mtdcount = (++mtdcount%2);
-							
+							}
+							mtdcount = (++mtdcount%4);
 						}
 						else
 						{

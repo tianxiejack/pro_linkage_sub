@@ -229,7 +229,7 @@ void State::manuallinkage_moveball(int x, int y)
 
 void State::autolinkage_moveball(int x, int y)
 {
-
+	return ;
 	SENDST trkmsg={0};
 	float zoom;
 	Point2i inPoint;
@@ -238,7 +238,7 @@ void State::autolinkage_moveball(int x, int y)
 	int delta_X ;
 	int offset_x = 0;
 	zoom = 2.0;
-
+	
 	inPoint.x = x;
 	inPoint.y = y;
 		
@@ -399,30 +399,31 @@ float State::deltaPan2rate(float x)
 
 	float deltax1,deltax2;
 
-	if(fabs(delta) > 1.0)
+	if(delta < -1.0)
 	{
-		if(delta < 0)
-		{
-			deltax1 = fabs(delta);
-			deltax2 = m_curpos.p - x + 2.0;
-			delta = (deltax1 < deltax2)?deltax1:deltax2;
-			moveway = RIGHT;
-		}else{
-			deltax1 = delta;
-			deltax2 = x - m_curpos.p + 2.0;
-			delta = (deltax1 < deltax2)?deltax1:deltax2;
-			moveway = LEFT;
-		}
-	}else{
-		if(delta < 0)
-			moveway = RIGHT;
-		else
-			moveway = LEFT;
+		ret = delta + 2.0;
+		moveway = LEFT;
+	}
+	else if(delta >= -1.0 && delta < 0)
+	{
+		ret = delta;
+		moveway = RIGHT;
+
+	}
+	else if(delta >=0 && delta <1.0)
+	{
+		ret = delta;
+		moveway = LEFT;
+	}
+	else if(delta >= 1.0)
+	{
+		ret = 2.0 - delta;
+		moveway = RIGHT;
 	}
 
 	ret = getPanSpeed(fabs(delta));
 	
-	if(!moveway)
+	if( LEFT == moveway )
 		ret = -1*ret;
 	
 	return ret;
@@ -459,7 +460,7 @@ float State::deltaTil2rate(float y)
 
 void State::transPix2rate(float& x, float& y)
 {
-	float tmpx,tmpy;
+	float tmpx = 0,tmpy = 0;
 	
 	tmpx = deltaPan2rate(x);
 	tmpy = deltaTil2rate(y);
@@ -721,7 +722,6 @@ void State::link2pos(int x,int y)
 	}
 	else 
 	{
-		printf("link2pos\n");
 		mapgun2fullscreen_auto(&x,&y);
 		manuallinkage_moveball(x,y);
 	}
