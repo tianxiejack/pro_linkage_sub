@@ -404,8 +404,6 @@ void CVideoProcess::main_proc_func()
 			{	
 				m_pMovDetector->setFrame(frame_gray,msgextInCtrl->SensorStat,gCFG_Mtd.detectSpeed, m_stateManger->getMtdMinsize(),  m_stateManger->getMtdMaxsize(),  m_stateManger->getMtdSensi() );
 				if(m_bAutoLink){
-					if(!stopflag)
-						stopflag  = true;
 					if( 0 == m_chSceneNum){
 						if(!OSA_semWait(&m_mvObjSync,20)){
 			
