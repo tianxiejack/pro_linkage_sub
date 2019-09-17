@@ -229,7 +229,6 @@ void State::manuallinkage_moveball(int x, int y)
 
 void State::autolinkage_moveball(int x, int y)
 {
-	return ;
 	SENDST trkmsg={0};
 	float zoom;
 	Point2i inPoint;
@@ -258,61 +257,61 @@ float State::getPanSpeed(float deltax)
 	if(deltax < 0.0002)
 		ret = 0;
 	if(deltax < 0.00027)
-		ret = 0.08;
+		ret = 0.02;
 	else if( deltax <0.00333)
-		ret = 0.09;
+		ret = 0.04;
 	else if( deltax <0.0039)
-		ret = 0.109;
+		ret = 0.06;
 	else if( deltax <0.0044)
-		ret = 0.125;
+		ret = 0.08;
 	else if( deltax <0.005)
-		ret = 0.14;
+		ret = 0.1;
 	else if(deltax < 0.0056)
-		ret = 0.156;
+		ret = 0.12;
 	else if( deltax <0.011)
-		ret = 0.219;
+		ret = 0.14;
 	else if(deltax<0.017)
-		ret = 0.28;
+		ret = 0.16;
 	else if(deltax< 0.022)
-		ret = 0.33;
+		ret = 0.18;
 	else if( deltax <0.028)
-		ret = 0.34;
+		ret = 0.2;
 	else if(deltax < 0.033)
-		ret = 0.36;
+		ret = 0.22;
 	else if(deltax< 0.044)
-		ret = 0.375;
+		ret = 0.24;
 	else if(deltax<0.056)
-		ret = 0.39;
+		ret = 0.26;
 	else if(deltax<0.067)
-		ret = 0.406;
+		ret = 0.28;
 	else if( deltax <0.083)
-		ret = 0.438;
+		ret = 0.3;
 	else if(deltax < 0.1)
-		ret = 0.469;
+		ret = 0.32;
 	else if(deltax < 0.11)
-		ret = 0.5;
+		ret = 0.34;
 	else if(deltax<0.14)
-		ret = 0.53;
+		ret = 0.36;
 	else if( deltax <0.167)
-		ret = 0.56;
+		ret = 0.38;
 	else if(deltax < 0.194)
-		ret = 0.594;
+		ret = 0.4;
 	else if(deltax < 0.22)
-		ret = 0.7;
+		ret = 0.42;
 	else if(deltax < 0.25)
-		ret = 0.78;
+		ret = 0.44;
 	else if( deltax <0.278)
-		ret = 0.843;
+		ret = 0.46;
 	else if(deltax < 0.333)
-		ret = 0.86;
+		ret = 0.48;
 	else if(deltax < 0.389)
-		ret = 0.875;
+		ret = 0.5;
 	else if(deltax < 0.44)
-		ret = 0.89;
+		ret = 0.52;
 	else if(deltax < 0.5)
-		ret = 0.91;
+		ret = 0.6;
 	else if( deltax <0.56)
-		ret = 0.922;
+		ret = 0.7;
 	else
 		ret = 0.938;
 	return ret;
@@ -324,63 +323,63 @@ float State::getTilSpeed(float deltax)
 	if(deltax < 0.0002)
 		ret = 0;
 	if(deltax < 0.00027)
-		ret = 0.08;
+		ret = 0.02;
 	else if( deltax <0.00333)
-		ret = 0.09;
+		ret = 0.04;
 	else if( deltax <0.0039)
-		ret = 0.109;
+		ret = 0.06;
 	else if( deltax <0.0044)
-		ret = 0.125;
+		ret = 0.08;
 	else if( deltax <0.005)
-		ret = 0.14;
+		ret = 0.1;
 	else if(deltax < 0.0056)
-		ret = 0.156;
+		ret = 0.12;
 	else if( deltax <0.011)
-		ret = 0.219;
+		ret = 0.14;
 	else if(deltax<0.017)
-		ret = 0.28;
+		ret = 0.16;
 	else if(deltax< 0.022)
-		ret = 0.33;
+		ret = 0.18;
 	else if( deltax <0.028)
-		ret = 0.34;
+		ret = 0.2;
 	else if(deltax < 0.033)
-		ret = 0.36;
+		ret = 0.22;
 	else if(deltax< 0.044)
-		ret = 0.375;
+		ret = 0.24;
 	else if(deltax<0.056)
-		ret = 0.39;
+		ret = 0.26;
 	else if(deltax<0.067)
-		ret = 0.406;
+		ret = 0.28;
 	else if( deltax <0.083)
-		ret = 0.438;
+		ret = 0.3;
 	else if(deltax < 0.1)
-		ret = 0.469;
+		ret = 0.32;
 	else if(deltax < 0.11)
-		ret = 0.5;
+		ret = 0.34;
 	else if(deltax<0.14)
-		ret = 0.53;
+		ret = 0.36;
 	else if( deltax <0.167)
-		ret = 0.56;
+		ret = 0.38;
 	else if(deltax < 0.194)
-		ret = 0.594;
+		ret = 0.4;
 	else if(deltax < 0.22)
-		ret = 0.7;
+		ret = 0.42;
 	else if(deltax < 0.25)
-		ret = 0.78;
+		ret = 0.44;
 	else if( deltax <0.278)
-		ret = 0.843;
+		ret = 0.46;
 	else if(deltax < 0.333)
-		ret = 0.86;
+		ret = 0.48;
 	else if(deltax < 0.389)
-		ret = 0.875;
+		ret = 0.5;
 	else if(deltax < 0.44)
-		ret = 0.89;
+		ret = 0.52;
 	else if(deltax < 0.5)
-		ret = 0.91;
+		ret = 0.55;
 	else if( deltax <0.56)
-		ret = 0.922;
+		ret = 0.6;
 	else
-		ret = 0.938;
+		ret = 0.7;
 	return ret;
 }
 
@@ -449,7 +448,7 @@ float State::deltaTil2rate(float y)
 		moveway = DOWN;
 
 	ret = getTilSpeed(fabs(delta));
-
+	
 	if(!moveway)
 		ret = -1*ret;
 	
